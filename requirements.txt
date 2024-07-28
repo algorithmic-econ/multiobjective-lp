@@ -1,0 +1,11 @@
+cffi==1.15.1
+gmpy2==2.1.5
+mip==1.15.0
+natsort==8.4.0
+numpy==2.0.0
+pabutools==1.1.7
+preflibtools==2.0.22
+prefsampling==0.1.21
+PuLP==2.8.0
+pycparser==2.22
+pydantic==2.7.4

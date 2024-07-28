@@ -1,0 +1,5 @@
+/venv
+/output
+/resources/**/*
+/.ipynb_checkpoints/
+/.idea/
