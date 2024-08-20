@@ -4,6 +4,7 @@ theme:
 
 nav:
   - Introduction: index.md
+  - Meeting notes: meeting-notes.md
 
 markdown_extensions:
   - admonition
