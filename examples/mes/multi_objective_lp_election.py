@@ -1,4 +1,4 @@
-from model.multi_objective_lp import MultiObjectiveLpProblem
+from src.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpAffineExpression, LpConstraint, LpConstraintGE, LpConstraintLE
 from typing import List, Optional
 from logging import Logger

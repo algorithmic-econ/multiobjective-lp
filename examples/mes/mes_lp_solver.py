@@ -1,6 +1,6 @@
 from pulp import LpSolver
 
-from model.multi_objective_lp import MultiObjectiveLpProblem
+from src.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 class MesLPSolver(LpSolver):

@@ -1,7 +1,7 @@
 from pulp import LpVariable, lpSum
 
 from examples.summing.SummedObjectivesLpSolver import SummedObjectivesLpSolver
-from model.multi_objective_lp import MultiObjectiveLpProblem
+from src.model.multi_objective_lp import MultiObjectiveLpProblem
 
 if __name__ == '__main__':
     # we are building only one warehouse

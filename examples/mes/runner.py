@@ -3,12 +3,13 @@ from examples.mes.pabutools.model import EnhancedProject, EnhancedProfile
 from examples.mes.pabutools.parsing import load_pabulib_to_enhanced_projects_and_district_profiles
 from examples.mes.pabutools.utils import use_modified_price, merge_voter_preferences_by_district, filter_projects, \
     by_district, by_category, get_feasibility_ratio, get_modification_ratio, get_candidates_ids_from_constraint
-from utils.utils import flatten
 from pabutools.election import Instance, ApprovalProfile
 from pabutools.rules import method_of_equal_shares
 from pabutools.election.satisfaction import Cost_Sat
 from typing import Tuple, List, Dict
-from utils.logger import get_logs_from_stream, logger, LogKey
+
+from src.utils.logger import logger, LogKey, get_logs_from_stream
+from src.utils.utils import flatten
 
 
 def project_costs_interference(it: int, project: EnhancedProject) -> EnhancedProject:
