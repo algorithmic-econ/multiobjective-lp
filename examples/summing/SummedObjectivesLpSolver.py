@@ -4,6 +4,11 @@ from src.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 class SummedObjectivesLpSolver(LpSolver):
+    """
+    Info: SummedObjectivesLpSolver
+        Example dummy solver that sums multiple objectives.
+    """
+
     def __init__(self):
         super().__init__()
 
