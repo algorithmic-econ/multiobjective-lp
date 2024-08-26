@@ -11,23 +11,25 @@
       
       
       
-        <link rel="prev" href="../code-reference/summed-objectives-lp-solver/">
+        <link rel="prev" href="../multi-objective-lp-problem/">
       
       
+        <link rel="next" href="../../meeting-notes/">
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
     
     
       
-        <title>Meeting notes - Multi-objective Linear Programming</title>
+        <title>SummedObjectivesLpSolver - Multi-objective Linear Programming</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3cba04c6.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#notes" class="md-skip">
+        <a href="#examples.summing.SummedObjectivesLpSolver" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +94,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Multi-objective Linear Programming" class="md-header__button md-logo" aria-label="Multi-objective Linear Programming" data-md-component="logo">
+    <a href="../.." title="Multi-objective Linear Programming" class="md-header__button md-logo" aria-label="Multi-objective Linear Programming" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -112,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Meeting notes
+              SummedObjectivesLpSolver
             
           </span>
         </div>
@@ -213,7 +215,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -228,11 +230,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../code-reference/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -248,11 +252,9 @@
         
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../meeting-notes/" class="md-tabs__link">
         
   
     
@@ -294,7 +296,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Multi-objective Linear Programming" class="md-nav__button md-logo" aria-label="Multi-objective Linear Programming" data-md-component="logo">
+    <a href="../.." title="Multi-objective Linear Programming" class="md-nav__button md-logo" aria-label="Multi-objective Linear Programming" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -324,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -341,6 +343,8 @@
       
   
   
+    
+  
   
   
     
@@ -357,40 +361,72 @@
     
     
       
+        
+        
+      
       
     
     
       
-        
-        
-      
     
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
-  
-  
-    <a href="../code-reference/" class="md-nav__link">
-      
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Reference
   </span>
   
 
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi-objective-lp-problem/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MultiObjectiveLpProblem
+  </span>
   
 
-      
+      </a>
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
     
@@ -402,14 +438,12 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
   <span class="md-ellipsis">
-    Meeting notes
+    SummedObjectivesLpSolver
   </span>
   
 
@@ -420,7 +454,7 @@
         
   
   <span class="md-ellipsis">
-    Meeting notes
+    SummedObjectivesLpSolver
   </span>
   
 
@@ -432,8 +466,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -442,9 +474,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#11072024" class="md-nav__link">
+  <a href="#examples.summing.SummedObjectivesLpSolver" class="md-nav__link">
     <span class="md-ellipsis">
-      11/07/2024
+      SummedObjectivesLpSolver
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples.summing.SummedObjectivesLpSolver-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      SummedObjectivesLpSolver
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SummedObjectivesLpSolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code examples:
     </span>
   </a>
   
@@ -454,6 +534,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meeting-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Meeting notes
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -476,28 +584,165 @@
   
 
 
-<h1 id="notes">Notes</h1>
-<h3 id="11072024">11/07/2024</h3>
-<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Implement solver and use actualSolve<ul>
-<li>Allow to inject Gurobi under etc.</li>
-</ul>
-</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Example dummy solver<ul>
-<li>sum multiobjectives into one objective and run default PULP</li>
-</ul>
-</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Documentation</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> package publishing</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Implement constrained mes as solver</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Compare solvers by fairness</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Criteria module to get metrics about provided solution, e.g:<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> sum of objectives</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> count of non zero objective</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> other examples, proportionality...</li>
-</ul>
-</li>
-</ul>
+  <h1>SummedObjectivesLpSolver</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="examples.summing.SummedObjectivesLpSolver"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+<h4 id="examples.summing.SummedObjectivesLpSolver-classes">Classes</h4>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h5 id="examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>SummedObjectivesLpSolver</code>
+
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+
+
+
+<details class="info" open>
+  <summary>Info</summary>
+  <p>Example dummy solver that sums multiple objectives.</p>
+</details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<h6 id="examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver-functions">Functions</h6>
+
+<div class="doc doc-object doc-function">
+
+
+<h7 id="examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
+
+</h7>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h7 id="examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver.actualSolve" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">actualSolve</span><span class="p">(</span><span class="n">lp</span><span class="p">)</span></code>
+
+</h7>
+
+
+    <div class="doc doc-contents ">
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>lp</code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="src.model.multi_objective_lp.MultiObjectiveLpProblem" href="../multi-objective-lp-problem/#src.model.multi_objective_lp.MultiObjectiveLpProblem">MultiObjectiveLpProblem</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Instance of MultiObjectiveLpProblem</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h3 id="code-examples">Code examples:</h3>
+<details class="example">
+<summary>Warehouse cost example</summary>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">model.multi_objective_lp</span> <span class="kn">import</span> <span class="n">MultiObjectiveLpProblem</span>
+<span class="kn">from</span> <span class="nn">pulp</span> <span class="kn">import</span> <span class="n">LpVariable</span><span class="p">,</span> <span class="n">lpSum</span>
+<span class="kn">from</span> <span class="nn">examples.summing.SummedObjectivesLpSolver</span> <span class="kn">import</span> <span class="n">SummedObjectivesLpSolver</span>
+
+<span class="c1"># we are building only one warehouse</span>
+<span class="n">warehouses_to_build</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># define the costs for the warehouse choices</span>
+<span class="n">warehouse_fixed_costs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">80</span><span class="p">]</span>
+<span class="n">cost_per_km</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">]</span>
+<span class="n">transport_costs</span> <span class="o">=</span> <span class="p">[</span><span class="n">cost</span> <span class="o">*</span> <span class="n">dist</span> <span class="k">for</span> <span class="n">cost</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cost_per_km</span><span class="p">,</span> <span class="n">distances</span><span class="p">)]</span>
+<span class="n">warehouses</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MultiObjectiveLpProblem</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;warehouse&#39;</span><span class="p">)</span>
+
+<span class="n">build_warehouse_flag</span> <span class="o">=</span> <span class="n">LpVariable</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="s2">&quot;build&quot;</span><span class="p">,</span> <span class="n">warehouses</span><span class="p">,</span> <span class="n">cat</span><span class="o">=</span><span class="s2">&quot;Binary&quot;</span><span class="p">,</span> <span class="n">lowBound</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">+=</span> <span class="n">lpSum</span><span class="p">(</span><span class="n">build_warehouse_flag</span><span class="p">)</span> <span class="o">==</span> <span class="n">warehouses_to_build</span>
+
+<span class="c1"># cost to be minimized</span>
+<span class="n">transport_obj</span> <span class="o">=</span> <span class="n">lpSum</span><span class="p">([</span><span class="n">trans_cost</span> <span class="o">*</span> <span class="n">flag</span> <span class="k">for</span> <span class="n">trans_cost</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">transport_costs</span><span class="p">,</span> <span class="n">build_warehouse_flag</span><span class="p">)])</span>
+<span class="n">fix_obj</span> <span class="o">=</span> <span class="n">lpSum</span><span class="p">([</span><span class="n">fix_cost</span> <span class="o">*</span> <span class="n">flag</span> <span class="k">for</span> <span class="n">fix_cost</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">warehouse_fixed_costs</span><span class="p">,</span> <span class="n">build_warehouse_flag</span><span class="p">)])</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">setObjectives</span><span class="p">([</span><span class="n">transport_obj</span><span class="p">,</span> <span class="n">fix_obj</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="n">SummedObjectivesLpSolver</span><span class="p">())</span>
+</code></pre></div>
+</details>
 
 
 
@@ -533,7 +778,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../code-reference/summed-objectives-lp-solver/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SummedObjectivesLpSolver">
+          <a href="../multi-objective-lp-problem/" class="md-footer__link md-footer__link--prev" aria-label="Previous: MultiObjectiveLpProblem">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -543,11 +788,27 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                SummedObjectivesLpSolver
+                MultiObjectiveLpProblem
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../../meeting-notes/" class="md-footer__link md-footer__link--next" aria-label="Next: Meeting notes">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Meeting notes
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
         
       </nav>
     
@@ -574,12 +835,12 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.prune", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.prune", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.integrate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
       
-        <script src="../javascripts/katex.js"></script>
+        <script src="../../javascripts/katex.js"></script>
       
         <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
       
