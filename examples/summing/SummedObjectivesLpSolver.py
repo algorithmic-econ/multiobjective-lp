@@ -1,6 +1,6 @@
 from pulp import LpSolver, LpSolverDefault, lpSum
 
-from src.model.multi_objective_lp import MultiObjectiveLpProblem
+from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 class SummedObjectivesLpSolver(LpSolver):

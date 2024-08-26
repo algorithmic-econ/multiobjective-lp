@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "multiobjective_lp"
-version = "0.0.1"
+version = "0.0.2"
 description = "Implementation of multi objective linear programming module"
 authors = [
     { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
