@@ -9,7 +9,7 @@ serve-doc: ## serve documentation with docker
 
 .PHONY: serve-doc-local
 .SILENT: serve-doc-local
-serve-doc: ## serve documentation directly
+serve-doc-local: ## serve documentation directly
 	mkdocs serve
 
 .PHONY: deploy-doc

@@ -1,10 +1,38 @@
-site_name: Multi-objective Linear Programming
+site_name: "Multi-objective Linear Programming"
+site_description: "Multi-objective Linear Programming Project"
+repo_url: "https://github.com/jasieksz/multiobjective-lp"
+repo_name: "multiobjective-lp"
 theme:
   name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.prune
+    - navigation.path
+    - navigation.indexes
+    - navigation.footer
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - toc.integrate
 
 nav:
   - Introduction: index.md
-  - Reference: reference.md
+  - Reference:
+      - code-reference/index.md
+      - MultiObjectiveLpProblem: code-reference/multi-objective-lp-problem.md
+      - SummedObjectivesLpSolver: code-reference/summed-objectives-lp-solver.md
   - Meeting notes: meeting-notes.md
 
 plugins:
@@ -18,10 +46,8 @@ plugins:
             show_source: false
             heading_level: 4
             show_bases: false
-#            show_root_heading: true
-#            show_root_full_path: true
             show_symbol_type_heading: true
-#            group_by_category: true
+            group_by_category: true
             show_category_heading: true
 
   - search
@@ -36,8 +62,11 @@ markdown_extensions:
           - name: mermaid
             class: mermaid
             format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - attr_list
   - md_in_html
+
 
 extra_javascript:
   - javascripts/katex.js
