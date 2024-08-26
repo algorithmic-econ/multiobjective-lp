@@ -6,7 +6,7 @@
 - [x] Example dummy solver
     - sum multiobjectives into one objective and run default PULP
 - [x] Documentation
-- [ ] package publishing
+- [x] package publishing
 - [ ] Implement constrained mes as solver
 - [ ] Compare solvers by fairness
 - [ ] Criteria module to get metrics about provided solution, e.g:

@@ -1,1 +1,1 @@
-::: src.model.multi_objective_lp
+::: multiobjective_lp.src.model.multi_objective_lp
