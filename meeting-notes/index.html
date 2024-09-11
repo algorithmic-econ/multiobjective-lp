@@ -450,6 +450,48 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#mkdocs-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      MkDocs Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MkDocs Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admonitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admonitions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Graphs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latex" class="md-nav__link">
+    <span class="md-ellipsis">
+      LaTeX
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -498,6 +540,29 @@
 </ul>
 </li>
 </ul>
+<h3 id="mkdocs-examples">MkDocs Examples</h3>
+<h4 id="admonitions">Admonitions</h4>
+<details class="info annotate" open="open">
+<summary>About (1)</summary>
+<p>Collapsible panel</p>
+</details>
+<ol>
+<li>🚀 I'm an annotation!</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Be careful</p>
+</div>
+<h4 id="graphs">Graphs</h4>
+<pre class="mermaid"><code>graph LR
+  A[Start] --&gt; B{Error?};
+  B --&gt;|Yes| C[Hmm...];
+  C --&gt; D[Debug];
+  D --&gt; B;
+  B ----&gt;|No| E[Yay!];</code></pre>
+<h4 id="latex">LaTeX</h4>
+<p>The homomorphism <span class="arithmatex">\(f\)</span> is injective if and only if its kernel is only the
+singleton set <span class="arithmatex">\(e_G\)</span>, because otherwise <span class="arithmatex">\(\exists a,b\in G\)</span> with <span class="arithmatex">\(a\neq b\)</span> such
+that <span class="arithmatex">\(f(a)=f(b)\)</span>.</p>
 
 
 
