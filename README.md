@@ -17,7 +17,6 @@ cd documentation
 make deploy-doc
 ```
 
-
 ### Code Deployment
 1. Configure API key in `~/.pypirc`
 2. From repository root directory run the following

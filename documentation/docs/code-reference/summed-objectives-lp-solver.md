@@ -1,4 +1,7 @@
-::: examples.summing.SummedObjectivesLpSolver
+::: examples.summing.SummedObjectivesLpSolver.SummedObjectivesLpSolver
+    options:
+        show_source: true
+        members: no
 
 ### Code examples:
 

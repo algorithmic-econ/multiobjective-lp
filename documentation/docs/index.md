@@ -1,28 +1,7 @@
 # Introduction
 
-About this project ...
+This project extends [PuLP](https://github.com/coin-or/pulp) model to allow defining _Multi Objective LPs_.
 
-### MkDocs Examples
+Furthermore, it aims to provide framework for ^^using and comparing^^ alternative algorithms as LP solvers, e.g., Method of Equal Shares.
 
-#### Admonitions
-???+ info annotate "About (1)"
-
-    Collapsible panel
-1.  🚀 I'm an annotation!
-
-!!! warning "Be careful"
-
-#### Graphs
-``` mermaid
-graph LR
-  A[Start] --> B{Error?};
-  B -->|Yes| C[Hmm...];
-  C --> D[Debug];
-  D --> B;
-  B ---->|No| E[Yay!];
-```
-
-#### LaTeX
-The homomorphism $f$ is injective if and only if its kernel is only the
-singleton set $e_G$, because otherwise $\exists a,b\in G$ with $a\neq b$ such
-that $f(a)=f(b)$.
+See code reference and examples [here](code-reference/index.md)

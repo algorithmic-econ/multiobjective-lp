@@ -66,6 +66,11 @@ markdown_extensions:
       custom_checkbox: true
   - attr_list
   - md_in_html
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
 
 
 extra_javascript:
