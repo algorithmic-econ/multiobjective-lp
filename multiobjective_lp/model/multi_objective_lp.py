@@ -1,13 +1,13 @@
 from logging import Logger
 from typing import List, Optional
 
-from pulp import LpProblem, LpAffineExpression, PulpError
+from pulp import LpProblem, LpAffineExpression, PulpError, LpMaximize, LpMinimize
 
 
 class MultiObjectiveLpProblem(LpProblem):
 
-    def __init__(self, name: str, objectives: List[LpAffineExpression] = None, logger: Optional[Logger] = None) -> None:
-        super().__init__(name)
+    def __init__(self, name: str, sense: LpMaximize | LpMinimize = LpMaximize, objectives: List[LpAffineExpression] = None, logger: Optional[Logger] = None) -> None:
+        super().__init__(name, sense=sense)
         self._objectives = objectives
         self._logger = logger
 
