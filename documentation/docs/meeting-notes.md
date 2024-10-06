@@ -4,8 +4,8 @@
 - [ ] Transform (if possible) election metrics / statistics to general constraint
   - EJR unclear
 - [ ] Analyzer module
-  - Part of repo not package 
-  - Generate MOLP from pabutools format
+  - [x] Part of repo not package 
+  - [x] Generate MOLP from pabutools format
   - Run solver and save to file
   - Analyze results
     - start with tables / raw numbers

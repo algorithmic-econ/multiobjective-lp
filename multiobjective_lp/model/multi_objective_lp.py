@@ -22,16 +22,7 @@ class MultiObjectiveLpProblem(LpProblem):
     def logger(self) -> Logger:
         return self._logger
 
-    def fixObjective(self):
-        if self.logger is not None:
-            self.logger.warning("fixObjective is incompatible with MultiObjectiveLp, returning mock values")
-        print("fixObjective is incompatible with MultiObjectiveLp, returning mock values")
-        return 1, None
-
-    def restoreObjective(self, wasNone, dummyVar):
-        if self.logger is not None:
-            self.logger.warning("SKIPPED, restoreObjective is incompatible with MultiObjectiveLp")
-            pass
+    # TODO: Decide how to handle fixObjective and restoreObjective
 
     def toDict(self) -> dict:
         try:
