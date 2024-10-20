@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import List, Optional
 
-from pulp import LpProblem, LpAffineExpression, PulpError, LpMaximize, LpMinimize
+from pulp import LpProblem, LpAffineExpression, PulpError, LpMaximize, LpMinimize, LpConstraint, LpVariable
 
 
 class MultiObjectiveLpProblem(LpProblem):
@@ -34,7 +34,6 @@ class MultiObjectiveLpProblem(LpProblem):
         # TODO: Skip calling fixObjective()
         variables = self.variables()
         return dict(
-            # TODO: List of objectives
             objectives=[dict(name=objective.name, coefficients=objective.toDict()) for objective in self.objectives],
             constraints=[v.toDict() for v in self.constraints.values()],
             variables=[v.toDict() for v in variables],
@@ -49,5 +48,49 @@ class MultiObjectiveLpProblem(LpProblem):
         )
 
     to_dict = toDict
+
+    @classmethod
+    def fromDict(cls, _dict):
+
+        # we instantiate the problem
+        params = _dict["parameters"]
+        pb_params = {"name", "sense"}
+        args = {k: params[k] for k in pb_params}
+        pb = cls(**args)
+        pb.status = params["status"]
+        pb.sol_status = params["sol_status"]
+
+        # recreate the variables.
+        var = {v["name"]: LpVariable.fromDict(**v) for v in _dict["variables"]}
+
+        # objective function.
+        # we change the names for the objects:
+        recreated_objectives = []
+        for objective in _dict["objectives"]:
+            coefficients = {var[v["name"]]: v["value"] for v in objective["coefficients"]}
+            recreated_objectives.append(LpAffineExpression(e=coefficients, name=objective["name"]))
+        pb.setObjectives(recreated_objectives)
+
+        # constraints
+        # we change the names for the objects:
+        def edit_const(const):
+            const = dict(const)
+            const["coefficients"] = {
+                var[v["name"]]: v["value"] for v in const["coefficients"]
+            }
+            return const
+
+        constraints = [edit_const(v) for v in _dict["constraints"]]
+        for c in constraints:
+            pb += LpConstraint.fromDict(c)
+
+        # last, parameters, other options
+        list_to_dict = lambda v: {k: v for k, v in enumerate(v)}
+        pb.sos1 = list_to_dict(_dict["sos1"])
+        pb.sos2 = list_to_dict(_dict["sos2"])
+
+        return pb
+
+    from_dict = fromDict
 
     # TODO: override __iadd__ to append objective to the list of objectives

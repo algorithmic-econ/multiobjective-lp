@@ -20,14 +20,14 @@ if __name__ == '__main__':
 
     endTime = time.time()
 
-    selected_ids: RunnerResult = {
+
+    result: RunnerResult = {
         "time": endTime - startTime,
         "solver": solver_type.name,
         "source_type": source_type.name,
         "source": source_directory_path.split('/')[-2],
         "selected": [project.name[1:] for project in [var for var in problem.variables() if var.value() == 1.0]],
-        "problem": {"variables": problem.toDict()['variables']}
+        "problem": problem.toDict()
     }
-    write_to_json(f"resources/results/{datetime.now().isoformat(timespec='seconds')}_{source_directory_path.split('/')[-2]}_{solver_type.name}.json", selected_ids)
-    write_to_json(f"resources/results/latest.json", selected_ids)
-
+    write_to_json(f"resources/results/{datetime.now().isoformat(timespec='seconds')}_{source_directory_path.split('/')[-2]}_{solver_type.name}.json", result)
+    write_to_json(f"resources/results/latest.json", result)

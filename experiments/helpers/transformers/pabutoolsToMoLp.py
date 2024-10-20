@@ -9,8 +9,8 @@ District: TypeAlias = str
 AgentId: TypeAlias = str
 
 
-def pabutools_to_multiobjective_lp(instances: Dict[District, Instance],
-                                   profiles: Dict[District, Profile]) -> MultiObjectiveLpProblem:
+def pabutools_to_multi_objective_lp(instances: Dict[District, Instance],
+                                    profiles: Dict[District, Profile]) -> MultiObjectiveLpProblem:
     problem = MultiObjectiveLpProblem('election')
 
     project_variables = create_projects_variables(instances)

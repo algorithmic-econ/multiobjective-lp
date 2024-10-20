@@ -1,5 +1,9 @@
 # Notes
 
+### 10/10/2024
+- [ ] Config to problemRunner as json with 
+- [ ] Loop runner over directories
+
 ### 11/09/2024
 - [ ] Transform (if possible) election metrics / statistics to general constraint
   - EJR unclear
