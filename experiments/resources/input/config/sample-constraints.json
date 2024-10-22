@@ -1,0 +1,6 @@
+[
+  {"category": "education", "bound": "LOWER", "budget_ratio": 0.15},
+  {"category": "education", "bound": "UPPER", "budget_ratio": 0.30},
+  {"category": "sport", "bound": "UPPER", "budget_ratio": 0.25},
+  {"category": "ignored", "bound": "UPPER", "budget_ratio": 0.30}
+]

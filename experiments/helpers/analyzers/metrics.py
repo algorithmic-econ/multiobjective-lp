@@ -1,9 +1,15 @@
 from enum import Enum
-from typing import Dict, Callable
+from typing import Dict, Callable, List
+
+from ..analyzers.model import Metric, AnalyzerResult
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
-Metric = Enum('Metric', ['NON_ZERO_OBJECTIVES', 'SUM_OBJECTIVES'])
+def get_metrics(metrics: List[Metric], problem: MultiObjectiveLpProblem) -> Dict:
+    result: AnalyzerResult = {"metrics": [metric.name for metric in metrics]}
+    for metric in metrics:
+        result |= {metric.name: get_metric_strategy(metric)(problem)}
+    return result
 
 
 def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], Dict]:
@@ -15,12 +21,12 @@ def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], D
 
 def non_zero_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     return {
-        "non_zero_objectives": len([1 for obj in problem.objectives if obj.value() != 0]),
-        "zero": len([1 for obj in problem.objectives if obj.value() == 0])
+        "non_zero_count": len([1 for obj in problem.objectives if obj.value() != 0]),
+        "zero_count": len([1 for obj in problem.objectives if obj.value() == 0])
     }
 
 
 def sum_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     return {
-        "sum_objectives": sum([obj.value() for obj in problem.objectives]),
+        "sum": sum([obj.value() for obj in problem.objectives]),
     }
