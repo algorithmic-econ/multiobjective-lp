@@ -1,20 +1,31 @@
 # Notes
 
+### 24/10/2024
+- [ ] Don't divide voters by district (one voter in citywide + district)
+- [ ] Future Solvers
+  - based on simple mes
+    - PB one constraint, i.e., with only positive weights, total budget 
+    - binary variables
+    - C++ implementation of solver itself 
+    - investigate how python and gurobi communicates
+  - extend simple mes with constraints 
+
 ### 10/10/2024
-- [ ] Config to problemRunner as json with 
-- [ ] Loop runner over directories
+- [x] Config to problemRunner as json with 
+- [x] Loop runner over directories
 
 ### 11/09/2024
 - [ ] Transform (if possible) election metrics / statistics to general constraint
+  - [x] dummy example
   - EJR unclear
-- [ ] Analyzer module
+- [x] Analyzer module
   - [x] Part of repo not package 
   - [x] Generate MOLP from pabutools format
-  - Run solver and save to file
+  - [x] Run solver and save to file
   - Analyze results
-    - start with tables / raw numbers
-    - graphs later
-- [ ] Market based explanations of collectiove decisions, D. Peters
+    - [x] start with tables / raw numbers
+    - [ ] graphs later
+- [x] Read "Market based explanations of collective decisions, D. Peters"
 
 
 ### 11/07/2024
@@ -27,8 +38,8 @@
 - [ ] Implement constrained mes as solver
 - [ ] Compare solvers by fairness
 - [ ] Criteria module to get metrics about provided solution, e.g:
-    - [ ] sum of objectives
-    - [ ] count of non zero objective
+    - [x] sum of objectives
+    - [x] count of non zero objective
     - [ ] other examples, proportionality...
 
 ### MkDocs Examples

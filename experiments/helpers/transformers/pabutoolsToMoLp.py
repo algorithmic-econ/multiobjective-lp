@@ -2,19 +2,14 @@ from functools import reduce
 from operator import itemgetter, ior
 from typing import Dict, TypeAlias, List, TypedDict, Literal
 
-from pabutools.election import Instance, Profile
+from pabutools.election import Instance, Profile, Project
 from pulp import LpVariable, LpAffineExpression, LpConstraint, lpSum, LpConstraintLE, LpConstraintGE
 
+from ..runners.model import ConstraintConfig
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
-
-
-class ConstraintConfig(TypedDict):
-    category: str
-    bound: Literal['UPPER', 'LOWER']
-    budget_ratio: float
 
 
 def pabutools_to_multi_objective_lp(instances: Dict[District, Instance],
@@ -87,7 +82,7 @@ def create_baseline_constraints(instances: Dict[District, Instance],
         for district, instance in instances.items()
     }
 
-    return [define_constraint_ub(district, projects_variables, projects_costs[district], budgets[district])
+    return [define_constraint(district, LpConstraintLE, projects_variables, projects_costs[district], budgets[district])
             for district in instances.keys()]
 
 
@@ -102,40 +97,31 @@ def create_constraints_from_config(constraints_configs: List[ConstraintConfig],
     projects = [project for instance in instances.values() for project in instance]
     constraints = []
     for constraint_config in constraints_configs:
-        category, bound, budget_ratio = itemgetter('category', 'bound', 'budget_ratio')(constraint_config)
-        if category not in allowed_categories:
-            continue
-        projects_costs = reduce(ior, [{project.name: int(project.cost)} for project in projects if category in project.categories], {})
-        constraint_limit = int(budget_ratio * total_budget)
-        if bound == 'UPPER':
+        if constraint_config['type'] == 'CATEGORY' and constraint_config['category'] in allowed_categories:
             constraints.append(
-                define_constraint_ub(category, projects_variables, projects_costs, constraint_limit))
-        if bound == 'LOWER':
-            constraints.append(
-                define_constraint_lb(category, projects_variables, projects_costs, constraint_limit))
-
+                create_category_constraint(constraint_config, projects_variables, projects, total_budget))
     return constraints
 
 
-def define_constraint_ub(name: str,
-                         all_projects_variables: Dict[AgentId, LpVariable],
-                         participating_projects_costs: Dict[AgentId, int],
-                         maximum_cost: int) -> LpConstraint:
-    # Σ (selected[i] * cost[i]) <= budget
+def create_category_constraint(constraint_config: ConstraintConfig,
+                               projects_variables: Dict[AgentId, LpVariable],
+                               projects: List[Project],
+                               total_budget: int) -> LpConstraint:
+    category, bound, budget_ratio = itemgetter('category', 'bound', 'budget_ratio')(constraint_config)
+    projects_costs = reduce(ior, [{project.name: int(project.cost)} for project in projects if
+                                  category in project.categories], {})
+    constraint_limit = int(budget_ratio * total_budget)
+    sense = LpConstraintLE if bound == 'UPPER' else LpConstraintGE
+    return define_constraint(category, sense, projects_variables, projects_costs, constraint_limit)
+
+
+def define_constraint(name: str,
+                      sense: LpConstraintGE | LpConstraintLE,
+                      all_projects_variables: Dict[AgentId, LpVariable],
+                      participating_projects_costs: Dict[AgentId, int],
+                      maximum_cost: int) -> LpConstraint:
     return LpConstraint(
         e=lpSum(all_projects_variables[project_id] * project_cost for project_id, project_cost in
                 participating_projects_costs.items()),
-        sense=LpConstraintLE,
-        rhs=maximum_cost, name=f"ub_{name}")
-
-
-def define_constraint_lb(name: str,
-                         all_projects_variables: Dict[AgentId, LpVariable],
-                         participating_projects_costs: Dict[AgentId, int],
-                         minimum_cost: int) -> LpConstraint:
-    # Σ (selected[i] * cost[i]) >= minimumCost
-    return LpConstraint(
-        e=lpSum(all_projects_variables[project_id] * project_cost for project_id, project_cost in
-                participating_projects_costs.items()),
-        sense=LpConstraintGE,
-        rhs=minimum_cost, name=f"lb_{name}")
+        sense=sense,
+        rhs=maximum_cost, name=f"{'ub' if sense == LpConstraintLE else 'lb'}_{name}")

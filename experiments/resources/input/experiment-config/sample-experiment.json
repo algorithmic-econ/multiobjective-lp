@@ -1,0 +1,19 @@
+{
+  "experiment_results_base_path": "resources/experiment-results/second/",
+  "runner_configs": [
+    {
+      "solver_type": "SUMMING",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "resources/input/warszawa_2023_test/",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json",
+      "results_base_path": "resources/experiment-results/second/"
+    },
+    {
+      "solver_type": "SUMMING",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "resources/input/warszawa_2023_test/",
+      "constraints_configs_path": "resources/input/constraint-config/sample-constraints.json",
+      "results_base_path": "resources/experiment-results/second/"
+    }
+  ]
+}

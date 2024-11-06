@@ -1,32 +1,29 @@
-from enum import Enum
-from typing import List, Tuple, TypedDict
+from typing import List, TypedDict, Literal
+
+Solver = Literal['SUMMING', 'MES']
+Source = Literal['PULP', 'PABUTOOLS']
 
 
-Sources = Enum('Sources', ['PULP', 'PABUTOOLS'])
-Solvers = Enum('Solvers', ['SUMMING', 'MES'])
+class RunnerConfig(TypedDict):
+    solver_type: Solver
+    source_type: Source
+    source_directory_path: str
+    constraints_configs_path: str | None
+    results_base_path: str
 
 
-def validate_args(args: List[str]) -> Tuple[Solvers, Solvers, str, str | None]:
-    if not Solvers[args[0]] in Solvers:
-        raise Exception("Unsupported solver type")
-    if not Sources[args[1]] in Sources:
-        raise Exception("Unsupported source type")
-    if not args[2]:
-        raise Exception("Missing source directory path")
-    constraints_configs_path = args[3] if len(args) > 3 else None
-    return Solvers[args[0]], Sources[args[1]], args[2], constraints_configs_path
-
-
-class Constraints(TypedDict):
-    source_type: str
-    categories: dict
+class ConstraintConfig(TypedDict):
+    type: Literal['CATEGORY']
+    category: str
+    bound: Literal['UPPER', 'LOWER']
+    budget_ratio: float
 
 
 class RunnerResult(TypedDict):
     time: float
-    solver: str
-    source_type: str
-    constraints_configs: str | None
-    source: str
+    solver: Solver
+    source_type: Source
+    source_path: str
+    constraints_configs: List[ConstraintConfig]
     selected: List[str]
-    problem: dict
+    problem_path: str

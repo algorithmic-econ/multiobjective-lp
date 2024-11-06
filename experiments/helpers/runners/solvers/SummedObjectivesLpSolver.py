@@ -1,4 +1,4 @@
-from pulp import LpSolver, LpSolverDefault, lpSum
+from pulp import LpSolver, LpSolverDefault, lpSum, PULP_CBC_CMD
 
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
@@ -19,5 +19,5 @@ class SummedObjectivesLpSolver(LpSolver):
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
         """
-        lp.objective = lpSum(lp.objectives)
-        return LpSolverDefault.actualSolve(lp)
+        lp.setObjective(lpSum(lp.objectives))
+        return PULP_CBC_CMD(msg=False).actualSolve(lp)

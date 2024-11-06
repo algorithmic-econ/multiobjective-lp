@@ -16,3 +16,4 @@ if __name__ == '__main__':
         # f"{basePath}{datetime.now().isoformat(timespec='seconds')}_{data['source']}_{data['solver']}.json",
         f"{basePath}latest.json",
         result)
+    print(result)
