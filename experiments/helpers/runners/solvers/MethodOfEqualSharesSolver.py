@@ -3,11 +3,11 @@ from pulp import LpSolver, lpSum, PULP_CBC_CMD
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
-class SummedObjectivesLpSolver(LpSolver):
+class MethodOfEqualSharesSolver(LpSolver):
     """
 
     Info:
-        Example dummy solver that sums multiple objectives.
+        Solver that executes Methods of Equal Shares to find solution
 
     """
 
@@ -19,5 +19,6 @@ class SummedObjectivesLpSolver(LpSolver):
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
         """
-        lp.setObjective(lpSum(lp.objectives))
-        return PULP_CBC_CMD(msg=False).actualSolve(lp)
+        pass
+        # TODO: Transform problem into parameters for C++ program
+        # TODO: Run C++ MES implementation and return selected candidates

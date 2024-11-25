@@ -1,5 +1,11 @@
 # Notes
 
+
+### 15/11/2024
+- [ ] End of November
+  - Full experiment and analyzer runners
+  - MES solver in cpp
+
 ### 24/10/2024
 - [ ] Don't divide voters by district (one voter in citywide + district)
 - [ ] Future Solvers

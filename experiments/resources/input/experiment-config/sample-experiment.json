@@ -4,16 +4,14 @@
     {
       "solver_type": "SUMMING",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "resources/input/warszawa_2023_test/",
-      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json",
-      "results_base_path": "resources/experiment-results/second/"
+      "source_directory_path": "resources/input/krakow_2023/",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
     },
     {
       "solver_type": "SUMMING",
       "source_type": "PABUTOOLS",
       "source_directory_path": "resources/input/warszawa_2023_test/",
-      "constraints_configs_path": "resources/input/constraint-config/sample-constraints.json",
-      "results_base_path": "resources/experiment-results/second/"
+      "constraints_configs_path": "resources/input/constraint-config/sample-constraints.json"
     }
   ]
 }

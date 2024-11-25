@@ -1,10 +1,11 @@
 from functools import reduce
 from operator import itemgetter, ior
-from typing import Dict, TypeAlias, List, TypedDict, Literal
+from typing import Dict, TypeAlias, List
 
 from pabutools.election import Instance, Profile, Project
 from pulp import LpVariable, LpAffineExpression, LpConstraint, lpSum, LpConstraintLE, LpConstraintGE
 
+from .pabutoolsConstants import VARIABLE_PREFIX, TARGET_PREFIX, CONSTRAINT_PREFIX
 from ..runners.model import ConstraintConfig
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
@@ -39,7 +40,7 @@ def pabutools_to_multi_objective_lp(instances: Dict[District, Instance],
 #
 def create_projects_variables(instances: Dict[District, Instance]) -> Dict[AgentId, LpVariable]:
     projects_ids = [project.name for instance in instances.values() for project in instance]
-    variables = LpVariable.dicts("", projects_ids, cat='Binary')
+    variables = LpVariable.dicts(VARIABLE_PREFIX, projects_ids, cat='Binary')
     for variable in variables.values():
         variable.setInitialValue(0)
     return variables
@@ -57,7 +58,7 @@ def create_voter_objectives(profiles: Dict[District, Profile],
     }
 
     return {
-        voter: define_voter_objective(f"target_{voter}", approved_candidates, projects_variables)
+        voter: define_voter_objective(f"{TARGET_PREFIX}_{voter}", approved_candidates, projects_variables)
         for voter, approved_candidates in votes.items()
     }
 
@@ -124,4 +125,4 @@ def define_constraint(name: str,
         e=lpSum(all_projects_variables[project_id] * project_cost for project_id, project_cost in
                 participating_projects_costs.items()),
         sense=sense,
-        rhs=maximum_cost, name=f"{'ub' if sense == LpConstraintLE else 'lb'}_{name}")
+        rhs=maximum_cost, name=f"{CONSTRAINT_PREFIX}_{'ub' if sense == LpConstraintLE else 'lb'}_{name}")

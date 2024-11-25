@@ -1,4 +1,4 @@
-from typing import List, TypedDict, Literal
+from typing import List, TypedDict, Literal, NotRequired
 
 Solver = Literal['SUMMING', 'MES']
 Source = Literal['PULP', 'PABUTOOLS']
@@ -9,7 +9,7 @@ class RunnerConfig(TypedDict):
     source_type: Source
     source_directory_path: str
     constraints_configs_path: str | None
-    results_base_path: str
+    results_base_path: NotRequired[str]
 
 
 class ConstraintConfig(TypedDict):

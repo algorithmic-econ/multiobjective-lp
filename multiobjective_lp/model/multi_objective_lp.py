@@ -1,18 +1,20 @@
-from logging import Logger
-from typing import List, Optional
+from multiobjective_lp.utils.lpWriterUtils import expression_to_lp_format
 
+from typing import List
+
+import pulp
 from pulp import LpProblem, LpAffineExpression, LpMaximize, LpMinimize
 
-from multiobjective_lp.utils.lpWriterUtils import expression_to_lp_format
+# Override line limit for writeLP to output single line values
+pulp.const.LpCplexLPLineSize = 100000
 
 
 class MultiObjectiveLpProblem(LpProblem):
 
     def __init__(self, name: str, sense: LpMaximize | LpMinimize = LpMaximize,
-                 objectives: List[LpAffineExpression] = None, logger: Optional[Logger] = None) -> None:
+                 objectives: List[LpAffineExpression] = None) -> None:
         super().__init__(name, sense=sense)
         self._objectives = objectives
-        self._logger = logger
 
     @property
     def objectives(self) -> List[LpAffineExpression]:
@@ -20,10 +22,6 @@ class MultiObjectiveLpProblem(LpProblem):
 
     def setObjectives(self, objectives: List[LpAffineExpression]) -> None:
         self._objectives = objectives
-
-    @property
-    def logger(self) -> Logger:
-        return self._logger
 
     # TODO: Decide how to handle fixObjective and restoreObjective
 
