@@ -37,10 +37,9 @@ def problem_runner(config: RunnerConfig):
     problem_id = f"{datetime.now().isoformat(timespec='seconds')[5:]}_{str(uuid4())[:8]}"
     result['problem_path'] = f"{results_base_path}problem_{problem_id}.lp"
 
-    # problem.writeLP(f"{results_base_path}problem_{problem_id}.lp")
-    # problem.writeMPS(f"{results_base_path}problem_{problem_id}.mps")
-    # write_to_json(f"{results_base_path}run_{problem_id}.json", result)
+    problem.writeLP(f"{results_base_path}problem_{problem_id}.lp")
+    write_to_json(f"{results_base_path}run_{problem_id}.json", result)
 
-    problem.writeLP(f"{results_base_path}latest.lp")
-    write_to_json(f"{results_base_path}latest.json", result)
+    # problem.writeLP(f"{results_base_path}latest.lp")
+    # write_to_json(f"{results_base_path}latest.json", result)
 

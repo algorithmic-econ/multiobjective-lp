@@ -1,4 +1,5 @@
 import multiprocessing
+import sys
 from pathlib import Path
 from typing import List, TypedDict
 
@@ -25,5 +26,5 @@ def main(experiment: ExperimentConfig):
 
 
 if __name__ == '__main__':
-    config: ExperimentConfig = read_from_json("resources/input/experiment-config/sample-experiment.json")
+    config: ExperimentConfig = read_from_json(sys.argv[1])
     main(config)

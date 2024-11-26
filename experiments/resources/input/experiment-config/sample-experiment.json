@@ -1,5 +1,5 @@
 {
-  "experiment_results_base_path": "resources/experiment-results/second/",
+  "experiment_results_base_path": "resources/experiment-results/sample-result/",
   "runner_configs": [
     {
       "solver_type": "SUMMING",
