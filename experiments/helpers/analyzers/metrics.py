@@ -6,16 +6,16 @@ from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 def get_metrics(metrics: List[Metric], problem: MultiObjectiveLpProblem) -> Dict:
-    result: AnalyzerResult = {"metrics": [metric.name for metric in metrics]}
+    result: AnalyzerResult = {"metrics": metrics}
     for metric in metrics:
-        result |= {metric.name: get_metric_strategy(metric)(problem)}
+        result |= {metric: get_metric_strategy(metric)(problem)}
     return result
 
 
 def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], Dict]:
-    if metric == Metric.NON_ZERO_OBJECTIVES:
+    if metric == 'NON_ZERO_OBJECTIVES':
         return non_zero_objectives
-    if metric == Metric.SUM_OBJECTIVES:
+    if metric == 'SUM_OBJECTIVES':
         return sum_objectives
 
 

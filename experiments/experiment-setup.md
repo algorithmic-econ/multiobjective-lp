@@ -76,5 +76,21 @@ To read it use `read_lp_file` method
 from multiobjective_lp.utils.lpReaderUtils import read_lp_file
 ```
 
-### 4. Analyze results
-TBD
+### 4. Define analyzer configuration
+Prepare analyzer configuration file, that provides experiment results directory as data source (from previous steps), 
+list of metrics and path for saving analyzer results.
+```json
+{
+  "analyzer_result_path": "resources/analyzer-results/sample-result/latest.json",
+  "experiment_results_base_path": "resources/experiment-results/sample-result/",
+  "metrics": ["NON_ZERO_OBJECTIVES", "SUM_OBJECTIVES"]
+}
+```
+
+### 5. Run analyzer
+```shell
+python analyzerRunner.py {ANALYZER_CONFIG_PATH}
+# Example:
+# cd {repository_root}/experiments
+# python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
+```
