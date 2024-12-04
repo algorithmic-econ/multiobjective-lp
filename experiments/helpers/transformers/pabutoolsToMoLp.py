@@ -1,3 +1,4 @@
+from collections import defaultdict
 from functools import reduce
 from operator import itemgetter, ior
 from typing import Dict, TypeAlias, List
@@ -51,11 +52,10 @@ def create_projects_variables(instances: Dict[District, Instance]) -> Dict[Agent
 #
 def create_voter_objectives(profiles: Dict[District, Profile],
                             projects_variables: Dict[AgentId, LpVariable]) -> Dict[str, LpAffineExpression]:
-    votes = {
-        f"{district}_{ballot.meta['voter_id']}": [str(c) for c in ballot]
-        for district, profile in profiles.items()
-        for ballot in profile
-    }
+    votes = defaultdict(list)
+    for district, profile in profiles.items():
+        for ballot in profile:
+            votes[ballot.meta['voter_id']] += [str(c) for c in ballot]
 
     return {
         voter: define_voter_objective(f"{TARGET_PREFIX}_{voter}", approved_candidates, projects_variables)

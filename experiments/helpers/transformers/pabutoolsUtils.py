@@ -12,7 +12,7 @@ def load_pabutools_by_district(directory_path: str) -> \
     profiles: Dict[District, Profile] = {}
     for filename in os.listdir(directory_path):
         if filename.endswith('.pb'):
-            instance, profile = parse_pabulib(directory_path + filename)
+            instance, profile = parse_pabulib(f"{directory_path}/{filename}")
             district = instance.meta['subunit'] if 'subunit' in instance.meta else 'citywide'
             instances[district] = instance
             profiles[district] = profile
