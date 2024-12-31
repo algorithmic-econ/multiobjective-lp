@@ -1,0 +1,31 @@
+{
+  "experiment_results_base_path": "resources/experiment-results/py-mes-result/",
+  "runner_configs": [
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    }
+  ]
+}
+
+

@@ -94,3 +94,5 @@ python analyzerRunner.py {ANALYZER_CONFIG_PATH}
 # cd {repository_root}/experiments
 # python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
 ```
+
+Analyzer results are available at path provided in config `analyzer_result_path`  

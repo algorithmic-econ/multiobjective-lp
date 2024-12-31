@@ -1,5 +1,6 @@
 import multiprocessing
 import sys
+import time
 from pathlib import Path
 from typing import List, TypedDict
 
@@ -21,8 +22,10 @@ def main(experiment: ExperimentConfig):
         if 'results_base_path' not in runner_config:
             runner_config['results_base_path'] = experiment['experiment_results_base_path']
 
+    print(f"starting experiment {time.time()}")
     with multiprocessing.Pool(processes=4) as pool:
         pool.map(problem_runner, experiment['runner_configs'])
+    print(f"finished experiment {time.time()}")
 
 
 if __name__ == '__main__':
