@@ -81,8 +81,8 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=
 //Flags used by the linker during RELWITHDEBINFO builds.
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
-//Enable/Disable output of compile commands during generation.
-CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
+//No help, variable specified on the command line.
+CMAKE_EXPORT_COMPILE_COMMANDS:UNINITIALIZED=ON
 
 //Value Computed by CMake.
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/helpers/runners/solvers/mes/build/CMakeFiles/pkgRedirects
@@ -394,6 +394,8 @@ _Python_INCLUDE_DIR:INTERNAL=/opt/homebrew/opt/python@3.11/Frameworks/Python.fra
 //Python Properties
 _Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;11;9;64;<none>;cpython-311-darwin;abi3;/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11;/Users/jasiek/Documents/Projects/multiobjective-lp/venv/lib/python3.11;/Users/jasiek/Documents/Projects/multiobjective-lp/venv/lib/python3.11/site-packages;/Users/jasiek/Documents/Projects/multiobjective-lp/venv/lib/python3.11/site-packages
 _Python_INTERPRETER_SIGNATURE:INTERNAL=0f92b04df7c3ba4e7583beedb2624039
+//Interpreter reason failure
+_Python_Interpreter_REASON_FAILURE:INTERNAL=
 //Path to a library.
 _Python_LIBRARY_RELEASE:INTERNAL=/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/lib/libpython3.11.dylib
 //NumPy reason failure

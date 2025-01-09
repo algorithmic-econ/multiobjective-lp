@@ -1,6 +1,6 @@
 from typing import List, TypedDict, Literal, NotRequired
 
-Solver = Literal['SUMMING', 'MES']
+Solver = Literal['SUMMING', 'MES', 'MES_ADD1']
 Source = Literal['PULP', 'PABUTOOLS']
 
 

@@ -22,10 +22,11 @@ def main(experiment: ExperimentConfig):
         if 'results_base_path' not in runner_config:
             runner_config['results_base_path'] = experiment['experiment_results_base_path']
 
-    print(f"starting experiment {time.time()}")
-    with multiprocessing.Pool(processes=4) as pool:
+    start_time = time.time()
+    print(f"starting experiment {experiment['experiment_results_base_path']}")
+    with multiprocessing.Pool(processes=2) as pool:
         pool.map(problem_runner, experiment['runner_configs'])
-    print(f"finished experiment {time.time()}")
+    print(f"finished experiment {time.time() - start_time}")
 
 
 if __name__ == '__main__':

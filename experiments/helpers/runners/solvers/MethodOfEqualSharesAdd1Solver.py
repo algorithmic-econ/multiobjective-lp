@@ -4,11 +4,10 @@ from collections import defaultdict
 from pulp import LpSolver
 
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
-from ..solvers.mes.build.mes import equal_shares
-# from ..solvers.python_mes import equal_shares_fixed_budget as equal_shares
+from ..solvers.mes_add1.build.mes_add1 import equal_shares_add1 as equal_shares
 
 
-class MethodOfEqualSharesSolver(LpSolver):
+class MethodOfEqualSharesAdd1Solver(LpSolver):
     """
 
     Info:
@@ -36,11 +35,10 @@ class MethodOfEqualSharesSolver(LpSolver):
                             if constraint.name.startswith('C_ub_')]) * -1
 
         start_time = time.time()
-        print(f"STARTING MES {start_time}")
+        print(f"STARTING MES_ADD1 {start_time}")
         selected = equal_shares(voters, projects, costs, approvals, total_budget)
-        print(f"FINISHED MES {time.time() - start_time}")
+        print(f"FINISHED MES_ADD1 {time.time() - start_time}")
 
         for variable in lp.variables():
             variable.setInitialValue(1 if variable.name in selected else 0)
         return
-

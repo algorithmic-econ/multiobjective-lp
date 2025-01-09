@@ -1,10 +1,10 @@
 {
-  "experiment_results_base_path": "resources/experiment-results/py-mes-result/",
+  "experiment_results_base_path": "resources/experiment-results/krakow-warszawa-2022-2024/MES/cores-2/",
   "runner_configs": [
     {
       "solver_type": "MES",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2022",
       "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
     },
     {
@@ -16,13 +16,25 @@
     {
       "solver_type": "MES",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024",
       "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
     },
     {
       "solver_type": "MES",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2022",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2023",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024",
       "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
     }
   ]

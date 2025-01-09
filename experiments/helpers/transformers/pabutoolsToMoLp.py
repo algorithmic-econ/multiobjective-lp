@@ -75,7 +75,7 @@ def define_voter_objective(name: str, approved_projects: List[AgentId],
 def create_baseline_constraints(instances: Dict[District, Instance],
                                 projects_variables: Dict[AgentId, LpVariable]) -> List[LpConstraint]:
     budgets: Dict[District, int] = {
-        district: int(instance.meta['budget']) if 'budget' in instance.meta else 0
+        district: int(float(instance.meta['budget'])) if 'budget' in instance.meta else 0
         for district, instance in instances.items()
     }
     projects_costs: Dict[District, Dict[AgentId, int]] = {
@@ -90,7 +90,7 @@ def create_baseline_constraints(instances: Dict[District, Instance],
 def create_constraints_from_config(constraints_configs: List[ConstraintConfig],
                                    instances: Dict[District, Instance],
                                    projects_variables: Dict[AgentId, LpVariable]) -> List[LpConstraint]:
-    total_budget: int = sum([int(instance.meta['budget'])
+    total_budget: int = sum([int(float(instance.meta['budget']))
                              if 'budget' in instance.meta else 0
                              for district, instance in instances.items()])
     allowed_categories = reduce(ior, [instance.categories for instance in instances.values()], set())
