@@ -4,12 +4,13 @@ import time
 from pathlib import Path
 from typing import List, TypedDict
 
-from experiments.helpers.runners.model import RunnerConfig
-from experiments.helpers.utils.utils import read_from_json
-from experiments.problemRunner import problem_runner
+from helpers.runners.model import RunnerConfig
+from helpers.utils.utils import read_from_json
+from problemRunner import problem_runner
 
 
 class ExperimentConfig(TypedDict):
+    concurrency: int
     experiment_results_base_path: str
     runner_configs: List[RunnerConfig]
 
@@ -24,7 +25,7 @@ def main(experiment: ExperimentConfig):
 
     start_time = time.time()
     print(f"starting experiment {experiment['experiment_results_base_path']}")
-    with multiprocessing.Pool(processes=2) as pool:
+    with multiprocessing.Pool(processes=experiment['concurrency']) as pool:
         pool.map(problem_runner, experiment['runner_configs'])
     print(f"finished experiment {time.time() - start_time}")
 

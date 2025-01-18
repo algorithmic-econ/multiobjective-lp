@@ -25,6 +25,7 @@ def pabutools_to_multi_objective_lp(instances: Dict[District, Instance],
     objectives = create_voter_objectives(profiles, project_variables)
     problem.setObjectives(list(objectives.values()))
 
+    # TODO: Add constraint for total budget
     district_constraints = create_baseline_constraints(instances, project_variables)
     for constraint in district_constraints:
         problem.addConstraint(constraint)

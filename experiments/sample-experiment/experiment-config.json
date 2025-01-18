@@ -1,0 +1,20 @@
+{
+  "concurrency": 2,
+  "experiment_results_base_path": "results/sample-experiment/",
+  "runner_configs": [
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "input/krakow_2024",
+      "constraints_configs_path": "empty-constraints-config.json"
+    },
+    {
+      "solver_type": "MES",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "input/warszawa_2024",
+      "constraints_configs_path": "empty-constraints-config.json"
+    }
+  ]
+}
+
+

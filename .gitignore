@@ -6,3 +6,7 @@
 /documentation/site/
 /dist/
 /experiments/resources/results/
+/solvers/*/binding/build/
+/experiments/sample-experiment/input/krakow_2024/*.pb
+/experiments/sample-experiment/input/warszawa_2024/*.pb
+

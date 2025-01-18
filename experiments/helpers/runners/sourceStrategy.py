@@ -1,6 +1,6 @@
 from typing import List, Tuple
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
-from ..runners.model import Source
+from experiments.helpers.runners.model import Source
 from ..transformers.pabutoolsToMoLp import pabutools_to_multi_objective_lp, ConstraintConfig
 from ..transformers.pabutoolsUtils import load_pabutools_by_district
 from ..utils.utils import read_from_json

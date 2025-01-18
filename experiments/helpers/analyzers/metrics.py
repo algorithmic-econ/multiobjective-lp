@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Dict, Callable, List
 
 from ..analyzers.model import Metric, AnalyzerResult

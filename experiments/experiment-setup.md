@@ -3,6 +3,7 @@
 This repository contains sample directory structure for running experiments.  
 However, you can use **any structure by providing different paths** in configuration 
 
+// json, give example name / command, location
 ### 1. Define experiment by creating configuration file, with the following structure
 ```json
 {
@@ -32,6 +33,7 @@ If the provided `category` is not present for a given election, the constraint w
 
 [See sample configuration here](resources/input/experiment-config/sample-experiment.json)
 
+// give base paths
 ### 2. Run experiment script, the only input is path to configuration file
 ```shell
 python experimentRunner.py {EXPERIMENT_CONFIG_PATH}
@@ -96,3 +98,6 @@ python analyzerRunner.py {ANALYZER_CONFIG_PATH}
 ```
 
 Analyzer results are available at path provided in config `analyzer_result_path`  
+
+// How to compile mes bindings for your arch
+// dependencies cmake
