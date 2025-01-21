@@ -1,6 +1,6 @@
 from typing import Dict, Callable, List
 
-from ..analyzers.model import Metric, AnalyzerResult
+from experiments.helpers.analyzers.model import Metric, AnalyzerResult
 from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
