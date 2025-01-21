@@ -36,7 +36,7 @@ def problem_runner(config: RunnerConfig):
     }
 
     def get_file_name(file_type: Literal['problem', 'meta'], ext: Literal['lp', 'json']) -> str:
-        problem_id = f"{datetime.now().isoformat(timespec='seconds')[5:]}_{str(uuid4())[:4]}"
+        problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':','-')[5:]}_{str(uuid4())[:4]}"
         return f"{file_type}_{problem_id}_{source_directory_path.split('/')[-1]}_{solver_type}.{ext}"
 
     result['problem_path'] = f"{results_base_path}{get_file_name('problem', 'lp')}"
