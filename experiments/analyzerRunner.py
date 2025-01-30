@@ -24,9 +24,13 @@ def main(config: AnalyzerConfig):
     runner_results = [result_path for result_path in Path(config['experiment_results_base_path']).iterdir()
                       if result_path.is_file() and result_path.suffix == ".json"]
 
-    with multiprocessing.Pool(processes=4) as pool:
+    Path(config['analyzer_result_path']).mkdir(parents=True, exist_ok=True)
+
+    with multiprocessing.Pool(processes=1) as pool:
         analysis = pool.starmap(method_name, zip(runner_results, repeat(config['metrics'])))
-        write_to_json(f"{config['analyzer_result_path']}", analysis)
+        write_to_json(
+            f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json",
+            analysis)
 
 
 if __name__ == '__main__':

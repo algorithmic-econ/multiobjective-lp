@@ -1,0 +1,30 @@
+[
+    {
+        "problem_path": "results/sample-experiment/meta_02-03T12-07-45_d757_warszawa_2024_MES.json",
+        "metrics": [
+            "NON_ZERO_OBJECTIVES",
+            "SUM_OBJECTIVES"
+        ],
+        "NON_ZERO_OBJECTIVES": {
+            "non_zero_count": 80274,
+            "zero_count": 3851
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 829223
+        }
+    },
+    {
+        "problem_path": "results/sample-experiment/meta_02-03T12-07-39_0ff4_krakow_2024_MES.json",
+        "metrics": [
+            "NON_ZERO_OBJECTIVES",
+            "SUM_OBJECTIVES"
+        ],
+        "NON_ZERO_OBJECTIVES": {
+            "non_zero_count": 64520,
+            "zero_count": 581
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 195983
+        }
+    }
+]

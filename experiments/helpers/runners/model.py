@@ -9,7 +9,7 @@ class RunnerConfig(TypedDict):
     source_type: Source
     source_directory_path: str
     constraints_configs_path: str | None
-    results_base_path: NotRequired[str]
+    results_base_path: str
 
 
 class ConstraintConfig(TypedDict):

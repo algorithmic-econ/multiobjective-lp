@@ -24,8 +24,8 @@ def main(experiment: ExperimentConfig):
             runner_config['results_base_path'] = experiment['experiment_results_base_path']
 
     start_time = time.time()
-    print(f"starting experiment {experiment['experiment_results_base_path']}")
-    with multiprocessing.Pool(processes=experiment['concurrency']) as pool:
+    print(f"starting experiment - result directory path: {experiment['experiment_results_base_path']}")
+    with multiprocessing.Pool(processes=int(experiment['concurrency'])) as pool:
         pool.map(problem_runner, experiment['runner_configs'])
     print(f"finished experiment {time.time() - start_time}")
 

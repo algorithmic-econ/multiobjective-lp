@@ -5,8 +5,7 @@
     {
       "solver_type": "MES",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "input/krakow_2024",
-      "constraints_configs_path": "empty-constraints-config.json"
+      "source_directory_path": "input/krakow_2024"
     },
     {
       "solver_type": "MES",

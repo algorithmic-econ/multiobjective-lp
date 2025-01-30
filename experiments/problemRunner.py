@@ -13,7 +13,7 @@ def problem_runner(config: RunnerConfig):
     solver_type = config['solver_type']
     source_type = config['source_type']
     source_directory_path = config['source_directory_path']
-    constraints_configs_path = config['constraints_configs_path']
+    constraints_configs_path = config['constraints_configs_path'] if 'constraints_configs_path' in config else None
     results_base_path = config['results_base_path']
 
     start_time = time.time()
@@ -35,10 +35,10 @@ def problem_runner(config: RunnerConfig):
         "selected": [project.name for project in [var for var in problem.variables() if var.value() == 1.0]]
     }
 
-    def get_file_name(file_type: Literal['problem', 'meta'], ext: Literal['lp', 'json']) -> str:
-        problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':','-')[5:]}_{str(uuid4())[:4]}"
-        return f"{file_type}_{problem_id}_{source_directory_path.split('/')[-1]}_{solver_type}.{ext}"
+    def get_file_name(file_type: Literal['problem', 'meta'], ext: Literal['lp', 'json'], unique_problem_id: str) -> str:
+        return f"{file_type}_{unique_problem_id}_{source_directory_path.split('/')[-1]}_{solver_type}.{ext}"
 
-    result['problem_path'] = f"{results_base_path}{get_file_name('problem', 'lp')}"
+    problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':','-')[5:]}_{str(uuid4())[:4]}"
+    result['problem_path'] = f"{results_base_path}{get_file_name('problem', 'lp', problem_id)}"
     problem.writeLP(result['problem_path'])
-    write_to_json(f"{results_base_path}{get_file_name('meta', 'json')}", result)
+    write_to_json(f"{results_base_path}{get_file_name('meta', 'json', problem_id)}", result)

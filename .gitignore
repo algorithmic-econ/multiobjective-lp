@@ -10,3 +10,4 @@
 /experiments/sample-experiment/input/krakow_2024/*.pb
 /experiments/sample-experiment/input/warszawa_2024/*.pb
 
+/experiments/sample-experiment/results/sample-experiment/*.lp

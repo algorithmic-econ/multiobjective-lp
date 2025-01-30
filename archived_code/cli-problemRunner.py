@@ -12,8 +12,8 @@ def cli_to_runner_config(args: List[str]) -> RunnerConfig:
         raise Exception("Unsupported source type")
     if not args[2]:
         raise Exception("Missing source directory path")
-    constraints_configs_path = args[3] if len(args) > 3 else None
-    results_base_path = args[4] if len(args) > 4 else 'resources/solver-results/'
+    results_base_path = args[3]
+    constraints_configs_path = args[4] if len(args) > 4 else None
     return {
         'solver_type': cast(Solver, args[0]),
         'source_type': cast(Source, args[1]),
