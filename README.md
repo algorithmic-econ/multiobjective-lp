@@ -24,11 +24,3 @@ make deploy-doc
     python3 -m build
     python3 -m twine upload --repository testpypi dist/*   
     ```
-
-### Troubleshooting
-
-During simultaneous development of the `multiobjective_lp` and `experiments` import the package as editable.
-```shell
-# From the root directory
-pip install -e .
-```

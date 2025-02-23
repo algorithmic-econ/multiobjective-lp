@@ -91,8 +91,8 @@ $ ./run.sh
     * `source_directory_path_suffix` and `solver_type` are based on experiment config file
     * `extension` is directly linked to `file_type`, it can be `.json` or `.lp`
   * Example files:
-    * [problem_01-21T19-34-55_9264_warszawa_2024_MES.lp](results/sample-experiment/problem_01-21T19-34-55_9264_warszawa_2024_MES.lp)
-    * [meta_01-21T19-34-56_c889_warszawa_2024_MES.json](results/Fsample-experiment/meta_01-21T19-34-56_c889_warszawa_2024_MES.json)
+    * [problem_02-03T12-07-45_d757_warszawa_2024_MES.lp](results/partial–sample-experiment/problem_02-03T12-07-45_d757_warszawa_2024_MES.lp)
+    * [meta_02-03T12-07-45_d757_warszawa_2024_MES.json](results/partial–sample-experiment/meta_02-03T12-07-45_d757_warszawa_2024_MES.json)
 
 
 ### 5. Define analyzer configuration
