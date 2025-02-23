@@ -6,6 +6,7 @@ Source = Literal['PULP', 'PABUTOOLS']
 
 class RunnerConfig(TypedDict):
     solver_type: Solver
+    solver_options: List[str] | None
     source_type: Source
     source_directory_path: str
     constraints_configs_path: str | None

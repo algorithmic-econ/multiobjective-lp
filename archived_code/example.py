@@ -25,4 +25,4 @@ if __name__ == '__main__':
     fix_obj = lpSum([fix_cost * flag for fix_cost, flag in zip(warehouse_fixed_costs, build_warehouse_flag)])
 
     model.setObjectives([trans_obj, fix_obj])
-    model.solve(solver=SummedObjectivesLpSolver())
+    model.solve(solver=SummedObjectivesLpSolver(False))

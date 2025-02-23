@@ -2,25 +2,28 @@ import time
 from datetime import datetime
 from uuid import uuid4
 
-from helpers.runners.model import RunnerResult, RunnerConfig
-from helpers.runners.solverStrategy import get_solver
-from helpers.runners.sourceStrategy import load_and_transform_strategy
-from helpers.utils.utils import write_to_json
+from experiments.helpers.runners.model import RunnerResult, RunnerConfig
+from experiments.helpers.runners.solverStrategy import get_solver
+from experiments.helpers.runners.sourceStrategy import load_and_transform_strategy
+from experiments.helpers.utils.utils import write_to_json
 from typing import Literal
 
 
 def problem_runner(config: RunnerConfig):
     solver_type = config['solver_type']
+    solver_options = config.get('solver_options', [])
     source_type = config['source_type']
     source_directory_path = config['source_directory_path']
-    constraints_configs_path = config['constraints_configs_path'] if 'constraints_configs_path' in config else None
+    constraints_configs_path = config.get('constraints_configs_path')
     results_base_path = config['results_base_path']
+
+    print(f"Starting problem - {config}")
 
     start_time = time.time()
     problem, constraints_configs = load_and_transform_strategy(source_type,
                                                                source_directory_path,
                                                                constraints_configs_path)
-    solver = get_solver(solver_type)
+    solver = get_solver(solver_type, solver_options)
     problem.solve(solver)
 
     end_time = time.time()

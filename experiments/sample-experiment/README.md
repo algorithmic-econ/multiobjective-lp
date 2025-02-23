@@ -46,6 +46,10 @@ Experiment consists of set of runner configs, where, one runner config describes
 }
 ```
 
+##### Optional runner configuration
+* `solver_options: ["use-gurobi"]` - optional parameter to provide configuration to selected solvers, e.g., Summing solver can internally use Gurobi instead of PULP
+
+
 #### 1.3 [OPTIONAL] Constraints config file
 
 * Optional list of constraints to be applied on the Multi-objective LP.

@@ -30,9 +30,7 @@ class MethodOfEqualSharesSolver(LpSolver):
         for objective in lp.objectives:
             for variable in objective:
                 approvals[variable.name] += [objective.name]
-        # TODO: calculation of total_budget assumes that all constraints are district UB constraint
-        total_budget = sum([constraint.constant for constraint in lp.constraints.values()
-                            if constraint.name.startswith('C_ub_')]) * -1
+        total_budget = abs(lp.constraints['C_ub_total_budget'].constant)
 
         start_time = time.time()
         print(f"STARTING MES {start_time}")

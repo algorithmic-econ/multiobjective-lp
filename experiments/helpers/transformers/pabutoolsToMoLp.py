@@ -84,8 +84,12 @@ def create_baseline_constraints(instances: Dict[District, Instance],
         for district, instance in instances.items()
     }
 
+    all_projects_costs = {k: v for district_projects_costs in projects_costs.values() for k, v in
+                          district_projects_costs.items()}
+    total_budget_constraint = define_constraint('total_budget', LpConstraintLE, projects_variables, all_projects_costs,
+                                                sum(budgets.values()))
     return [define_constraint(district, LpConstraintLE, projects_variables, projects_costs[district], budgets[district])
-            for district in instances.keys()]
+            for district in instances.keys()] + [total_budget_constraint]
 
 
 def create_constraints_from_config(constraints_configs: List[ConstraintConfig],

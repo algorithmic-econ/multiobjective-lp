@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List
 
 from pulp import LpSolver
 
@@ -8,10 +8,9 @@ from solvers.mes_add1.MethodOfEqualSharesAdd1Solver import MethodOfEqualSharesAd
 from solvers.summed.SummedObjectivesLpSolver import SummedObjectivesLpSolver
 
 
-
-def get_solver(solver_type: Solver) -> LpSolver:
+def get_solver(solver_type: Solver, solver_options: List[str] | None) -> LpSolver:
     if solver_type == 'SUMMING':
-        return SummedObjectivesLpSolver()
+        return SummedObjectivesLpSolver("use-gurobi" in solver_options)
     if solver_type == 'MES':
         return MethodOfEqualSharesSolver()
     if solver_type == 'MES_ADD1':
