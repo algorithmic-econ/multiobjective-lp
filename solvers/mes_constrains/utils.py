@@ -2,10 +2,11 @@ from typing import List
 
 from pulp import LpConstraint, LpConstraintGE, LpConstraintLE
 
+from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+
 
 def get_feasibility_ratio(constraint: LpConstraint) -> float:
     """
-
     :rtype: object
     """
     # ratio: [0, inf)
@@ -14,18 +15,18 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
     return (value - target) / abs(target)
 
 
-def get_modification_ratio(feasibility_ratio: float, smallest: float, largest: float) -> float:
-    # ratio: [smallest, largest + delta]
-    delta = largest - smallest
-    return smallest + delta * feasibility_ratio
+# def get_modification_ratio(feasibility_ratio: float, lower: float, upper: float) -> float:
+#     return lower + (upper - lower) * feasibility_ratio
 
 
-def get_infeasible_constraints(self) -> List[LpConstraint]:
-    #
-    # TODO: Generalise for lower and upper bound, should be LE or GE than 0 based on the LpSense
-    #
+def get_infeasible_constraints(problem: MultiObjectiveLpProblem) -> List[LpConstraint]:
     return [
-        constraint for constraint in self.lp_problem.constraints.values()
-        if (constraint.sense == LpConstraintGE and constraint.value() < 0) or
-           (constraint.sense == LpConstraintLE and constraint.value() > 0)
+        constraint for constraint in problem.constraints.values()
+        if (constraint.sense == LpConstraintGE and constraint.value() < 0) or (
+                    constraint.sense == LpConstraintLE and constraint.value() > 0)
     ]
+
+
+def set_selected_candidates(problem: MultiObjectiveLpProblem, selected: List[str]) -> None:
+    for variable in problem.variables():
+        variable.setInitialValue(1 if variable.name in selected else 0)
