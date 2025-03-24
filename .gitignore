@@ -1,10 +1,13 @@
+__pycache__/
+*.log
+
 /venv
 /output
 /resources/**/*
-/.ipynb_checkpoints/
-/.idea/
+.ipynb_checkpoints/
+.idea/
 /documentation/site/
-/dist/
+dist/
 /experiments/resources/results/
 /solvers/*/binding/build/
 

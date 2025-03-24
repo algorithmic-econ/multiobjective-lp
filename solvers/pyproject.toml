@@ -1,0 +1,26 @@
+[project]
+version = "0.0.1"
+name = "multiobjective-lp-solvers"
+description = "Solvers for multi objective linear programming"
+
+authors = [
+    { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
+    { name = "Jan Sznajd", email = "j.sznajd@uw.edu.pl" }
+]
+license = "MIT"
+readme = "README.md"
+
+requires-python = ">=3.11"
+dependencies = []
+
+
+[tool.poetry]
+packages = [{include = "solvers", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api" 
+
+
+
+

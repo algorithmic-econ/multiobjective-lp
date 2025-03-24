@@ -1,0 +1,32 @@
+[project]
+version = "0.0.3"
+name = "multiobjective-lp"
+description = "Implementation of multi objective linear programming module"
+
+authors = [
+    { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
+    { name = "Jan Sznajd", email = "j.sznajd@uw.edu.pl" }
+]
+license = "MIT"
+readme = "README.md"
+
+requires-python = ">=3.11"
+dependencies = [
+    "pulp == 2.9.0"
+]
+
+[project.urls] 
+repository = "https://github.com/jasieksz/multiobjective-lp"
+documentation = "https://jasieksz.github.io/multiobjective-lp"
+
+
+[tool.poetry]
+packages = [{include = "multiobjective_lp", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api" 
+
+
+
+

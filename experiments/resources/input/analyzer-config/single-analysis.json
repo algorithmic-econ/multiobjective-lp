@@ -1,5 +1,5 @@
 {
-  "analyzer_result_path": "resources/analyzer-results/sample-result/solver-results.json",
-  "experiment_results_base_path": "resources/solver-results/",
+  "analyzer_result_path": "resources/analyzer-results/sample-result/solver-results/",
+  "experiment_results_base_path": "resources/experiment-results/single-run/",
   "metrics": ["NON_ZERO_OBJECTIVES", "SUM_OBJECTIVES"]
 }
