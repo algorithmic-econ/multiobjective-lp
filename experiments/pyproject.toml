@@ -1,0 +1,35 @@
+[project]
+version = "0.0.1"
+name = "multiobjective-lp-experiments"
+description = "Experiments using multi objective linear programming solvers"
+
+authors = [
+    { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
+    { name = "Jan Sznajd", email = "j.sznajd@uw.edu.pl" }
+]
+license = "MIT"
+readme = "README.md"
+
+requires-python = ">=3.11"
+dependencies = [
+]
+
+[tool.poetry.dependencies]
+multiobjective_lp = {version = "0.0.3", source = "test-pypi"}
+multiobjective_lp-solvers = {path = "../solvers", develop = true}
+
+[[tool.poetry.source]]
+name = "test-pypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
+
+[tool.poetry]
+packages = [{include = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api" 
+
+
+
+

@@ -1,0 +1,5 @@
+{
+  "analyzer_result_path": "resources/analyzer-results/sample-result/latest.json",
+  "experiment_results_base_path": "resources/experiment-results/sample-result/",
+  "metrics": ["NON_ZERO_OBJECTIVES", "SUM_OBJECTIVES"]
+}

@@ -11,11 +11,19 @@ license = "MIT"
 readme = "README.md"
 
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+]
 
+[tool.poetry.dependencies]
+multiobjective_lp = {version = "0.0.3", source = "test-pypi"}
+
+[[tool.poetry.source]]
+name = "test-pypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
 
 [tool.poetry]
-packages = [{include = "solvers", from = "src"}]
+packages = [{include = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

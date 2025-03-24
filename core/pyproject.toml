@@ -1,5 +1,5 @@
 [project]
-version = "0.0.3"
+version = "0.0.4"
 name = "multiobjective-lp"
 description = "Implementation of multi objective linear programming module"
 
@@ -15,13 +15,13 @@ dependencies = [
     "pulp == 2.9.0"
 ]
 
-[project.urls] 
+[project.urls]
 repository = "https://github.com/jasieksz/multiobjective-lp"
 documentation = "https://jasieksz.github.io/multiobjective-lp"
 
 
 [tool.poetry]
-packages = [{include = "multiobjective_lp", from = "src"}]
+packages = [{include = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
