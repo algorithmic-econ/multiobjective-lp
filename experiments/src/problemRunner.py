@@ -10,19 +10,19 @@ from typing import Literal
 
 
 def problem_runner(config: RunnerConfig):
-    solver_type = config['solver_type']
-    solver_options = config.get('solver_options', [])
-    source_type = config['source_type']
-    source_directory_path = config['source_directory_path']
-    constraints_configs_path = config.get('constraints_configs_path')
-    results_base_path = config['results_base_path']
+    solver_type = config["solver_type"]
+    solver_options = config.get("solver_options", [])
+    source_type = config["source_type"]
+    source_directory_path = config["source_directory_path"]
+    constraints_configs_path = config.get("constraints_configs_path")
+    results_base_path = config["results_base_path"]
 
     print(f"Starting problem - {config}")
 
     start_time = time.time()
-    problem, constraints_configs = load_and_transform_strategy(source_type,
-                                                               source_directory_path,
-                                                               constraints_configs_path)
+    problem, constraints_configs = load_and_transform_strategy(
+        source_type, source_directory_path, constraints_configs_path
+    )
     solver = get_solver(solver_type, solver_options)
     problem.solve(solver)
 
@@ -35,13 +35,24 @@ def problem_runner(config: RunnerConfig):
         "source_path": source_directory_path,
         "constraints_configs": constraints_configs,
         "problem_path": None,
-        "selected": [project.name for project in [var for var in problem.variables() if var.value() == 1.0]]
+        "selected": [
+            project.name
+            for project in [var for var in problem.variables() if var.value() == 1.0]
+        ],
     }
 
-    def get_file_name(file_type: Literal['problem', 'meta'], ext: Literal['lp', 'json'], unique_problem_id: str) -> str:
+    def get_file_name(
+        file_type: Literal["problem", "meta"],
+        ext: Literal["lp", "json"],
+        unique_problem_id: str,
+    ) -> str:
         return f"{file_type}_{unique_problem_id}_{source_directory_path.split('/')[-1]}_{solver_type}.{ext}"
 
     problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':','-')[5:]}_{str(uuid4())[:4]}"
-    result['problem_path'] = f"{results_base_path}{get_file_name('problem', 'lp', problem_id)}"
-    problem.writeLP(result['problem_path'])
-    write_to_json(f"{results_base_path}{get_file_name('meta', 'json', problem_id)}", result)
+    result[
+        "problem_path"
+    ] = f"{results_base_path}{get_file_name('problem', 'lp', problem_id)}"
+    problem.writeLP(result["problem_path"])
+    write_to_json(
+        f"{results_base_path}{get_file_name('meta', 'json', problem_id)}", result
+    )

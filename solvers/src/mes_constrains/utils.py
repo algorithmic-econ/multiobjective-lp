@@ -21,12 +21,15 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
 
 def get_infeasible_constraints(problem: MultiObjectiveLpProblem) -> List[LpConstraint]:
     return [
-        constraint for constraint in problem.constraints.values()
-        if (constraint.sense == LpConstraintGE and constraint.value() < 0) or (
-                    constraint.sense == LpConstraintLE and constraint.value() > 0)
+        constraint
+        for constraint in problem.constraints.values()
+        if (constraint.sense == LpConstraintGE and constraint.value() < 0)
+        or (constraint.sense == LpConstraintLE and constraint.value() > 0)
     ]
 
 
-def set_selected_candidates(problem: MultiObjectiveLpProblem, selected: List[str]) -> None:
+def set_selected_candidates(
+    problem: MultiObjectiveLpProblem, selected: List[str]
+) -> None:
     for variable in problem.variables():
         variable.setInitialValue(1 if variable.name in selected else 0)

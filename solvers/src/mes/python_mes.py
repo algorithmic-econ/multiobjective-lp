@@ -1,4 +1,3 @@
-
 def equal_shares_add1_python(voters, projects, cost, approvers, total_budget):
     """
     Computes the Method of Equal Shares for Participatory Budgeting.
@@ -40,7 +39,9 @@ def equal_shares_add1_python(voters, projects, cost, approvers, total_budget):
             break
         # would the next highest budget work?
         next_budget = budget + len(voters)
-        next_mes = equal_shares_fixed_budget(voters, projects, cost, approvers, next_budget)
+        next_mes = equal_shares_fixed_budget(
+            voters, projects, cost, approvers, next_budget
+        )
         current_cost = sum(cost[c] for c in next_mes)
         if current_cost <= total_budget:
             # yes, so continue with that budget
@@ -111,7 +112,8 @@ def equal_shares_fixed_budget(voters, projects, cost, approvers, total_budget):
         best = break_ties(voters, projects, cost, approvers, best)
         if len(best) > 1:
             raise Exception(
-                f"Tie-breaking failed: tie between projects {best} could not be resolved. Another tie-breaking needs to be added.")
+                f"Tie-breaking failed: tie between projects {best} could not be resolved. Another tie-breaking needs to be added."
+            )
         best = best[0]
         winners.append(best)
         del remaining[best]

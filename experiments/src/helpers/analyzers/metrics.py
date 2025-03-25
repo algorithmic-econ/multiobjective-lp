@@ -12,16 +12,16 @@ def get_metrics(metrics: List[Metric], problem: MultiObjectiveLpProblem) -> Dict
 
 
 def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], Dict]:
-    if metric == 'NON_ZERO_OBJECTIVES':
+    if metric == "NON_ZERO_OBJECTIVES":
         return non_zero_objectives
-    if metric == 'SUM_OBJECTIVES':
+    if metric == "SUM_OBJECTIVES":
         return sum_objectives
 
 
 def non_zero_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     return {
         "non_zero_count": len([1 for obj in problem.objectives if obj.value() != 0]),
-        "zero_count": len([1 for obj in problem.objectives if obj.value() == 0])
+        "zero_count": len([1 for obj in problem.objectives if obj.value() == 0]),
     }
 
 

@@ -10,12 +10,13 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 dependencies = [
+    "pabutools (>=1.1.11,<2.0.0)"
 ]
 
 [tool.poetry.dependencies]
-multiobjective_lp = {version = "0.0.3", source = "test-pypi"}
+multiobjective_lp = {version = "0.0.4", source = "test-pypi"}
 multiobjective_lp-solvers = {path = "../solvers", develop = true}
 
 [[tool.poetry.source]]
@@ -28,8 +29,7 @@ packages = [{include = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api" 
+build-backend = "poetry.core.masonry.api"
 
-
-
-
+[tool.black]
+line-length = 88

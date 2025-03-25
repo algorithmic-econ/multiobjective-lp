@@ -1,4 +1,4 @@
-from core.src.multiobjective_lp.utils.lpWriterUtils import expression_to_lp_format
+from core.src.utils.lpWriterUtils import expression_to_lp_format
 
 from typing import List
 
@@ -10,9 +10,12 @@ pulp.const.LpCplexLPLineSize = 100000
 
 
 class MultiObjectiveLpProblem(LpProblem):
-
-    def __init__(self, name: str, sense: LpMaximize | LpMinimize = LpMaximize,
-                 objectives: List[LpAffineExpression] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        sense: LpMaximize | LpMinimize = LpMaximize,
+        objectives: List[LpAffineExpression] = None,
+    ) -> None:
         super().__init__(name, sense=sense)
         self._objectives = objectives
 
@@ -27,7 +30,7 @@ class MultiObjectiveLpProblem(LpProblem):
 
     def writeLP(self, filename, writeSOS=1, mip=1, max_length=100):
         super().writeLP(filename, writeSOS, mip, max_length)
-        with open(filename, 'a', encoding="utf-8") as file:
+        with open(filename, "a", encoding="utf-8") as file:
             file.write("OBJECTIVES:\n")
             for objective in self.objectives:
                 file.write(expression_to_lp_format(objective))

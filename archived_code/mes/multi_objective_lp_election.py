@@ -5,10 +5,12 @@ from logging import Logger
 
 
 class MultiObjectiveLpElection(MultiObjectiveLpProblem):
-
-    def __init__(self, name: str = "mes",
-                 objectives: List[LpAffineExpression] = None,
-                 logger: Optional[Logger] = None) -> None:
+    def __init__(
+        self,
+        name: str = "mes",
+        objectives: List[LpAffineExpression] = None,
+        logger: Optional[Logger] = None,
+    ) -> None:
         if objectives is None:
             objectives = []
         super().__init__(name, objectives, logger)
@@ -21,7 +23,8 @@ class MultiObjectiveLpElection(MultiObjectiveLpProblem):
 
     def get_infeasible_constraints(self) -> List[LpConstraint]:
         return [
-            constraint for constraint in self.constraints.values()
-            if (constraint.sense == LpConstraintGE and constraint.value() < 0) or
-               (constraint.sense == LpConstraintLE and constraint.value() > 0)
+            constraint
+            for constraint in self.constraints.values()
+            if (constraint.sense == LpConstraintGE and constraint.value() < 0)
+            or (constraint.sense == LpConstraintLE and constraint.value() > 0)
         ]

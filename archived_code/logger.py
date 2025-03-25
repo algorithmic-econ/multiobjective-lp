@@ -11,13 +11,19 @@ def get_current_filename() -> str:
 
 report_stream = io.StringIO()
 memory_handler = logging.StreamHandler(stream=report_stream)
-memory_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt='%H:%M:%S'))
+memory_handler.setFormatter(
+    logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt='%H:%M:%S'))
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+)
 
-file_handler = logging.FileHandler('output/' + get_current_filename())
-file_handler.setFormatter(logging.Formatter("%(asctime)s|%(levelname)s|%(message)s", datefmt='%H:%M:%S'))
+file_handler = logging.FileHandler("output/" + get_current_filename())
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s|%(levelname)s|%(message)s", datefmt="%H:%M:%S")
+)
 
 logger = logging.getLogger("multiobjective-lp")
 logger.setLevel(os.environ.get("LOG_LEVEL", "INFO").upper())
@@ -31,6 +37,5 @@ def get_logs_from_stream() -> str:
 
 
 class LogKey(Enum):
-    PROJECT = 'PROJECT'
-    FEAS_RATIO = 'FEAS_RATIO'
-
+    PROJECT = "PROJECT"
+    FEAS_RATIO = "FEAS_RATIO"

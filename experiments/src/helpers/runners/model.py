@@ -1,7 +1,7 @@
 from typing import List, TypedDict, Literal, NotRequired
 
-Solver = Literal['SUMMING', 'MES', 'MES_ADD1']
-Source = Literal['PULP', 'PABUTOOLS']
+Solver = Literal["SUMMING", "MES", "MES_ADD1"]
+Source = Literal["PULP", "PABUTOOLS"]
 
 
 class RunnerConfig(TypedDict):
@@ -14,9 +14,9 @@ class RunnerConfig(TypedDict):
 
 
 class ConstraintConfig(TypedDict):
-    type: Literal['CATEGORY']
+    type: Literal["CATEGORY"]
     category: str
-    bound: Literal['UPPER', 'LOWER']
+    bound: Literal["UPPER", "LOWER"]
     budget_ratio: float
 
 

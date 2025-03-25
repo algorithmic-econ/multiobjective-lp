@@ -6,8 +6,10 @@ from examples.mes.pabutools.model import EnhancedProject, EnhancedProfile
 from gmpy2 import mpq
 
 
-def filter_projects(condition: Callable[[EnhancedProject], bool],
-                    projects: Dict[AgentId, EnhancedProject]) -> List[AgentId]:
+def filter_projects(
+    condition: Callable[[EnhancedProject], bool],
+    projects: Dict[AgentId, EnhancedProject],
+) -> List[AgentId]:
     return [p_id for p_id, project in projects.items() if condition(project)]
 
 
@@ -26,7 +28,9 @@ def get_all_categories(projects: Dict[AgentId, EnhancedProject]) -> Set[str]:
     return result
 
 
-def merge_voter_preferences_by_district(profiles: Dict[str, EnhancedProfile]) -> Dict[AgentId, List[AgentId]]:
+def merge_voter_preferences_by_district(
+    profiles: Dict[str, EnhancedProfile],
+) -> Dict[AgentId, List[AgentId]]:
     return {
         f"{voter.meta['voter_id']}_{district}": [str(c) for c in voter]
         for district, profile in profiles.items()
@@ -36,7 +40,7 @@ def merge_voter_preferences_by_district(profiles: Dict[str, EnhancedProfile]) ->
 
 def get_candidates_ids_from_constraint(constraint: LpConstraint) -> List[AgentId]:
     # name is selected_candidate_{ID}
-    return [candidate.name.split('_')[-1] for candidate in constraint.keys()]
+    return [candidate.name.split("_")[-1] for candidate in constraint.keys()]
 
 
 def get_feasibility_ratio(constraint: LpConstraint) -> float:
@@ -50,10 +54,12 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
     return (value - target) / abs(target)
 
 
-def get_modification_ratio(feasibility_ratio: float, smallest: float, largest: float) -> float:
+def get_modification_ratio(
+    feasibility_ratio: float, smallest: float, largest: float
+) -> float:
     # ratio: [smallest, largest + delta]
     delta = largest - smallest
-    return smallest + delta*feasibility_ratio
+    return smallest + delta * feasibility_ratio
 
 
 def use_modified_price(enhanced_project: EnhancedProject) -> EnhancedProject:

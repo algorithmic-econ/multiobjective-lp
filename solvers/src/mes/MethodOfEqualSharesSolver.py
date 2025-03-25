@@ -19,7 +19,9 @@ class MethodOfEqualSharesSolver(LpSolver):
         super().__init__()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
-        projects = [variable.name for variable in lp.variables() if variable.name != '__dummy']
+        projects = [
+            variable.name for variable in lp.variables() if variable.name != "__dummy"
+        ]
         voters = [objective.name for objective in lp.objectives]
         costs = {
             variable.name: coefficient
@@ -30,7 +32,7 @@ class MethodOfEqualSharesSolver(LpSolver):
         for objective in lp.objectives:
             for variable in objective:
                 approvals[variable.name] += [objective.name]
-        total_budget = abs(lp.constraints['C_ub_total_budget'].constant)
+        total_budget = abs(lp.constraints["C_ub_total_budget"].constant)
 
         start_time = time.time()
         print(f"STARTING MES {start_time}")
@@ -40,4 +42,3 @@ class MethodOfEqualSharesSolver(LpSolver):
         for variable in lp.variables():
             variable.setInitialValue(1 if variable.name in selected else 0)
         return
-

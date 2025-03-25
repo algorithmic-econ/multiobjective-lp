@@ -2,13 +2,20 @@ from lp_election_model import AgentId, LpElection
 from multiobjective_lp.utils.utils import flatten
 from pabutools.model import EnhancedProject, EnhancedProfile
 from pabutools.parsing import load_pabulib_to_enhanced_projects_and_district_profiles
-from pabutools.utils import use_modified_price, merge_voter_preferences_by_district, filter_projects, \
-    by_district, by_category, get_feasibility_ratio, get_modification_ratio, get_candidates_ids_from_constraint
+from pabutools.utils import (
+    use_modified_price,
+    merge_voter_preferences_by_district,
+    filter_projects,
+    by_district,
+    by_category,
+    get_feasibility_ratio,
+    get_modification_ratio,
+    get_candidates_ids_from_constraint,
+)
 from pabutools.election import Instance, ApprovalProfile
 from pabutools.rules import method_of_equal_shares
 from pabutools.election.satisfaction import Cost_Sat
 from typing import Tuple, List, Dict
-
 
 
 def project_costs_interference(it: int, project: EnhancedProject) -> EnhancedProject:
@@ -16,52 +23,80 @@ def project_costs_interference(it: int, project: EnhancedProject) -> EnhancedPro
     #
     # TODO: provide replacement_cost strategy as lambda
     #
-    replacement_cost = sum(project.costs[current_price_index:]) / len(project.costs[current_price_index:])
+    replacement_cost = sum(project.costs[current_price_index:]) / len(
+        project.costs[current_price_index:]
+    )
     project.costs = project.costs[:current_price_index] + [replacement_cost]
     return project
 
 
-def mes_wrapper(budget: int, _projects: List[EnhancedProject], _profiles: Dict[str, EnhancedProfile]) -> List[AgentId]:
-    instance = Instance({use_modified_price(enhanced_project).project for enhanced_project in _projects}, budget)
-    ballots = flatten([enhanced_profile.profile for _, enhanced_profile in _profiles.items()])
+def mes_wrapper(
+    budget: int, _projects: List[EnhancedProject], _profiles: Dict[str, EnhancedProfile]
+) -> List[AgentId]:
+    instance = Instance(
+        {
+            use_modified_price(enhanced_project).project
+            for enhanced_project in _projects
+        },
+        budget,
+    )
+    ballots = flatten(
+        [enhanced_profile.profile for _, enhanced_profile in _profiles.items()]
+    )
     # TODO: verify double usage of voter_id in citywide elections
     profile = ApprovalProfile(ballots)
     outcome = method_of_equal_shares(instance, profile, sat_class=Cost_Sat)
     return [_candidate.name for _candidate in outcome]
 
 
-def run(max_iterations=10) -> Tuple[List[str], LpElection, Dict[AgentId, EnhancedProject]]:
+def run(
+    max_iterations=10,
+) -> Tuple[List[str], LpElection, Dict[AgentId, EnhancedProject]]:
     #
     # Load election from pabulib file
     #
-    path = 'resources/warszawa_2023_test/'
-    projects, profiles, budgets = load_pabulib_to_enhanced_projects_and_district_profiles(path)
+    path = "resources/warszawa_2023_test/"
+    (
+        projects,
+        profiles,
+        budgets,
+    ) = load_pabulib_to_enhanced_projects_and_district_profiles(path)
 
     #
     # Create LpProblem, LpVariables, LpExpressions to represent election instance
     #
     election = LpElection(
         candidates=list(projects.keys()),
-        voters_preferences=merge_voter_preferences_by_district(profiles)
+        voters_preferences=merge_voter_preferences_by_district(profiles),
     )
 
     #
     # Add constraints for all districts, e.g., LB: 75%
     #
     for district in profiles.keys():
-        district_projects_costs = {p_id: int(projects[p_id].project.cost) for p_id in
-                                   filter_projects(by_district(district), projects)}
-        election.define_constraint_lb(district, district_projects_costs, int(budgets[district] * 0.8))
-        election.define_constraint_ub(district, district_projects_costs, int(budgets[district] * 0.5))
+        district_projects_costs = {
+            p_id: int(projects[p_id].project.cost)
+            for p_id in filter_projects(by_district(district), projects)
+        }
+        election.define_constraint_lb(
+            district, district_projects_costs, int(budgets[district] * 0.8)
+        )
+        election.define_constraint_ub(
+            district, district_projects_costs, int(budgets[district] * 0.5)
+        )
 
     #
     # Add constraints for categories, e.g. 25% of total budget for education
     #
-    education_projects_costs = {p_id: int(projects[p_id].project.cost) for p_id in
-                                filter_projects(by_category('education'), projects)}
-    election.define_constraint_lb('education', education_projects_costs, int(sum(budgets.values()) * 0.25))
+    education_projects_costs = {
+        p_id: int(projects[p_id].project.cost)
+        for p_id in filter_projects(by_category("education"), projects)
+    }
+    election.define_constraint_lb(
+        "education", education_projects_costs, int(sum(budgets.values()) * 0.25)
+    )
 
-    logger.info('============== start ==============')
+    logger.info("============== start ==============")
 
     #
     # Run MES with price changes
@@ -70,17 +105,21 @@ def run(max_iterations=10) -> Tuple[List[str], LpElection, Dict[AgentId, Enhance
     selected_candidates: List[str] = []
     while iteration < max_iterations:
         # Run MES
-        selected_candidates = mes_wrapper(sum(budgets.values()), list(projects.values()), profiles)
+        selected_candidates = mes_wrapper(
+            sum(budgets.values()), list(projects.values()), profiles
+        )
         election.set_selected_candidates_values(selected_candidates)
 
         # Check constraints
         infeasible = election.get_infeasible_constraints()
 
         for c in infeasible:
-            logger.info(f"{LogKey.FEAS_RATIO.name}|{iteration}|{c.name}|{get_feasibility_ratio(c)}")
+            logger.info(
+                f"{LogKey.FEAS_RATIO.name}|{iteration}|{c.name}|{get_feasibility_ratio(c)}"
+            )
 
         if len(infeasible) == 0:
-            logger.warn('============== all constraints fulfilled ==============')
+            logger.warn("============== all constraints fulfilled ==============")
             break
 
         # Modify prices
@@ -93,9 +132,11 @@ def run(max_iterations=10) -> Tuple[List[str], LpElection, Dict[AgentId, Enhance
                     # use iteration as index if candidate is in multiple constraints
                     if len(projects[candidate].costs) < iteration:
                         # TODO: investigate hard to replicate (random) out of index error here
-                        logger.error('boom')
+                        logger.error("boom")
                     previous_cost = projects[candidate].costs[iteration]
-                    projects[candidate].costs.append(int(previous_cost * cost_modification_ratio))
+                    projects[candidate].costs.append(
+                        int(previous_cost * cost_modification_ratio)
+                    )
                 except:
                     logger.info(f"\n========crashed|{iteration}")
                     for p in projects.values():
@@ -111,9 +152,9 @@ def run(max_iterations=10) -> Tuple[List[str], LpElection, Dict[AgentId, Enhance
     return selected_candidates, election, projects
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sc, e, p = run(4)
-    with open("output/latest.log", 'w', encoding="utf-8") as file:
+    with open("output/latest.log", "w", encoding="utf-8") as file:
         file.write(get_logs_from_stream())
     for project in p.values():
         logger.info(f"{LogKey.PROJECT.name}|{project.project.name}|{project.costs}")
