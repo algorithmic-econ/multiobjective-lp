@@ -11,21 +11,21 @@ license = "MIT"
 readme = "README.md"
 
 requires-python = ">=3.11,<3.13"
-dependencies = [
-    "pabutools (>=1.1.11,<2.0.0)"
-]
 
-[tool.poetry.dependencies]
-multiobjective_lp = {version = "0.0.4", source = "test-pypi"}
-multiobjective_lp-solvers = {path = "../solvers", develop = true}
+dynamic = [ "dependencies" ]
+
+[tool.poetry]
+package-mode = false
 
 [[tool.poetry.source]]
-name = "test-pypi"
+name = "test"
 url = "https://test.pypi.org/simple/"
 priority = "explicit"
 
-[tool.poetry]
-packages = [{include = "src"}]
+[tool.poetry.dependencies]
+pabutools = {version = "1.1.11"}
+multiobjective-lp-solvers = {version = "0.0.4", source = "test"}
+multiobjective-lp = {version = "0.0.6", source = "test"}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

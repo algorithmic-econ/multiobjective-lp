@@ -1,12 +1,13 @@
 from typing import List, Tuple
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
-from experiments.helpers.runners.model import Source
-from ..transformers.pabutoolsToMoLp import (
+
+from src.helpers.runners.model import Source
+from src.helpers.transformers.pabutoolsToMoLp import (
     pabutools_to_multi_objective_lp,
     ConstraintConfig,
 )
-from ..transformers.pabutoolsUtils import load_pabutools_by_district
-from ..utils.utils import read_from_json
+
+from src.helpers.transformers.pabutoolsUtils import load_pabutools_by_district
+from src.helpers.utils.utils import read_from_json
 
 
 def load_and_transform_strategy(

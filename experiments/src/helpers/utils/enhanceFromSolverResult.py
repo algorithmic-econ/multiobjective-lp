@@ -1,5 +1,4 @@
-from experiments.src.experiments.helpers.runners.model import RunnerResult
-from core.src.multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+from src.helpers.runners.model import RunnerResult
 
 
 def enhance_problem_from_solver_result(

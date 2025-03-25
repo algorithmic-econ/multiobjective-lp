@@ -2,14 +2,14 @@
 
 [[package]]
 name = "multiobjective-lp"
-version = "0.0.4"
+version = "0.0.6"
 description = "Implementation of multi objective linear programming module"
 optional = false
-python-versions = ">=3.11"
+python-versions = ">=3.11,<3.13"
 groups = ["main"]
 files = [
-    {file = "multiobjective_lp-0.0.4-py3-none-any.whl", hash = "sha256:6a7110a656e2fd56b8f6dde940653b32e7fe18bf95626a577e4d4c4b22a83e41"},
-    {file = "multiobjective_lp-0.0.4.tar.gz", hash = "sha256:3b093cd343420240491a6c5770de88f83719e47fad6c42864b16044e04ddfc1d"},
+    {file = "multiobjective_lp-0.0.6-py3-none-any.whl", hash = "sha256:4a6e3ec4f49810ca5ce03b4ba5fbcbe21a5266bf12231e7842a75b89d54d4020"},
+    {file = "multiobjective_lp-0.0.6.tar.gz", hash = "sha256:4ea39103a9701d9770b99b33b597ae561ec57639c991e4f1245239c62de90f6c"},
 ]
 
 [package.dependencies]
@@ -18,7 +18,7 @@ pulp = "2.9.0"
 [package.source]
 type = "legacy"
 url = "https://test.pypi.org/simple"
-reference = "test-pypi"
+reference = "test"
 
 [[package]]
 name = "pulp"
@@ -32,7 +32,12 @@ files = [
     {file = "pulp-2.9.0.tar.gz", hash = "sha256:2e30e6c0ef2c0edac185220e3e53faca62eb786a9bd68465208f05bc63e850f3"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "726976491430aea6858412e627b8634f94c8a4268dce72f19655fb65499d34ad"
+content-hash = "01e745f414cdc3a993583183caa4d64f59dbfc0427475036e9889ed953ef3cd7"
