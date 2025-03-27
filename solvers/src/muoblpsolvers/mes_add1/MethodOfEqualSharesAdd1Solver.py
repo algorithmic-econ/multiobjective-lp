@@ -3,8 +3,8 @@ from collections import defaultdict
 
 from pulp import LpSolver
 
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
-from solvers.mes_add1.binding.build.mes_add1 import equal_shares_add1
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblpsolvers.mes_add1.binding.build.mes_add1 import equal_shares_add1
 
 
 class MethodOfEqualSharesAdd1Solver(LpSolver):

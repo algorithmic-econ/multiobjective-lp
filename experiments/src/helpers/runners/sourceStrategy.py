@@ -1,5 +1,7 @@
 from typing import List, Tuple
 
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+
 from src.helpers.runners.model import Source
 from src.helpers.transformers.pabutoolsToMoLp import (
     pabutools_to_multi_objective_lp,

@@ -1,6 +1,6 @@
 from pulp import LpSolver, lpSum, PULP_CBC_CMD, GUROBI_CMD
 
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 class SummedObjectivesLpSolver(LpSolver):

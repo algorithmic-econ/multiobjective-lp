@@ -165,15 +165,15 @@ numpy = ["numpy (==1.21.*) ; python_version == \"3.7\"", "numpy (==1.24.*) ; pyt
 test = ["matplotlib (==3.5.3) ; python_version == \"3.7\"", "matplotlib (==3.6.2) ; python_version == \"3.8\"", "matplotlib (>=3.7) ; python_version >= \"3.9\"", "networkx (==2.6.3) ; python_version == \"3.7\"", "networkx (==2.8.8) ; python_version >= \"3.8\"", "pytest (>=7.4)"]
 
 [[package]]
-name = "multiobjective-lp"
-version = "0.0.6"
+name = "muoblp"
+version = "0.0.8"
 description = "Implementation of multi objective linear programming module"
 optional = false
-python-versions = ">=3.11,<3.13"
+python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "multiobjective_lp-0.0.6-py3-none-any.whl", hash = "sha256:4a6e3ec4f49810ca5ce03b4ba5fbcbe21a5266bf12231e7842a75b89d54d4020"},
-    {file = "multiobjective_lp-0.0.6.tar.gz", hash = "sha256:4ea39103a9701d9770b99b33b597ae561ec57639c991e4f1245239c62de90f6c"},
+    {file = "muoblp-0.0.8-py3-none-any.whl", hash = "sha256:6582aabace494843ba5d13cda350b671e12e2a68756dd40f4d1de149e88c7c22"},
+    {file = "muoblp-0.0.8.tar.gz", hash = "sha256:9743145e013cf7a2ada698a348464ecd7d836cec5f64d0fcb48d16fa31485f51"},
 ]
 
 [package.dependencies]
@@ -185,24 +185,21 @@ url = "https://test.pypi.org/simple"
 reference = "test"
 
 [[package]]
-name = "multiobjective-lp-solvers"
-version = "0.0.4"
+name = "muoblpsolvers"
+version = "0.0.5"
 description = "Solvers for multi objective linear programming"
 optional = false
-python-versions = ">=3.11,<3.13"
+python-versions = ">=3.11"
 groups = ["main"]
-files = [
-    {file = "multiobjective_lp_solvers-0.0.4-py3-none-any.whl", hash = "sha256:2b6434aea4d969acb16203c3a004a0d9471edb074e99aac3bbbb966440bb2dcc"},
-    {file = "multiobjective_lp_solvers-0.0.4.tar.gz", hash = "sha256:7f8123bcaa0fb061ab4b9513925c34b25ceb679834840f682a2320e60cb91550"},
-]
+files = []
+develop = true
 
 [package.dependencies]
-multiobjective-lp = "0.0.6"
+muoblp = "0.0.8"
 
 [package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "test"
+type = "directory"
+url = "../solvers"
 
 [[package]]
 name = "natsort"
@@ -372,4 +369,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "ce273cc80c88ddfbd00c634669a7063f3a802010cc8884c7b16cce066413b39e"
+content-hash = "00a49afb7c4befbf0923da0ab46bf9cf421fb1da80b157a9ca7a04324eb30202"

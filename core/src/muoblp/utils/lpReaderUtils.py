@@ -9,7 +9,7 @@ from pulp import (
     LpAffineExpression,
 )
 
-from core.src.multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 def get_constraint_sign(constraint: str) -> int:

@@ -1,12 +1,15 @@
 from typing import List
 
-from pulp import LpSolver
-from solvers.mes.MethodOfEqualSharesSolver import MethodOfEqualSharesSolver
-from solvers.mes_add1.MethodOfEqualSharesAdd1Solver import MethodOfEqualSharesAdd1Solver
-from solvers.mes_constrains.MethodOfEqualSharesConstrainsSolver import (
+from muoblpsolvers.mes.MethodOfEqualSharesSolver import MethodOfEqualSharesSolver
+from muoblpsolvers.mes_add1.MethodOfEqualSharesAdd1Solver import (
+    MethodOfEqualSharesAdd1Solver,
+)
+from muoblpsolvers.mes_constrains.MethodOfEqualSharesConstrainsSolver import (
     MethodOfEqualSharesConstrainsSolver,
 )
-from solvers.summed.SummedObjectivesLpSolver import SummedObjectivesLpSolver
+from muoblpsolvers.summed.SummedObjectivesLpSolver import SummedObjectivesLpSolver
+from pulp import LpSolver
+
 
 from src.helpers.runners.model import Solver
 

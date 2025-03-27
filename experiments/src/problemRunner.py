@@ -2,11 +2,12 @@ import time
 from datetime import datetime
 from uuid import uuid4
 
-from src.helpers.runners.model import RunnerConfig, RunnerResult
-from src.helpers.runners.solverStrategy import get_solver
-from src.helpers.runners.sourceStrategy import load_and_transform_strategy
-from src.helpers.utils.utils import write_to_json
 from typing import Literal
+
+from helpers.runners.model import RunnerConfig, RunnerResult
+from helpers.runners.solverStrategy import get_solver
+from helpers.runners.sourceStrategy import load_and_transform_strategy
+from helpers.utils.utils import write_to_json
 
 
 def problem_runner(config: RunnerConfig):

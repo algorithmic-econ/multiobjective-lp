@@ -5,12 +5,13 @@ from itertools import repeat
 from pathlib import Path
 from typing import List
 
-from helpers.analyzers.model import AnalyzerResult, AnalyzerConfig
-from helpers.analyzers.metrics import Metric, get_metrics
+from muoblp.utils.lpReaderUtils import read_lp_file
+
+from helpers.analyzers.model import AnalyzerResult, AnalyzerConfig, Metric
+from helpers.analyzers.metrics import get_metrics
 from helpers.runners.model import RunnerResult
 from helpers.utils.enhanceFromSolverResult import enhance_problem_from_solver_result
 from helpers.utils.utils import read_from_json, write_to_json
-from core.src.multiobjective_lp.utils.lpReaderUtils import read_lp_file
 
 
 def method_name(runner_result_path: Path, metrics: List[Metric]) -> AnalyzerResult:

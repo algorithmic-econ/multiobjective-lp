@@ -1,3 +1,5 @@
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+
 from src.helpers.runners.model import RunnerResult
 
 

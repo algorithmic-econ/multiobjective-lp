@@ -1,9 +1,9 @@
-from core.src.utils.lpWriterUtils import expression_to_lp_format
-
 from typing import List
 
 import pulp
 from pulp import LpProblem, LpAffineExpression, LpMaximize, LpMinimize
+
+from muoblp.utils.lpWriterUtils import expression_to_lp_format
 
 # Override line limit for writeLP to output single line values
 pulp.const.LpCplexLPLineSize = 100000

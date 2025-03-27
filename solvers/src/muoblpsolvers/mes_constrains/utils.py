@@ -2,7 +2,7 @@ from typing import List
 
 from pulp import LpConstraint, LpConstraintGE, LpConstraintLE
 
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 def get_feasibility_ratio(constraint: LpConstraint) -> float:

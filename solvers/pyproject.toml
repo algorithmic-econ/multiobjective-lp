@@ -1,6 +1,6 @@
 [project]
-version = "0.0.4"
-name = "multiobjective-lp-solvers"
+version = "0.0.5"
+name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
 authors = [
@@ -10,7 +10,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11"
 
 dynamic = [ "dependencies" ]
 
@@ -18,12 +18,11 @@ dynamic = [ "dependencies" ]
 name = "test"
 url = "https://test.pypi.org/simple/"
 
-
 [tool.poetry.dependencies]
-multiobjective-lp = {version = "0.0.6", source = "test"}
+muoblp = {version = "0.0.8", source = "test"}
 
 [tool.poetry]
-packages = [{include = "solvers", from = "src"}]
+packages = [{include = "muoblpsolvers", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

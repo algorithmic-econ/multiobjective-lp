@@ -1,12 +1,11 @@
 import time
 from collections import defaultdict
-from typing import List
 
 from pulp import LpSolver
-from solvers.mes.binding.build.mes import equal_shares
+from muoblpsolvers.mes.binding.build.mes import equal_shares
 
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
-from solvers.mes_constrains.utils import (
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblpsolvers.mes_constrains.utils import (
     set_selected_candidates,
     get_infeasible_constraints,
     get_feasibility_ratio,

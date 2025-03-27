@@ -9,6 +9,6 @@ __pycache__/
 /documentation/site/
 dist/
 /experiments/resources/results/
-/solvers/*/binding/build/
+/solvers/**/binding/build/
 
 /experiments/sample-experiment/results/sample-experiment/*

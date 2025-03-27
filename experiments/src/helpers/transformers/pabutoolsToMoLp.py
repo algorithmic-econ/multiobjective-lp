@@ -3,7 +3,7 @@ from functools import reduce
 from operator import itemgetter, ior
 from typing import Dict, TypeAlias, List
 
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import Instance, Profile, Project
 from pulp import (
     LpVariable,
