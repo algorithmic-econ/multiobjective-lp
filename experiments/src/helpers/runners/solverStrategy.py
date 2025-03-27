@@ -11,7 +11,7 @@ from muoblpsolvers.summed.SummedObjectivesLpSolver import SummedObjectivesLpSolv
 from pulp import LpSolver
 
 
-from src.helpers.runners.model import Solver
+from helpers.runners.model import Solver
 
 
 def get_solver(solver_type: Solver, solver_options: List[str] | None) -> LpSolver:
