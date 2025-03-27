@@ -49,11 +49,9 @@ def problem_runner(config: RunnerConfig):
     ) -> str:
         return f"{file_type}_{unique_problem_id}_{source_directory_path.split('/')[-1]}_{solver_type}.{ext}"
 
-    problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':','-')[5:]}_{str(uuid4())[:4]}"
-    result[
-        "problem_path"
-    ] = f"{results_base_path}{get_file_name('problem', 'lp', problem_id)}"
+    problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':', '-')[5:]}_{str(uuid4())[:4]}"
+    problem_file = get_file_name("problem", "lp", problem_id)
+    result["problem_path"] = f"{results_base_path}{problem_file}"
     problem.writeLP(result["problem_path"])
-    write_to_json(
-        f"{results_base_path}{get_file_name('meta', 'json', problem_id)}", result
-    )
+    meta_file = get_file_name("meta", "json", problem_id)
+    write_to_json(f"{results_base_path}{meta_file}", result)
