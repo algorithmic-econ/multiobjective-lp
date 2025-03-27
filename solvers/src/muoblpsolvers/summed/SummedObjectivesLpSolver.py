@@ -21,5 +21,7 @@ class SummedObjectivesLpSolver(LpSolver):
             lp: Instance of MultiObjectiveLpProblem
         """
         lp.setObjective(lpSum(lp.objectives))
-        solver_cmd = GUROBI_CMD() if self.use_gurobi else PULP_CBC_CMD(msg=False)
+        solver_cmd = (
+            GUROBI_CMD() if self.use_gurobi else PULP_CBC_CMD(msg=False)
+        )
         return solver_cmd.actualSolve(lp)

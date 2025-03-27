@@ -20,7 +20,9 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         projects = [
-            variable.name for variable in lp.variables() if variable.name != "__dummy"
+            variable.name
+            for variable in lp.variables()
+            if variable.name != "__dummy"
         ]
         voters = [objective.name for objective in lp.objectives]
         costs = {
@@ -36,7 +38,9 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
 
         start_time = time.time()
         print(f"STARTING MES_ADD1 {start_time}")
-        selected = equal_shares_add1(voters, projects, costs, approvals, total_budget)
+        selected = equal_shares_add1(
+            voters, projects, costs, approvals, total_budget
+        )
         print(f"FINISHED MES_ADD1 {time.time() - start_time}")
 
         for variable in lp.variables():

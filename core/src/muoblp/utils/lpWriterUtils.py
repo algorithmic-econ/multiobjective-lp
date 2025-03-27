@@ -1,7 +1,9 @@
 from pulp import LpAffineExpression
 
 
-def expression_to_lp_format(expression: LpAffineExpression, constant: int = 1) -> str:
+def expression_to_lp_format(
+    expression: LpAffineExpression, constant: int = 1
+) -> str:
     """
     copy-paste of `LpAffineExpression::asCplexLpAffineExpression` with line length limit modification
     returns a string that represents the Affine Expression in lp format

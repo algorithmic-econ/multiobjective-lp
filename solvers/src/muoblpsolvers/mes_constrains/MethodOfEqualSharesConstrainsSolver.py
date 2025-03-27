@@ -30,7 +30,9 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
             lp: Instance of MultiObjectiveLpProblem
         """
         projects = [
-            variable.name for variable in lp.variables() if variable.name != "__dummy"
+            variable.name
+            for variable in lp.variables()
+            if variable.name != "__dummy"
         ]
         voters = [objective.name for objective in lp.objectives]
         costs = {
@@ -48,7 +50,9 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         while iteration < MAX_ITERATIONS:
             # Run MES
             start_time = time.time()
-            selected = equal_shares(voters, projects, costs, approvals, total_budget)
+            selected = equal_shares(
+                voters, projects, costs, approvals, total_budget
+            )
             print(f"FINISHED MES {time.time() - start_time:.2f} s")
             set_selected_candidates(lp, selected)
 
@@ -60,12 +64,16 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 )
 
             if len(infeasible) == 0:
-                print("============== all constraints fulfilled ==============")
+                print(
+                    "============== all constraints fulfilled =============="
+                )
                 break
 
             # Modify prices
             for constraint in infeasible:
-                feasibility_ratio = get_feasibility_ratio(constraint)  # ratio: [0, inf)
+                feasibility_ratio = get_feasibility_ratio(
+                    constraint
+                )  # ratio: [0, inf)
                 cost_modification_ratio = feasibility_ratio * (
                     1.005**iteration
                 )  # exponential backoff
@@ -76,6 +84,8 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                     f"Modifying cost of {len(affected_candidates)} variables with ratio {cost_modification_ratio:.4f}"
                 )
                 for candidate in affected_candidates:
-                    costs[candidate] = int(costs[candidate] * cost_modification_ratio)
+                    costs[candidate] = int(
+                        costs[candidate] * cost_modification_ratio
+                    )
 
             iteration += 1

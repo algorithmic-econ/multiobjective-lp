@@ -19,7 +19,9 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
 #     return lower + (upper - lower) * feasibility_ratio
 
 
-def get_infeasible_constraints(problem: MultiObjectiveLpProblem) -> List[LpConstraint]:
+def get_infeasible_constraints(
+    problem: MultiObjectiveLpProblem,
+) -> List[LpConstraint]:
     return [
         constraint
         for constraint in problem.constraints.values()

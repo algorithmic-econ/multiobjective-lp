@@ -37,7 +37,9 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         LpMaximize if lines[1].lower().startswith("maximize") else LpMinimize
     )
 
-    for variable_line in lines[lines.index("Binaries\n") + 1 : lines.index("End\n")]:
+    for variable_line in lines[
+        lines.index("Binaries\n") + 1 : lines.index("End\n")
+    ]:
         variable = LpVariable(variable_line.strip(), cat=LpBinary)
         variable.setInitialValue(0)
         problem_data["variables"][variable_line.strip()] = variable
