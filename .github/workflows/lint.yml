@@ -1,6 +1,6 @@
 name: Lint
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   format:
@@ -14,4 +14,4 @@ jobs:
             core/
             solvers/
       - run: ruff check --fix --exclude archived_code
-      - run: ruff format
+      - run: ruff format --diff
