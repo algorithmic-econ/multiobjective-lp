@@ -1,6 +1,6 @@
 __pycache__/
 *.log
-
+.DS_Store
 /venv
 /output
 /resources/**/*
@@ -9,6 +9,6 @@ __pycache__/
 /documentation/site/
 dist/
 /experiments/resources/results/
-/solvers/*/binding/build/
+/solvers/**/binding/build/
 
 /experiments/sample-experiment/results/sample-experiment/*

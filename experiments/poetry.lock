@@ -165,6 +165,43 @@ numpy = ["numpy (==1.21.*) ; python_version == \"3.7\"", "numpy (==1.24.*) ; pyt
 test = ["matplotlib (==3.5.3) ; python_version == \"3.7\"", "matplotlib (==3.6.2) ; python_version == \"3.8\"", "matplotlib (>=3.7) ; python_version >= \"3.9\"", "networkx (==2.6.3) ; python_version == \"3.7\"", "networkx (==2.8.8) ; python_version >= \"3.8\"", "pytest (>=7.4)"]
 
 [[package]]
+name = "muoblp"
+version = "0.0.8"
+description = "Implementation of multi objective linear programming module"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "muoblp-0.0.8-py3-none-any.whl", hash = "sha256:6582aabace494843ba5d13cda350b671e12e2a68756dd40f4d1de149e88c7c22"},
+    {file = "muoblp-0.0.8.tar.gz", hash = "sha256:9743145e013cf7a2ada698a348464ecd7d836cec5f64d0fcb48d16fa31485f51"},
+]
+
+[package.dependencies]
+pulp = "2.9.0"
+
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
+
+[[package]]
+name = "muoblpsolvers"
+version = "0.0.5"
+description = "Solvers for multi objective linear programming"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = []
+develop = true
+
+[package.dependencies]
+muoblp = "0.0.8"
+
+[package.source]
+type = "directory"
+url = "../solvers"
+
+[[package]]
 name = "natsort"
 version = "8.4.0"
 description = "Simple yet flexible natural sorting in Python."
@@ -306,6 +343,18 @@ numpy = "*"
 dev = ["Sphinx", "coverage", "matplotlib", "pandas", "scipy", "seaborn", "sphinx-book-theme", "sphinxcontrib-napoleon", "unittest2"]
 
 [[package]]
+name = "pulp"
+version = "2.9.0"
+description = "PuLP is an LP modeler written in python. PuLP can generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to solve linear problems."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "PuLP-2.9.0-py3-none-any.whl", hash = "sha256:ad6a9b566d8458f4d05f4bfe2cea59e32885dd1da6929a361be579222107987c"},
+    {file = "pulp-2.9.0.tar.gz", hash = "sha256:2e30e6c0ef2c0edac185220e3e53faca62eb786a9bd68465208f05bc63e850f3"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
@@ -320,4 +369,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "dc85e0368fc39a394b785f51479373d1dba5da61931c3f8f345afdf2317bf94c"
+content-hash = "00a49afb7c4befbf0923da0ab46bf9cf421fb1da80b157a9ca7a04324eb30202"

@@ -1,16 +1,16 @@
 echo "Prepare C++ bindings"
 START_DIR=$PWD
 
-rm -rf solvers/mes/binding/build
-mkdir solvers/mes/binding/build
-cd solvers/mes/binding/build
+rm -rf src/muoblpsolvers/mes/binding/build
+mkdir src/muoblpsolvers/mes/binding/build
+cd src/muoblpsolvers/mes/binding/build
 cmake ..
 make
 
 cd $START_DIR
 
-rm -rf solvers/mes_add1/binding/build
-mkdir solvers/mes_add1/binding/build
-cd solvers/mes_add1/binding/build
+rm -rf src/muoblpsolvers/mes_add1/binding/build
+mkdir src/muoblpsolvers/mes_add1/binding/build
+cd src/muoblpsolvers/mes_add1/binding/build
 cmake ..
 make

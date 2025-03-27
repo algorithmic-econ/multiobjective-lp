@@ -3,6 +3,7 @@ from functools import reduce
 from operator import itemgetter, ior
 from typing import Dict, TypeAlias, List
 
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import Instance, Profile, Project
 from pulp import (
     LpVariable,
@@ -13,9 +14,12 @@ from pulp import (
     LpConstraintGE,
 )
 
-from .pabutoolsConstants import VARIABLE_PREFIX, TARGET_PREFIX, CONSTRAINT_PREFIX
+from .pabutoolsConstants import (
+    VARIABLE_PREFIX,
+    TARGET_PREFIX,
+    CONSTRAINT_PREFIX,
+)
 from ..runners.model import ConstraintConfig
-from multiobjective_lp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -35,7 +39,9 @@ def pabutools_to_multi_objective_lp(
     problem.setObjectives(list(objectives.values()))
 
     # TODO: Add constraint for total budget
-    district_constraints = create_baseline_constraints(instances, project_variables)
+    district_constraints = create_baseline_constraints(
+        instances, project_variables
+    )
     for constraint in district_constraints:
         problem.addConstraint(constraint)
 
@@ -67,7 +73,8 @@ def create_projects_variables(
 # Objectives
 #
 def create_voter_objectives(
-    profiles: Dict[District, Profile], projects_variables: Dict[AgentId, LpVariable]
+    profiles: Dict[District, Profile],
+    projects_variables: Dict[AgentId, LpVariable],
 ) -> Dict[str, LpAffineExpression]:
     votes = defaultdict(list)
     for district, profile in profiles.items():
@@ -99,11 +106,14 @@ def define_voter_objective(
 # Constraints
 #
 def create_baseline_constraints(
-    instances: Dict[District, Instance], projects_variables: Dict[AgentId, LpVariable]
+    instances: Dict[District, Instance],
+    projects_variables: Dict[AgentId, LpVariable],
 ) -> List[LpConstraint]:
     budgets: Dict[District, int] = {
         district: (
-            int(float(instance.meta["budget"])) if "budget" in instance.meta else 0
+            int(float(instance.meta["budget"]))
+            if "budget" in instance.meta
+            else 0
         )
         for district, instance in instances.items()
     }
@@ -143,7 +153,9 @@ def create_constraints_from_config(
 ) -> List[LpConstraint]:
     total_budget: int = sum(
         [
-            int(float(instance.meta["budget"])) if "budget" in instance.meta else 0
+            int(float(instance.meta["budget"]))
+            if "budget" in instance.meta
+            else 0
             for district, instance in instances.items()
         ]
     )
@@ -151,7 +163,9 @@ def create_constraints_from_config(
         ior, [instance.categories for instance in instances.values()], set()
     )
 
-    projects = [project for instance in instances.values() for project in instance]
+    projects = [
+        project for instance in instances.values() for project in instance
+    ]
     constraints = []
     for constraint_config in constraints_configs:
         if (
@@ -160,7 +174,10 @@ def create_constraints_from_config(
         ):
             constraints.append(
                 create_category_constraint(
-                    constraint_config, projects_variables, projects, total_budget
+                    constraint_config,
+                    projects_variables,
+                    projects,
+                    total_budget,
                 )
             )
     return constraints
@@ -172,9 +189,9 @@ def create_category_constraint(
     projects: List[Project],
     total_budget: int,
 ) -> LpConstraint:
-    category, bound, budget_ratio = itemgetter("category", "bound", "budget_ratio")(
-        constraint_config
-    )
+    category, bound, budget_ratio = itemgetter(
+        "category", "bound", "budget_ratio"
+    )(constraint_config)
     projects_costs = reduce(
         ior,
         [

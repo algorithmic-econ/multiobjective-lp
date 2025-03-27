@@ -1,0 +1,12 @@
+{
+  "concurrency": 1,
+  "experiment_results_base_path": "resources/experiment-results/single-run-v2/",
+  "runner_configs": [
+    {
+      "solver_type": "MES_CONSTRAINT",
+      "source_type": "PABUTOOLS",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024",
+      "constraints_configs_path": "resources/input/constraint-config/no-constraints.json"
+    }
+  ]
+}
