@@ -11,3 +11,4 @@ repos:
         - id: ruff
           exclude: archived_code
         - id: ruff-format
+          args: [--diff]
