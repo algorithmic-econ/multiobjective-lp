@@ -16,7 +16,9 @@ class ExperimentConfig(TypedDict):
 
 
 def main(experiment: ExperimentConfig):
-    Path(experiment["experiment_results_base_path"]).mkdir(parents=True, exist_ok=True)
+    Path(experiment["experiment_results_base_path"]).mkdir(
+        parents=True, exist_ok=True
+    )
 
     for runner_config in experiment["runner_configs"]:
         if "results_base_path" not in runner_config:
@@ -30,7 +32,9 @@ def main(experiment: ExperimentConfig):
         f"concurrency: {experiment['concurrency']},"
         f" experiment_results_base_path: {experiment['experiment_results_base_path']}"
     )
-    with multiprocessing.Pool(processes=int(experiment["concurrency"])) as pool:
+    with multiprocessing.Pool(
+        processes=int(experiment["concurrency"])
+    ) as pool:
         pool.map(problem_runner, experiment["runner_configs"])
     print(f"finished experiment {time.time() - start_time}")
 

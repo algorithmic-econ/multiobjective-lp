@@ -22,7 +22,9 @@ def equal_shares_add1_python(voters, projects, cost, approvers, total_budget):
         # ["p1", "p3"]
 
     """
-    mes = equal_shares_fixed_budget(voters, projects, cost, approvers, total_budget)
+    mes = equal_shares_fixed_budget(
+        voters, projects, cost, approvers, total_budget
+    )
     # add1 completion
     # start with integral per-voter budget
     budget = int(total_budget / len(voters)) * len(voters)
@@ -63,7 +65,6 @@ def break_ties(voters, projects, cost, approvers, choices):
 
 
 def equal_shares_fixed_budget(voters, projects, cost, approvers, total_budget):
-
     budget = {i: total_budget / len(voters) for i in voters}
     remaining = {}  # remaining candidate -> previous effective vote count
     for c in projects:
@@ -74,7 +75,9 @@ def equal_shares_fixed_budget(voters, projects, cost, approvers, total_budget):
         best = []
         best_eff_vote_count = 0
         # go through remaining candidates in order of decreasing previous effective vote count
-        remaining_sorted = sorted(remaining, key=lambda c: remaining[c], reverse=True)
+        remaining_sorted = sorted(
+            remaining, key=lambda c: remaining[c], reverse=True
+        )
         for c in remaining_sorted:
             previous_eff_vote_count = remaining[c]
             if previous_eff_vote_count < best_eff_vote_count:

@@ -2,7 +2,6 @@ from typing import List, Tuple
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from helpers.runners.solverStrategy import Solver
 from helpers.transformers.pabutoolsToMoLp import (
     pabutools_to_multi_objective_lp,
     ConstraintConfig,
@@ -14,7 +13,9 @@ from helpers.runners.model import Source
 
 
 def load_and_transform_strategy(
-    source_type: Source, source_directory_path: str, constraints_config_path: str | None
+    source_type: Source,
+    source_directory_path: str,
+    constraints_config_path: str | None,
 ) -> Tuple[MultiObjectiveLpProblem, List[ConstraintConfig]]:
     if source_type == "PABUTOOLS":
         instances, profiles = load_pabutools_by_district(source_directory_path)
@@ -25,7 +26,9 @@ def load_and_transform_strategy(
         )
 
         return (
-            pabutools_to_multi_objective_lp(instances, profiles, constraints_configs),
+            pabutools_to_multi_objective_lp(
+                instances, profiles, constraints_configs
+            ),
             constraints_configs,
         )
 

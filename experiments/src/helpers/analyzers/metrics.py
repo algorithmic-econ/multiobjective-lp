@@ -5,14 +5,18 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from src.helpers.analyzers.model import Metric, AnalyzerResult
 
 
-def get_metrics(metrics: List[Metric], problem: MultiObjectiveLpProblem) -> Dict:
+def get_metrics(
+    metrics: List[Metric], problem: MultiObjectiveLpProblem
+) -> Dict:
     result: AnalyzerResult = {"metrics": metrics}
     for metric in metrics:
         result |= {metric: get_metric_strategy(metric)(problem)}
     return result
 
 
-def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], Dict]:
+def get_metric_strategy(
+    metric: Metric,
+) -> Callable[[MultiObjectiveLpProblem], Dict]:
     if metric == "NON_ZERO_OBJECTIVES":
         return non_zero_objectives
     if metric == "SUM_OBJECTIVES":
@@ -21,8 +25,12 @@ def get_metric_strategy(metric: Metric) -> Callable[[MultiObjectiveLpProblem], D
 
 def non_zero_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     return {
-        "non_zero_count": len([1 for obj in problem.objectives if obj.value() != 0]),
-        "zero_count": len([1 for obj in problem.objectives if obj.value() == 0]),
+        "non_zero_count": len(
+            [1 for obj in problem.objectives if obj.value() != 0]
+        ),
+        "zero_count": len(
+            [1 for obj in problem.objectives if obj.value() == 0]
+        ),
     }
 
 

@@ -38,7 +38,9 @@ def problem_runner(config: RunnerConfig):
         "problem_path": None,
         "selected": [
             project.name
-            for project in [var for var in problem.variables() if var.value() == 1.0]
+            for project in [
+                var for var in problem.variables() if var.value() == 1.0
+            ]
         ],
     }
 
