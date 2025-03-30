@@ -1,5 +1,5 @@
 [project]
-version = "0.0.5"
+version = "0.0.6"
 name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
@@ -13,6 +13,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dynamic = [ "dependencies" ]
+
+[project.urls]
+repository = "https://github.com/jasieksz/multiobjective-lp"
+documentation = "https://jasieksz.github.io/multiobjective-lp"
 
 [[tool.poetry.source]]
 name = "test"

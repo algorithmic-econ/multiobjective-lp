@@ -1,5 +1,5 @@
 [project]
-version = "0.0.8"
+version = "1.0.0"
 name = "muoblp"
 description = "Implementation of multi objective linear programming module"
 
