@@ -53,5 +53,5 @@ jobs:
       - run: echo ${{ env.STAGE }}
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: ${{ env.STAGE == 'preview' && 'https://test.pypi.org/legacy/' || 'https://pypi.org/simple/' }}
+          repository-url: ${{ env.STAGE == 'preview' && 'https://test.pypi.org/legacy/' || 'https://upload.pypi.org/legacy/' }}
           verbose: true
