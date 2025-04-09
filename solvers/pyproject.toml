@@ -25,8 +25,60 @@ packages = [{include = "muoblpsolvers", from = "src"}]
 muoblp = "1.0.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["scikit-build-core>=0.7", "pybind11>=2.11"]
+build-backend = "scikit_build_core.build"
 
 [tool.ruff]
 line-length = 79
+
+[tool.scikit-build]
+# CMake configuration
+cmake.source-dir = "src/muoblpsolvers/bindings"
+cmake.build-type = "Release"
+cmake.define = { PYTHON_EXECUTABLE = "python" }
+
+# Wheel configuration
+wheel.packages = ["src/muoblpsolvers"]
+wheel.py-api = "cp311"  # Python 3.11 ABI
+
+# Build configuration
+build-dir = "_skbuild"
+
+[tool.cibuildwheel]
+# Build for all major platforms
+#platform = "auto"
+
+# Architectures to build for
+archs = ["arm64"]
+
+# Skip 32-bit builds
+skip = ["*-win32", "*-manylinux_i686", "*-musllinux_i686"]
+
+# Build dependencies
+before-build = """
+    pip install -U pip
+    pip install -U cmake
+"""
+
+# Platform-specific build dependencies
+linux.before-build = """
+    apt-get update
+    apt-get install -y build-essential
+"""
+
+macos.before-build = """
+    brew install cmake
+"""
+
+windows.before-build = """
+    choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+"""
+
+# Environment variables
+environment = { CMAKE_ARGS = "-DCMAKE_BUILD_TYPE=Release" }
+
+# Test command
+test-command = "python -c 'import muoblpsolvers.mes; import muoblpsolvers.mes_add1'"
+
+# Repair command for Linux wheels
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
