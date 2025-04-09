@@ -5,13 +5,13 @@ project(muoblpsolver_bindings LANGUAGES CXX)
 message(STATUS "Configuring main bindings project for System: ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_PROCESSOR})")
 
 # --- Find TARGET Python ---
-find_package(Python 3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python REQUIRED COMPONENTS Interpreter Development)
 message(STATUS "Found Target Python: ${Python_EXECUTABLE}")
 
 # --- Find TARGET Pybind11 ---
 # Make pybind11 use the Python found above
 set(PYBIND11_PYTHON_EXECUTABLE ${Python_EXECUTABLE})
-find_package(pybind11 REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 message(STATUS "Found Target pybind11 includes: ${pybind11_INCLUDE_DIRS}")
 
 # Include pybind11 headers globally for subprojects

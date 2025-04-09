@@ -15,8 +15,8 @@ jobs:
 #            cibw_archs: "arm64"
           - os: ubuntu-latest
             cibw_archs: "auto"
-          - os: windows-latest
-            cibw_archs: "auto"
+#          - os: windows-latest
+#            cibw_archs: "auto"
 
     steps:
       - uses: actions/checkout@v4

@@ -24,28 +24,16 @@ packages = [{include = "muoblpsolvers", from = "src"}]
 [tool.poetry.dependencies]
 muoblp = "1.0.0"
 
-[build-system]
-requires = ["scikit-build-core>=0.7", "pybind11>=2.11"]
-build-backend = "scikit_build_core.build"
-
 [tool.ruff]
 line-length = 79
 
+[build-system]
+requires = ["scikit-build-core>=0.10", "pybind11"]
+build-backend = "scikit_build_core.build"
+
 [tool.scikit-build]
-# CMake configuration
 cmake.source-dir = "src/muoblpsolvers/bindings"
-cmake.build-type = "Release"
-cmake.define = { PYTHON_EXECUTABLE = "python" }
-
-# Wheel configuration
-wheel.packages = ["src/muoblpsolvers"]
-wheel.py-api = "cp311"  # Python 3.11 ABI
-
-# Build configuration
-build-dir = "_skbuild"
 
 [tool.cibuildwheel]
-
 skip = ["*-win32", "*-manylinux_i686", "*-musllinux_i686"]
-
 test-command = "python -c 'import muoblpsolvers.mes; import muoblpsolvers.mes_add1'"
