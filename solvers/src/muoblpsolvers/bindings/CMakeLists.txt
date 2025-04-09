@@ -5,6 +5,11 @@ project(muoblpsolver_bindings LANGUAGES CXX)
 message(STATUS "Configuring main bindings project for System: ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_PROCESSOR})")
 
 # --- Find TARGET Python ---
+# Respect PYTHON_EXECUTABLE passed from scikit-build-core
+if(DEFINED PYTHON_EXECUTABLE)
+  set(Python3_EXECUTABLE "${PYTHON_EXECUTABLE}")
+endif()
+
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 message(STATUS "Found Target Python: ${Python_EXECUTABLE}")
 
