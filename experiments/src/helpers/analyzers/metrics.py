@@ -2,7 +2,7 @@ from typing import Dict, Callable, List
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from src.helpers.analyzers.model import Metric, AnalyzerResult
+from helpers.analyzers.model import Metric, AnalyzerResult
 
 
 def get_metrics(

@@ -1,6 +1,6 @@
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from src.helpers.runners.model import RunnerResult
+from helpers.runners.model import RunnerResult
 
 
 def enhance_problem_from_solver_result(

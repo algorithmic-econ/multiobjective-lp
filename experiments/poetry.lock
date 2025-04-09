@@ -166,27 +166,22 @@ test = ["matplotlib (==3.5.3) ; python_version == \"3.7\"", "matplotlib (==3.6.2
 
 [[package]]
 name = "muoblp"
-version = "0.0.8"
+version = "1.0.0"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "muoblp-0.0.8-py3-none-any.whl", hash = "sha256:6582aabace494843ba5d13cda350b671e12e2a68756dd40f4d1de149e88c7c22"},
-    {file = "muoblp-0.0.8.tar.gz", hash = "sha256:9743145e013cf7a2ada698a348464ecd7d836cec5f64d0fcb48d16fa31485f51"},
+    {file = "muoblp-1.0.0-py3-none-any.whl", hash = "sha256:d9155db48535375504c5cf6da6fdd41426e4d507559de1876d24577beb8cbbc5"},
+    {file = "muoblp-1.0.0.tar.gz", hash = "sha256:90006e9483d2779327c75c7fc23e4c14cf36e2051378e749e0fc1a2c2e36e961"},
 ]
 
 [package.dependencies]
 pulp = "2.9.0"
 
-[package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "test"
-
 [[package]]
 name = "muoblpsolvers"
-version = "0.0.5"
+version = "0.0.7"
 description = "Solvers for multi objective linear programming"
 optional = false
 python-versions = ">=3.11"
@@ -195,7 +190,7 @@ files = []
 develop = true
 
 [package.dependencies]
-muoblp = "0.0.8"
+muoblp = "1.0.0"
 
 [package.source]
 type = "directory"
@@ -369,4 +364,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "00a49afb7c4befbf0923da0ab46bf9cf421fb1da80b157a9ca7a04324eb30202"
+content-hash = "ec80c1c5dc54ab000d56ea8f41c63073da9ae413305c100e3eb3f6a45e776703"

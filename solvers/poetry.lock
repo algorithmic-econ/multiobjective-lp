@@ -2,23 +2,18 @@
 
 [[package]]
 name = "muoblp"
-version = "0.0.8"
+version = "1.0.0"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "muoblp-0.0.8-py3-none-any.whl", hash = "sha256:6582aabace494843ba5d13cda350b671e12e2a68756dd40f4d1de149e88c7c22"},
-    {file = "muoblp-0.0.8.tar.gz", hash = "sha256:9743145e013cf7a2ada698a348464ecd7d836cec5f64d0fcb48d16fa31485f51"},
+    {file = "muoblp-1.0.0-py3-none-any.whl", hash = "sha256:d9155db48535375504c5cf6da6fdd41426e4d507559de1876d24577beb8cbbc5"},
+    {file = "muoblp-1.0.0.tar.gz", hash = "sha256:90006e9483d2779327c75c7fc23e4c14cf36e2051378e749e0fc1a2c2e36e961"},
 ]
 
 [package.dependencies]
 pulp = "2.9.0"
-
-[package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "test"
 
 [[package]]
 name = "pulp"
@@ -32,12 +27,7 @@ files = [
     {file = "pulp-2.9.0.tar.gz", hash = "sha256:2e30e6c0ef2c0edac185220e3e53faca62eb786a9bd68465208f05bc63e850f3"},
 ]
 
-[package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "test"
-
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "344a72a9952321796bef0d9a5780e8715d53e684cbe55e47c0ceac7f237880e1"
+content-hash = "9e1fb4cab412d498e170821d2808c40f13d0682b82f1acd9d3b559a358dcc7e3"

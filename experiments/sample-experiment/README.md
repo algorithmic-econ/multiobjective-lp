@@ -33,8 +33,8 @@ Experiment consists of set of runner configs, where, one runner config describes
 
 #### 1.2 Single runner config defines the following problem and data:
 
-* `solver_type: "MES"` - which solver to use, here it's MethodOfEqualShares solver, see [solverStrategy.py](../helpers/runners/solverStrategy.py) for other values,
-* `source_type: "PABUTOOLS"` - format and type of input data, see [sourceStrategy.py](../helpers/runners/sourceStrategy.py) for other values,
+* `solver_type: "MES"` - which solver to use, here it's MethodOfEqualShares solver, see [solverStrategy.py](../src/helpers/runners/solverStrategy.py) for other values,
+* `source_type: "PABUTOOLS"` - format and type of input data, see [sourceStrategy.py](../src/helpers/runners/sourceStrategy.py) for other values,
 * `source_directory_path: "input/krakow_2024"` - path to directory with input data, in this case to pabutools files describing PB instance.
 * `constraints_configs_path: "empty-constraints-config.json"` - optional path to configuration file defining constraints for a problem
 ```json

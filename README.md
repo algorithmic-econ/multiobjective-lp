@@ -9,9 +9,16 @@ This project provides tools to work with multi objective linear programs, i.e.,
 
 ## Documentation
 
-Documentation is available at [github.io/multiobjective-lp](https://jasieksz.github.io/multiobjective-lp/).
+Documentation is available at [github.io/multiobjective-lp](https://jasieksz.github.io/multiobjective-lp/) .
 
 For details and installation guide see the READMEs for each package linked above.
+
+* Documentation is created using MkDocs
+* To deploy new changes run
+    ```shell
+    cd documentation
+    make deploy-doc
+    ```
 
 ## Development
 
@@ -26,4 +33,11 @@ For details and installation guide see the READMEs for each package linked above
 Every pushed commit triggers required code quality checks.
 The workflow is configured in [ruff.yml](.github/workflows/ruff.yml).
 
-### Publishing to PyPI
+### Publishing packages
+Publish workflow is triggered by creating a git tag.
+
+1. Increment project version in `pyproject.toml` file by one to `x.y.z` .
+2. To publish a package you need to tag the selected commit.
+   * Publish to TestPyPI - use tag pattern: `packageName@x.y.z-rc`
+   * Publish to PyPI - use tag pattern: `packageName@x.y.z`
+   * Where `packageName` is `core` or `solvers`

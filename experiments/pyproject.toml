@@ -24,7 +24,7 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 pabutools = {version = "1.1.11"}
-muoblp = {version = "0.0.8", source = "test"}
+muoblp = {version = "1.0.0"}
 muoblpsolvers = {path = "../solvers", develop = true}
 
 [build-system]
