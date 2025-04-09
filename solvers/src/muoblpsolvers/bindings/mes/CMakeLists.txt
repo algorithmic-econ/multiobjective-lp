@@ -7,7 +7,7 @@ message(STATUS "Configuring mes module")
 pybind11_add_module(mes SHARED mes.cpp)
 
 # Link Python library (inherited target from parent's find_package)
-#target_link_libraries(mes PRIVATE Python::Python)
+target_link_libraries(mes PRIVATE Python::Python)
 
 # Add any specific include directories or link libraries for ONLY the mes module here
 # target_include_directories(mes PRIVATE ...)
