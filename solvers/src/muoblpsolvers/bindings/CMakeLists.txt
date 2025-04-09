@@ -5,8 +5,8 @@ project(muoblpsolver_bindings LANGUAGES CXX)
 message(STATUS "Configuring main bindings project for System: ${CMAKE_SYSTEM_NAME} (${CMAKE_SYSTEM_PROCESSOR})")
 
 # --- Find TARGET Python ---
-# find_package(Python REQUIRED COMPONENTS Interpreter Development)
-# message(STATUS "Found Target Python: ${Python_EXECUTABLE}")
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+message(STATUS "Found Target Python: ${Python_EXECUTABLE}")
 
 # --- Find TARGET Pybind11 ---
 # Make pybind11 use the Python found above
