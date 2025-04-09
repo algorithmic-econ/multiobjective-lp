@@ -45,40 +45,36 @@ wheel.py-api = "cp311"  # Python 3.11 ABI
 build-dir = "_skbuild"
 
 [tool.cibuildwheel]
-# Build for all major platforms
-#platform = "auto"
 
 # Architectures to build for
-archs = ["arm64"]
+#archs = ["x86_64", "arm64"]
 
 # Skip 32-bit builds
 skip = ["*-win32", "*-manylinux_i686", "*-musllinux_i686"]
 
-# Build dependencies
-before-build = """
-    pip install -U pip
-    pip install -U cmake
-"""
-
-# Platform-specific build dependencies
-linux.before-build = """
-    apt-get update
-    apt-get install -y build-essential
-"""
-
-macos.before-build = """
-    brew install cmake
-"""
-
-windows.before-build = """
-    choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-"""
-
-# Environment variables
-environment = { CMAKE_ARGS = "-DCMAKE_BUILD_TYPE=Release" }
+## Build dependencies
+#before-build = """
+#    pip install -U pip
+#    pip install -U cmake
+#    pip install delocate
+#"""
+#
+## Platform-specific build dependencies
+#linux.before-build = """
+#    apt-get update
+#    apt-get install -y build-essential
+#"""
+#
+#macos.before-build = """
+#    brew install cmake
+#"""
+#
+#windows.before-build = """
+#    choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+#"""
+#
+## Environment variables
+#environment = { CMAKE_ARGS = "-DCMAKE_BUILD_TYPE=Release" }
 
 # Test command
 test-command = "python -c 'import muoblpsolvers.mes; import muoblpsolvers.mes_add1'"
-
-# Repair command for Linux wheels
-repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
