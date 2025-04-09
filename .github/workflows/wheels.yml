@@ -1,6 +1,6 @@
 name: build
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build_solvers:
@@ -8,8 +8,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # macos-13 is an intel runner, macos-14 is apple silicon
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        include:
+#          - os: macos-13  # Intel
+#            cibw_archs: "x86_64"
+#          - os: macos-14  # Apple Silicon
+#            cibw_archs: "arm64"
+          - os: ubuntu-latest
+            cibw_archs: "auto"
+          - os: windows-latest
+            cibw_archs: "auto"
 
     steps:
       - uses: actions/checkout@v4
@@ -17,12 +24,8 @@ jobs:
         uses: pypa/cibuildwheel@v2.23.2
         with:
           package-dir: solvers
-        # env:
-        #   CIBW_SOME_OPTION: value
-        #   ...
-        # with:
-        #   output-dir: wheelhouse
-        #   config-file: "{package}/pyproject.toml"
+        env:
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
       - run: |
           ls -l
           ls -R wheelhouse/
