@@ -40,10 +40,8 @@ def main(config: AnalyzerConfig):
         analysis = pool.starmap(
             method_name, zip(runner_results, repeat(config["metrics"]))
         )
-        write_to_json(
-            f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json",
-            analysis,
-        )
+        result_path = f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
+        write_to_json(result_path, analysis)
 
 
 if __name__ == "__main__":
