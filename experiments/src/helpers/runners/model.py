@@ -1,4 +1,4 @@
-from typing import List, TypedDict, Literal
+from typing import List, TypedDict, Literal, Dict
 
 Solver = Literal["SUMMING", "MES", "MES_ADD1"]
 Source = Literal["PULP", "PABUTOOLS"]
@@ -6,7 +6,7 @@ Source = Literal["PULP", "PABUTOOLS"]
 
 class RunnerConfig(TypedDict):
     solver_type: Solver
-    solver_options: List[str] | None
+    solver_options: Dict | None
     source_type: Source
     source_directory_path: str
     constraints_configs_path: str | None
@@ -14,8 +14,8 @@ class RunnerConfig(TypedDict):
 
 
 class ConstraintConfig(TypedDict):
-    type: Literal["CATEGORY"]
-    category: str
+    key: Literal["CATEGORY", "DISTRICT"]
+    value: str
     bound: Literal["UPPER", "LOWER"]
     budget_ratio: float
 

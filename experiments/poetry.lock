@@ -191,6 +191,7 @@ develop = true
 
 [package.dependencies]
 muoblp = "1.0.0"
+pulp = "2.9.0"
 
 [package.source]
 type = "directory"

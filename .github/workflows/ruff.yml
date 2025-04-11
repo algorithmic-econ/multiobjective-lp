@@ -1,11 +1,6 @@
 name: lint
 
-on:
-  push:
-    tags-ignore: ['*']
-    branches: ['*']
-  merge_group:
-
+on: [push, merge_group]
 
 jobs:
   format:
