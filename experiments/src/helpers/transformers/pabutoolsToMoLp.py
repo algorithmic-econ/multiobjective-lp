@@ -38,17 +38,16 @@ def pabutools_to_multi_objective_lp(
     objectives = create_voter_objectives(profiles, project_variables)
     problem.setObjectives(list(objectives.values()))
 
-    # TODO: Add constraint for total budget
     district_constraints = create_baseline_constraints(
         instances, project_variables
     )
     for constraint in district_constraints:
         problem.addConstraint(constraint)
 
-    category_constraints = create_constraints_from_config(
+    additional_constraints = create_constraints_from_config(
         constraints_configs, instances, project_variables
     )
-    for constraint in category_constraints:
+    for constraint in additional_constraints:
         problem.addConstraint(constraint)
 
     return problem
@@ -103,7 +102,7 @@ def define_voter_objective(
 
 
 #
-# Constraints
+# Base Constraints (total and per UB district)
 #
 def create_baseline_constraints(
     instances: Dict[District, Instance],
@@ -169,14 +168,29 @@ def create_constraints_from_config(
     constraints = []
     for constraint_config in constraints_configs:
         if (
-            constraint_config["type"] == "CATEGORY"
-            and constraint_config["category"] in allowed_categories
+            constraint_config["key"] == "CATEGORY"
+            and constraint_config["value"] in allowed_categories
         ):
             constraints.append(
                 create_category_constraint(
                     constraint_config,
                     projects_variables,
                     projects,
+                    total_budget,
+                )
+            )
+        if (
+            constraint_config["key"] == "DISTRICT"
+            and constraint_config["value"] in instances.keys()
+        ):
+            constraints.append(
+                create_district_constraint(
+                    constraint_config,
+                    projects_variables,
+                    [
+                        project
+                        for project in instances[constraint_config["value"]]
+                    ],
                     total_budget,
                 )
             )
@@ -190,7 +204,7 @@ def create_category_constraint(
     total_budget: int,
 ) -> LpConstraint:
     category, bound, budget_ratio = itemgetter(
-        "category", "bound", "budget_ratio"
+        "value", "bound", "budget_ratio"
     )(constraint_config)
     projects_costs = reduce(
         ior,
@@ -205,6 +219,28 @@ def create_category_constraint(
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(
         category, sense, projects_variables, projects_costs, constraint_limit
+    )
+
+
+def create_district_constraint(
+    constraint_config: ConstraintConfig,
+    projects_variables: Dict[AgentId, LpVariable],
+    district_projects: List[Project],
+    total_budget: int,
+) -> LpConstraint:
+    district, bound, budget_ratio = itemgetter(
+        "value", "bound", "budget_ratio"
+    )(constraint_config)
+    projects_costs = reduce(
+        ior,
+        [{project.name: int(project.cost)} for project in district_projects],
+        {},
+    )
+    constraint_limit = int(budget_ratio * total_budget)
+    # TODO: Validate constraint config, district upper bound is created in baseline constraints
+    sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
+    return define_constraint(
+        district, sense, projects_variables, projects_costs, constraint_limit
     )
 
 

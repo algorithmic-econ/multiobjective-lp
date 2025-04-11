@@ -19,15 +19,16 @@ $ cd multiobjective-lp/solvers # package root
 $ pip install -e .
 ```
 
-## Solver
-1. See example [SummedObjectivesLpSolver](src/muoblpsolvers/summed/SummedObjectivesLpSolver.py)
-2. Solver has to be a class that extends `LpSolver`
-3. Solver needs to override method `actualSolve` to accept an instance of `MultiObjectiveLpProblem`
-
-## Prepare C++ python bindings
+### Prepare C++ python bindings
 To use solvers that rely on C++ bindings you need to build them first on your machine.
 
 ```shell
 $ cd multiobjective-lp/solvers # package root
 $ ./prepare_bindings.sh
 ```
+
+
+## Solver
+1. See example [SummedObjectivesLpSolver](src/muoblpsolvers/summed/SummedObjectivesLpSolver.py)
+2. Solver has to be a class that extends `LpSolver`
+3. Solver needs to override method `actualSolve` to accept an instance of `MultiObjectiveLpProblem`
