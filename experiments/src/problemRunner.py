@@ -12,7 +12,7 @@ from helpers.utils.utils import write_to_json
 
 def problem_runner(config: RunnerConfig):
     solver_type = config["solver_type"]
-    solver_options = config.get("solver_options", [])
+    solver_options = config.get("solver_options", {})
     source_type = config["source_type"]
     source_directory_path = config["source_directory_path"]
     constraints_configs_path = config.get("constraints_configs_path")

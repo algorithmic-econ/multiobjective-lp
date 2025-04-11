@@ -1,5 +1,6 @@
 import time
 from collections import defaultdict
+from typing import TypedDict
 
 from pulp import LpSolver
 from muoblpsolvers.mes.binding.build.mes import equal_shares
@@ -11,7 +12,10 @@ from muoblpsolvers.mes_constrains.utils import (
     get_feasibility_ratio,
 )
 
-MAX_ITERATIONS = 100
+
+class SolverOptions(TypedDict):
+    cost_modification_base: float
+    max_iterations: int
 
 
 class MethodOfEqualSharesConstrainsSolver(LpSolver):
@@ -21,10 +25,14 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         Method Of Equal Shares with Constraints solver
     """
 
-    def __init__(self):
+    def __init__(self, solver_options):
         super().__init__()
+        self.solver_options = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
+        print(
+            f"Starting MethodOfEqualSharesConstrainsSolver {self.solver_options}"
+        )
         """
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
@@ -47,20 +55,20 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         total_budget = abs(lp.constraints["C_ub_total_budget"].constant)
 
         iteration = 0
-        while iteration < MAX_ITERATIONS:
+        while iteration < self.solver_options["max_iterations"]:
             # Run MES
             start_time = time.time()
             selected = equal_shares(
                 voters, projects, costs, approvals, total_budget
             )
-            print(f"FINISHED MES {time.time() - start_time:.2f} s")
+            print(f"FINISHED MES {time.time() - start_time:.2f} s\n")
             set_selected_candidates(lp, selected)
 
             # Check constraints
             infeasible = get_infeasible_constraints(lp)
             for c in infeasible:
                 print(
-                    f"FEAS_RATIO|{iteration}|{c.name}|{get_feasibility_ratio(c):.4f}\n"
+                    f"FEAS_RATIO|{iteration}|{c.name}|{get_feasibility_ratio(c):.4f}"
                 )
 
             if len(infeasible) == 0:
@@ -70,12 +78,13 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 break
 
             # Modify prices
+            # TODO: Extract to parametrized strategy
             for constraint in infeasible:
                 feasibility_ratio = get_feasibility_ratio(
                     constraint
                 )  # ratio: [0, inf)
                 cost_modification_ratio = feasibility_ratio * (
-                    1.005**iteration
+                    self.solver_options["cost_modification_base"] ** iteration
                 )  # exponential backoff
                 affected_candidates = [
                     candidate.name for candidate in constraint.keys()
