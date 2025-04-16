@@ -1,6 +1,6 @@
 from typing import List, TypedDict, Literal, Dict
 
-Solver = Literal["SUMMING", "MES", "MES_ADD1"]
+Solver = Literal["SUMMING", "MES", "MES_ADD1", "MES_CONSTRAINT"]
 Source = Literal["PULP", "PABUTOOLS"]
 
 
@@ -23,6 +23,7 @@ class ConstraintConfig(TypedDict):
 class RunnerResult(TypedDict):
     time: float
     solver: Solver
+    solver_options: Dict | None
     source_type: Source
     source_path: str
     constraints_configs: List[ConstraintConfig]
