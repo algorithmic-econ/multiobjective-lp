@@ -48,7 +48,7 @@ def expression_to_variables_only(expression: LpAffineExpression):
             term = f"{sign} {v.name}"
         else:
             # adding zero to val to remove instances of negative zero
-            term = f"{sign} {val + 0:.12g} {v.name}"
+            term = f"{sign} {int(val) + 0:.12g} {v.name}"
 
         line += [term]
     return result, line
