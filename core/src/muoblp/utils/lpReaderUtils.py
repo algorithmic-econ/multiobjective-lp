@@ -1,3 +1,5 @@
+from typing import Tuple, Dict
+
 from pulp import (
     LpMaximize,
     LpMinimize,
@@ -82,7 +84,7 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         t_name = target_line[:name_right_idx]
         target = LpAffineExpression(
             [
-                [problem_data["variables"][var.strip()], 1]
+                parse_variable_with_coefficient(problem_data["variables"], var)
                 for var in target_line[name_right_idx + 2 :].split("+")
             ],
             name=t_name,
@@ -97,3 +99,14 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         problem.addConstraint(constraint)
 
     return problem
+
+
+def parse_variable_with_coefficient(
+    variables: Dict[str, LpVariable], var: str
+) -> Tuple[LpVariable, int]:
+    parts = var.strip().split(" ")
+    if len(parts) == 1:
+        return [variables[parts[0]], 1]
+    if len(parts) == 2:
+        return [variables[parts[1]], int(parts[0])]
+    raise Exception("Unexpected variable parts")
