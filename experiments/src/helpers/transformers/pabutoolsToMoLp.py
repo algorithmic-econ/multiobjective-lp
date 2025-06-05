@@ -1,10 +1,16 @@
 from collections import defaultdict
 from functools import reduce
 from operator import itemgetter, ior
-from typing import Dict, TypeAlias, List
+from typing import Dict, TypeAlias, List, Tuple
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pabutools.election import Instance, Profile, Project
+from pabutools.election import (
+    Instance,
+    Profile,
+    Project,
+    OrdinalProfile,
+    CumulativeProfile,
+)
 from pulp import (
     LpVariable,
     LpAffineExpression,
@@ -19,7 +25,7 @@ from .pabutoolsConstants import (
     TARGET_PREFIX,
     CONSTRAINT_PREFIX,
 )
-from ..runners.model import ConstraintConfig
+from ..runners.model import ConstraintConfig, Utility
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -29,13 +35,14 @@ def pabutools_to_multi_objective_lp(
     instances: Dict[District, Instance],
     profiles: Dict[District, Profile],
     constraints_configs: List[ConstraintConfig],
+    utility: Utility,
 ) -> MultiObjectiveLpProblem:
     problem = MultiObjectiveLpProblem("election")
 
     project_variables = create_projects_variables(instances)
     problem.addVariables(project_variables.values())
 
-    objectives = create_voter_objectives(profiles, project_variables)
+    objectives = create_voter_objectives(utility, profiles, project_variables)
     problem.setObjectives(list(objectives.values()))
 
     district_constraints = create_baseline_constraints(
@@ -71,14 +78,59 @@ def create_projects_variables(
 #
 # Objectives
 #
+def ballot_to_expression_strategy(
+    utility: Utility,
+) -> [str, int]:
+    match utility:
+        case "APPROVAL":
+            return lambda ballot: [[str(c), 1] for c in ballot]
+        case "COST":
+            return lambda ballot: [[str(c), int(c.cost)] for c in ballot]
+        case "ORDINAL":
+            # TODO: Is it enough for lexicographic strategy?
+            # TODO: How to deal with merged objectives between citywide and districts e.g.
+            # objective_1791: (P_cw_1 + 3*P_cw_2 + 2*P_cw_5) + (2*P_d_6 + P_d_7 + 3*P_d_8)
+            return lambda ballot: [
+                [str(c), len(ballot) - idx] for idx, c in enumerate(ballot)
+            ]
+        case "CUMULATIVE":
+            return lambda ballot: [
+                [str(c), int(points)] for c, points in ballot.items()
+            ]
+    raise Exception(f"Unknown utility ${utility}")
+
+
+def validate_profile_type_matches_utility(
+    profile: Profile, utility: Utility
+) -> bool:
+    match utility:
+        case "APPROVAL":
+            return True
+        case "COST":
+            return True
+        case "ORDINAL":
+            return isinstance(profile, OrdinalProfile)
+        case "CUMULATIVE":
+            return isinstance(profile, CumulativeProfile)
+    raise Exception(f"Unknown utility ${utility}")
+
+
 def create_voter_objectives(
+    utility: Utility,
     profiles: Dict[District, Profile],
     projects_variables: Dict[AgentId, LpVariable],
 ) -> Dict[str, LpAffineExpression]:
+    ballot_mapper_by_utility = ballot_to_expression_strategy(utility)
     votes = defaultdict(list)
+
     for district, profile in profiles.items():
+        # TODO: Extract input data validation
+        if not validate_profile_type_matches_utility(profile, utility):
+            raise Exception(
+                f"Profile for {district} does not match utility {utility}"
+            )
         for ballot in profile:
-            votes[ballot.meta["voter_id"]] += [str(c) for c in ballot]
+            votes[ballot.meta["voter_id"]] += ballot_mapper_by_utility(ballot)
 
     return {
         voter: define_voter_objective(
@@ -90,14 +142,19 @@ def create_voter_objectives(
 
 def define_voter_objective(
     name: str,
-    approved_projects: List[AgentId],
+    approved_projects_utilities: List[Tuple[AgentId, float]],
     projects_variables: Dict[AgentId, LpVariable],
 ) -> LpAffineExpression:
     approved_projects_variables = [
-        projects_variables[candidate_id] for candidate_id in approved_projects
+        [projects_variables[candidate_id], utility]
+        for candidate_id, utility in approved_projects_utilities
     ]
     return LpAffineExpression(
-        [[variable, 1] for variable in approved_projects_variables], name=name
+        [
+            [variable, utility]
+            for variable, utility in approved_projects_variables
+        ],
+        name=name,
     )
 
 

@@ -1,13 +1,16 @@
 import time
-from collections import defaultdict
 from typing import TypedDict
 
 from pulp import LpSolver
-from muoblpsolvers.mes.binding.build.mes import equal_shares
+from muoblpbindings import equal_shares_utils
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpsolvers.mes_constrains.utils import (
+
+from muoblpsolvers.common import (
+    prepare_mes_parameters,
     set_selected_candidates,
+)
+from muoblpsolvers.mes_constrains.utils import (
     get_infeasible_constraints,
     get_feasibility_ratio,
 )
@@ -20,7 +23,6 @@ class SolverOptions(TypedDict):
 
 class MethodOfEqualSharesConstrainsSolver(LpSolver):
     """
-
     Info:
         Method Of Equal Shares with Constraints solver
     """
@@ -37,38 +39,25 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
         """
-        projects = [
-            variable.name
-            for variable in lp.variables()
-            if variable.name != "__dummy"
-        ]
-        voters = [objective.name for objective in lp.objectives]
-        costs = {
-            variable.name: coefficient
-            for constraint in lp.constraints.values()
-            for variable, coefficient in constraint.items()
-        }
-        approvals = defaultdict(list)
-        for objective in lp.objectives:
-            for variable in objective:
-                approvals[variable.name] += [objective.name]
-        total_budget = abs(lp.constraints["C_ub_total_budget"].constant)
+        projects, voters, costs, approvals_utilities, total_budget = (
+            prepare_mes_parameters(lp)
+        )
 
         iteration = 0
         while iteration < self.solver_options["max_iterations"]:
             # Run MES
             start_time = time.time()
-            selected = equal_shares(
-                voters, projects, costs, approvals, total_budget
+            selected = equal_shares_utils(
+                voters, projects, costs, approvals_utilities, total_budget
             )
             print(f"FINISHED MES {time.time() - start_time:.2f} s\n")
             set_selected_candidates(lp, selected)
 
             # Check constraints
             infeasible = get_infeasible_constraints(lp)
-            for c in infeasible:
+            for constraint in infeasible:
                 print(
-                    f"FEAS_RATIO|{iteration}|{c.name}|{get_feasibility_ratio(c):.4f}"
+                    f"FEAS_RATIO|{iteration}|{constraint.name}|{get_feasibility_ratio(constraint):.6f}"
                 )
 
             if len(infeasible) == 0:
@@ -77,8 +66,8 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 )
                 break
 
-            # Modify prices
             # TODO: Extract to parametrized strategy
+            # Modify prices
             for constraint in infeasible:
                 feasibility_ratio = get_feasibility_ratio(
                     constraint

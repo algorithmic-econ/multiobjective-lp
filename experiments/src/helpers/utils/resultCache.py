@@ -1,8 +1,8 @@
 import os
 import re
 
-from src.helpers.runners.model import RunnerConfig
-from src.helpers.utils.utils import read_from_json
+from helpers.runners.model import RunnerConfig
+from helpers.utils.utils import read_from_json
 
 
 def is_metadata_content_matching(
@@ -39,10 +39,11 @@ def is_metadata_content_matching(
 def is_result_present(problem_config: RunnerConfig) -> bool:
     base_path = problem_config["results_base_path"]
     solver_type = problem_config["solver_type"]
+    utility_type = problem_config["utility_type"]
     data_source = problem_config["source_directory_path"].split("/")[-1]
 
     for filename in os.listdir(base_path):
-        pattern = f"meta_[0-9]{{2}}-[0-9]{{2}}T[0-9]{{2}}-[0-9]{{2}}-[0-9]{{2}}_[a-z0-9]{{4}}_{data_source}_{solver_type}.json"
+        pattern = f"meta_[0-9]{{2}}-[0-9]{{2}}T[0-9]{{2}}-[0-9]{{2}}-[0-9]{{2}}_[a-z0-9]{{4}}_{data_source}_{utility_type}_{solver_type}.json"
         if re.match(pattern, filename):
             metadata_file_path = os.path.join(base_path, filename)
             if is_metadata_content_matching(

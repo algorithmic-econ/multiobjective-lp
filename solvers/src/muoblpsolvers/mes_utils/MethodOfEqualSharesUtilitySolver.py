@@ -1,8 +1,9 @@
 import time
+
 from pulp import LpSolver
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import equal_shares_add1
+from muoblpbindings import equal_shares_utils
 
 from muoblpsolvers.common import (
     prepare_mes_parameters,
@@ -10,10 +11,10 @@ from muoblpsolvers.common import (
 )
 
 
-class MethodOfEqualSharesAdd1Solver(LpSolver):
+class MethodOfEqualSharesUtilitySolver(LpSolver):
     """
     Info:
-        Methods of Equal Shares Add1 solver
+        Solver that executes Methods of Equal Shares to find solution
     """
 
     def __init__(self):
@@ -25,11 +26,11 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
         )
 
         start_time = time.time()
-        print(f"STARTING MES_ADD1 {start_time}")
-        selected = equal_shares_add1(
+        print(f"STARTING MES UTILS {start_time}")
+        selected = equal_shares_utils(
             voters, projects, costs, approvals_utilities, total_budget
         )
-        print(f"FINISHED MES_ADD1 {time.time() - start_time}")
+        print(f"FINISHED MES UTILS {time.time() - start_time}")
 
         set_selected_candidates(lp, selected)
         return
