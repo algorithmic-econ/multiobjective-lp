@@ -28,10 +28,3 @@ def get_infeasible_constraints(
         if (constraint.sense == LpConstraintGE and constraint.value() < 0)
         or (constraint.sense == LpConstraintLE and constraint.value() > 0)
     ]
-
-
-def set_selected_candidates(
-    problem: MultiObjectiveLpProblem, selected: List[str]
-) -> None:
-    for variable in problem.variables():
-        variable.setInitialValue(1 if variable.name in selected else 0)

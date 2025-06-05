@@ -2,18 +2,61 @@
 
 [[package]]
 name = "muoblp"
-version = "1.0.0"
+version = "1.0.1"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "muoblp-1.0.0-py3-none-any.whl", hash = "sha256:d9155db48535375504c5cf6da6fdd41426e4d507559de1876d24577beb8cbbc5"},
-    {file = "muoblp-1.0.0.tar.gz", hash = "sha256:90006e9483d2779327c75c7fc23e4c14cf36e2051378e749e0fc1a2c2e36e961"},
+    {file = "muoblp-1.0.1-py3-none-any.whl", hash = "sha256:0239a9a763206a64347e7a2ec70cda37d359358e5e64651fd92792bae2bc278c"},
+    {file = "muoblp-1.0.1.tar.gz", hash = "sha256:6ecb65ea8e6ec64a140746c3448e01fcf97559baed4efc47b159e131faae37f8"},
 ]
 
 [package.dependencies]
 pulp = "2.9.0"
+
+[[package]]
+name = "muoblpbindings"
+version = "0.0.11"
+description = ""
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "muoblpbindings-0.0.11-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:32be1b296bee373d8a20015f58c945d684ca992153d1af7aa7dd0940ae2f6f73"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:cc215e593b7991bc25c20c56696992e2e672c2208b870a6a645d7e560df7e122"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1ff93be4ed1b49550f8f58bbb86c5b6555b0fa584e230c1cac25f5c283882932"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:870009f714be5814fb009f80bb7a2ecbe6940a584320b3d78fad44c145bcd7f2"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:462aedd3cda22f3e5d44e924ccc2fa7a7e81771723046cb374d1ee13812c391a"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:22b227749aab1ad9f951167b91a42daaeba4ca5eb1a2f6a0cc2a0b3985659547"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-win32.whl", hash = "sha256:70e138e437eeb7b60feec85706d4e678b7afd83056ba79de51605ebcc93871bb"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-win_amd64.whl", hash = "sha256:c0b04a79dc69f894485b2807061ddc2c3407128439d4d91a0e35892325ed2878"},
+    {file = "muoblpbindings-0.0.11-cp311-cp311-win_arm64.whl", hash = "sha256:a3c0339b2ee90299bc7e90d39bec85499fb55d9d320a715ab9e24f2a1585ed8a"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:e6eaaa6330f423fdea8a650372e2626ff804d2a07bef59619839d0997a6ca7b3"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:812133a66c431ee26083f2cc27259e1947a924b54011cd47b1346fcf6e49ad70"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e948566fb138eed58991d26d210fdbf18b1e7556995a8b2950c11aa58a313860"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c5bae860b2ac5155ef9da5aeee817782150bd722834543716ac08457b9141e94"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:9f128178b49c67efe962819e61ae236eb0e1c0c26f29c1e546add3e766ff10ab"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:61c2bc395c58542f20161838d964d3b3a41086745e8278f6886a177f1ef1982c"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-win32.whl", hash = "sha256:6b9d405783ab70a819c569235c1eb9c4d1d5af7859c623cc1b18f3a9a6261b1a"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-win_amd64.whl", hash = "sha256:f97a55946af4abbc6e97ee91a2e70120b5ddb47f07c43f52e81b942159f06be3"},
+    {file = "muoblpbindings-0.0.11-cp312-cp312-win_arm64.whl", hash = "sha256:8ac97a5ab81acab060372e84db1c284ca4489ff6d05c5b602bdcfda45296a8df"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:b7c2c09a0381ae231ea2fbe0b5149ae4001814ca92dba515f71f8e14d93aef77"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:c12c23a9745866d538766a6f70d833daf9edd9e6401e00ea5aed17ec0ab2481d"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:96c8e822547a60e7f6e7d07a919a6aba2eb8059bfcabb5d82f92706d46069d69"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fb66b96d2ff6f352acd2311bd99eee128e67c032ab7deaec6541030a08f93536"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:658387f9306ed2752488e47ff71f4953505514b561cf1dac630e406c58e1eb7b"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:88f3b7ad5fdb64c67f2e2454846180c259d0ab115a1c3bd1bb02bd621fa93019"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-win32.whl", hash = "sha256:70cd5902db49d3853dc6e2604c202b2576c6f7c84d3ee1baf1ed9c2a2b3df19d"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-win_amd64.whl", hash = "sha256:c0554cdc0627c746d6be2aaf3f0b9d76b94aed5f4e158516d248e250f06a09a2"},
+    {file = "muoblpbindings-0.0.11-cp313-cp313-win_arm64.whl", hash = "sha256:c021a4066e300c0d1006c3e337ad79b92ab6062f8f58674e7ebdc9e927e0c1f8"},
+    {file = "muoblpbindings-0.0.11-pp311-pypy311_pp73-macosx_10_15_x86_64.whl", hash = "sha256:b41e24eab901c80b5349fe6bf2311d87d34d432576b1d329d03c112dfcc03d9b"},
+    {file = "muoblpbindings-0.0.11-pp311-pypy311_pp73-macosx_11_0_arm64.whl", hash = "sha256:86931747ce57f50e7fe08d5c78a1e5bc564a14d3ac496418a03844eaa616bbf4"},
+    {file = "muoblpbindings-0.0.11-pp311-pypy311_pp73-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f7967ca1f6bf616be54626e8e1fd5907771879cd513977145af052bb90e8193d"},
+    {file = "muoblpbindings-0.0.11-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9e4b6351d9312d5da49c83dee5abd3f9d4e7b29e3c88d4a950765aaf43c4453f"},
+    {file = "muoblpbindings-0.0.11-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:6e7b405073efd598bd3b6cab453fa99166e1b9986bdbce919a1ef69d352ee515"},
+    {file = "muoblpbindings-0.0.11.tar.gz", hash = "sha256:515afb694efaa4623a4ac156e632b0d036d8652a72fe555d5c27368e07945efa"},
+]
 
 [[package]]
 name = "pulp"
@@ -30,4 +73,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "b2444e066d58dd934fd8ffcb831cc6ccd6121e0dfcf80bfe173bd495cfa32c5d"
+content-hash = "1e2e8662c3b5179312da26f8556db95e7bf2870cbf1c00ed3324f350230a183e"
