@@ -9,11 +9,12 @@ from helpers.transformers.pabutoolsToMoLp import (
 
 from helpers.transformers.pabutoolsUtils import load_pabutools_by_district
 from helpers.utils.utils import read_from_json
-from helpers.runners.model import Source
+from helpers.runners.model import Source, Utility
 
 
 def load_and_transform_strategy(
     source_type: Source,
+    utility_type: Utility,
     source_directory_path: str,
     constraints_config_path: str | None,
 ) -> Tuple[MultiObjectiveLpProblem, List[ConstraintConfig]]:
@@ -27,7 +28,7 @@ def load_and_transform_strategy(
 
         return (
             pabutools_to_multi_objective_lp(
-                instances, profiles, constraints_configs
+                instances, profiles, constraints_configs, utility_type
             ),
             constraints_configs,
         )

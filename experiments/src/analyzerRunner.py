@@ -13,6 +13,9 @@ from helpers.utils.enhanceFromSolverResult import (
     enhance_problem_from_solver_result,
 )
 from helpers.utils.utils import read_from_json, write_to_json
+from helpers.analyzers.analysis_table import (
+    transform_metrics_to_markdown_table,
+)
 
 
 def method_name(
@@ -42,6 +45,9 @@ def main(config: AnalyzerConfig):
         )
         result_path = f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
         write_to_json(result_path, analysis)
+
+    markdown_output = transform_metrics_to_markdown_table(result_path)
+    print(markdown_output)
 
 
 if __name__ == "__main__":

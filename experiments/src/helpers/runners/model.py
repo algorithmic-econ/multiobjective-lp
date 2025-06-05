@@ -1,13 +1,15 @@
 from typing import List, TypedDict, Literal, Dict
 
-Solver = Literal["SUMMING", "MES", "MES_ADD1", "MES_CONSTRAINT"]
+Solver = Literal["SUMMING", "MES", "MES_ADD1", "MES_CONSTRAINT", "MES_UTILS"]
 Source = Literal["PULP", "PABUTOOLS"]
+Utility = Literal["COST", "APPROVAL", "ORDINAL", "CUMULATIVE"]
 
 
 class RunnerConfig(TypedDict):
     solver_type: Solver
     solver_options: Dict | None
     source_type: Source
+    utility_type: Utility
     source_directory_path: str
     constraints_configs_path: str | None
     results_base_path: str
@@ -25,6 +27,7 @@ class RunnerResult(TypedDict):
     solver: Solver
     solver_options: Dict | None
     source_type: Source
+    utility_type: Utility
     source_path: str
     constraints_configs: List[ConstraintConfig]
     selected: List[str]

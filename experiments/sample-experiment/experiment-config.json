@@ -3,13 +3,15 @@
   "experiment_results_base_path": "results/sample-experiment/",
   "runner_configs": [
     {
-      "solver_type": "MES",
+      "solver_type": "MES_UTILS",
       "source_type": "PABUTOOLS",
+      "utility_type": "ORDINAL",
       "source_directory_path": "input/krakow_2024"
     },
     {
-      "solver_type": "MES",
+      "solver_type": "MES_UTILS",
       "source_type": "PABUTOOLS",
+      "utility_type": "COST",
       "source_directory_path": "input/warszawa_2024",
       "constraints_configs_path": "empty-constraints-config.json"
     }
