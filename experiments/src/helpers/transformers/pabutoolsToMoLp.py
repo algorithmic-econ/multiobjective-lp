@@ -87,15 +87,22 @@ def ballot_to_expression_strategy(
         case "COST":
             return lambda ballot: [[str(c), int(c.cost)] for c in ballot]
         case "ORDINAL":
-            # TODO: Is it enough for lexicographic strategy?
-            # TODO: How to deal with merged objectives between citywide and districts e.g.
-            # objective_1791: (P_cw_1 + 3*P_cw_2 + 2*P_cw_5) + (2*P_d_6 + P_d_7 + 3*P_d_8)
             return lambda ballot: [
                 [str(c), len(ballot) - idx] for idx, c in enumerate(ballot)
             ]
         case "CUMULATIVE":
             return lambda ballot: [
                 [str(c), int(points)] for c, points in ballot.items()
+            ]
+        case "COST_ORDINAL":
+            return lambda ballot: [
+                [str(c), int(c.cost) * (len(ballot) - idx)]
+                for idx, c in enumerate(ballot)
+            ]
+        case "COST_CUMULATIVE":
+            return lambda ballot: [
+                [str(c), int(c.cost) * int(points)]
+                for c, points in ballot.items()
             ]
     raise Exception(f"Unknown utility ${utility}")
 
@@ -108,9 +115,9 @@ def validate_profile_type_matches_utility(
             return True
         case "COST":
             return True
-        case "ORDINAL":
+        case "ORDINAL" | "COST_ORDINAL":
             return isinstance(profile, OrdinalProfile)
-        case "CUMULATIVE":
+        case "CUMULATIVE" | "COST_CUMULATIVE":
             return isinstance(profile, CumulativeProfile)
     raise Exception(f"Unknown utility ${utility}")
 

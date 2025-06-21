@@ -7,13 +7,23 @@ AgentId: TypeAlias = str
 
 
 def load_pabutools_by_district(
-    directory_path: str,
+    path: str,
 ) -> Tuple[Dict[District, Instance], Dict[District, Profile]]:
     instances: Dict[District, Instance] = {}
     profiles: Dict[District, Profile] = {}
-    for filename in os.listdir(directory_path):
+
+    relevant_files: List[str] = []
+    if os.path.isfile(path) and path.endswith(".pb"):
+        relevant_files.append(path)
+
+    if os.path.isdir(path):
+        for filename in os.listdir(path):
+            if filename.endswith(".pb"):
+                relevant_files.append(os.path.join(path, filename))
+
+    for filename in relevant_files:
         if filename.endswith(".pb"):
-            instance, profile = parse_pabulib(f"{directory_path}/{filename}")
+            instance, profile = parse_pabulib(filename)
             district = (
                 instance.meta["subunit"]
                 if "subunit" in instance.meta
