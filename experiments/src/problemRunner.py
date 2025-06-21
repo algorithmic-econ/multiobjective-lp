@@ -62,7 +62,7 @@ def problem_runner(config: RunnerConfig) -> None:
         unique_problem_id: str,
     ) -> str:
         # TODO: Cache checking relies on file structure defined here
-        return f"{file_type}_{unique_problem_id}_{source_directory_path.split('/')[-1]}_{utility_type}_{solver_type}.{ext}"
+        return f"{file_type}_{unique_problem_id}_{source_directory_path.split('/')[-1].replace('.pb', '')}_{utility_type}_{solver_type}.{ext}"
 
     problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':', '-')[5:]}_{str(uuid4())[:4]}"
     problem_file = get_file_name("problem", "lp", problem_id)

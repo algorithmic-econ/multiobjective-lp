@@ -1,10 +1,31 @@
 # Notes
 
-### Future Solvers
+GH org - algorithmic-econ
+## PropRank
+py implementation is only for PB
+change candidate removal (when infeasible) to be based on constraints instead of cost > budget
+
+### Script to generate experiment configs for entrie pabulib
+
+
+### How to check total budget
+instead of checking C_ub_total_budget, check if there exists constraint with any name
+that has given structure
+
+### Future Solvers - Exponential MES
 * Similar to MES add1
+* Start with B_init
+* In each round increase budget exponentially
+* In each round we remove remaining candidates that would break feasiblity
+* We keep selected candidates from previous rounds
+* We keep unused budget from previous rounds
 * Increase money until infeasible
 * Fix selected projects
 * Repeat
+
+How to set B_init? - parameter of solver
+* option 1 - start with small epsilon
+* option 2 - solve equation for B_init to pick best project (cost/utility ratio) in the 1st round
 
 # Modify MES implementation - more generic utilities
 For objectives:

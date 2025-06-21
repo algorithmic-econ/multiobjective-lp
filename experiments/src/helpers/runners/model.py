@@ -1,8 +1,17 @@
 from typing import List, TypedDict, Literal, Dict
 
-Solver = Literal["SUMMING", "MES", "MES_ADD1", "MES_CONSTRAINT", "MES_UTILS"]
-Source = Literal["PULP", "PABUTOOLS"]
-Utility = Literal["COST", "APPROVAL", "ORDINAL", "CUMULATIVE"]
+Solver = Literal[
+    "SUMMING", "MES_ADD1", "MES_CONSTRAINT", "MES_UTILS", "MES_EXPONENTIAL"
+]
+Source = Literal["PABUTOOLS"]
+Utility = Literal[
+    "COST",
+    "APPROVAL",
+    "ORDINAL",
+    "CUMULATIVE",
+    "COST_ORDINAL",
+    "COST_CUMULATIVE",
+]
 
 
 class RunnerConfig(TypedDict):

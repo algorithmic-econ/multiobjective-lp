@@ -27,4 +27,6 @@ def get_solver(solver_type: Solver, solver_options: Dict | None) -> LpSolver:
         return MethodOfEqualSharesAdd1Solver()
     if solver_type == "MES_CONSTRAINT":
         return MethodOfEqualSharesConstrainsSolver(solver_options)
+    if solver_type == "MES_EXPONENTIAL":
+        return MethodOfEqualSharesConstrainsSolver(solver_options)
     raise Exception("Strategy not implemented for the solver type")

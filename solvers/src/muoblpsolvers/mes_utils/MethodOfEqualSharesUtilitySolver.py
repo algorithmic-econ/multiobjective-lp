@@ -21,14 +21,24 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
         super().__init__()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
-        projects, voters, costs, approvals_utilities, total_budget = (
-            prepare_mes_parameters(lp)
-        )
+        (
+            projects,
+            costs,
+            voters,
+            approvals_utilities,
+            total_utilities,
+            total_budget,
+        ) = prepare_mes_parameters(lp)
 
         start_time = time.time()
         print(f"STARTING MES UTILS {start_time}")
         selected = equal_shares_utils(
-            voters, projects, costs, approvals_utilities, total_budget
+            voters,
+            projects,
+            costs,
+            approvals_utilities,
+            total_utilities,
+            total_budget,
         )
         print(f"FINISHED MES UTILS {time.time() - start_time}")
 

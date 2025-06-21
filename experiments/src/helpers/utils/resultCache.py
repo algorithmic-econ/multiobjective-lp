@@ -40,7 +40,11 @@ def is_result_present(problem_config: RunnerConfig) -> bool:
     base_path = problem_config["results_base_path"]
     solver_type = problem_config["solver_type"]
     utility_type = problem_config["utility_type"]
-    data_source = problem_config["source_directory_path"].split("/")[-1]
+    data_source = (
+        problem_config["source_directory_path"]
+        .split("/")[-1]
+        .replace(".pb", "")
+    )
 
     for filename in os.listdir(base_path):
         pattern = f"meta_[0-9]{{2}}-[0-9]{{2}}T[0-9]{{2}}-[0-9]{{2}}-[0-9]{{2}}_[a-z0-9]{{4}}_{data_source}_{utility_type}_{solver_type}.json"
