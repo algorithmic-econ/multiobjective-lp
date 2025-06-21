@@ -39,9 +39,14 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
         """
-        projects, voters, costs, approvals_utilities, total_budget = (
-            prepare_mes_parameters(lp)
-        )
+        (
+            projects,
+            costs,
+            voters,
+            approvals_utilities,
+            total_utilities,
+            total_budget,
+        ) = prepare_mes_parameters(lp)
 
         iteration = 0
         while iteration < self.solver_options["max_iterations"]:
