@@ -108,7 +108,7 @@ Analyzer configuration file defines (see [example](sample-analysis-config.json))
 {
   "analyzer_result_path": "results/sample-analysis/",
   "experiment_results_base_path": "results/sample-experiment/",
-  "metrics": ["NON_ZERO_OBJECTIVES", "SUM_OBJECTIVES"]
+  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES"]
 }
 ```
 

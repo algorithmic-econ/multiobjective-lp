@@ -1,44 +1,19 @@
 [
     {
-        "problem_path": "src/experiments/resources/experiment-results/single-run/meta_02-24T23-04-59_643c_warszawa_2024_MES.json",
+        "problem_path": "../resources/experiment-results/single-run/meta_06-04T20-13-41_3e75_krakow_2024_APPROVAL_MES_UTILS.json",
         "metrics": [
-            "NON_ZERO_OBJECTIVES",
-            "SUM_OBJECTIVES"
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS"
         ],
-        "NON_ZERO_OBJECTIVES": {
-            "non_zero_count": 80274,
-            "zero_count": 3851
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.03440807360870033
         },
         "SUM_OBJECTIVES": {
-            "sum": 829223
-        }
-    },
-    {
-        "problem_path": "src/experiments/resources/experiment-results/single-run/meta_02-24T23-14-21_739e_warszawa_2024_MES_ADD1.json",
-        "metrics": [
-            "NON_ZERO_OBJECTIVES",
-            "SUM_OBJECTIVES"
-        ],
-        "NON_ZERO_OBJECTIVES": {
-            "non_zero_count": 80829,
-            "zero_count": 3296
+            "sum": 139694
         },
-        "SUM_OBJECTIVES": {
-            "sum": 905994
-        }
-    },
-    {
-        "problem_path": "src/experiments/resources/experiment-results/single-run/meta_02-24T23-05-09_f8b9_warszawa_2024_MES_CONSTRAINT.json",
-        "metrics": [
-            "NON_ZERO_OBJECTIVES",
-            "SUM_OBJECTIVES"
-        ],
-        "NON_ZERO_OBJECTIVES": {
-            "non_zero_count": 79467,
-            "zero_count": 4658
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 668795
+        "EJR_PLUS": {
+            "ejr_plus": 319
         }
     }
 ]

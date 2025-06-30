@@ -1,5 +1,5 @@
 {
-  "analyzer_result_path": "src/experiments/resources/analyzer-results/sample-result/solver-results/",
-  "experiment_results_base_path": "src/experiments/resources/experiment-results/single-run/",
-  "metrics": ["NON_ZERO_OBJECTIVES", "SUM_OBJECTIVES"]
+  "analyzer_result_path": "../resources/analyzer-results/sample-result/solver-results/",
+  "experiment_results_base_path": "../resources/experiment-results/single-run/",
+  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS"]
 }

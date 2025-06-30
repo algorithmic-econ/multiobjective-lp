@@ -1,30 +1,70 @@
 [
     {
-        "problem_path": "results/sample-experiment/meta_02-23T15-08-22_6579_warszawa_2024_MES.json",
+        "problem_path": "results/sample-experiment/meta_06-30T11-48-49_fc17_krakow_2024_COST_MES_ADD1.json",
         "metrics": [
-            "NON_ZERO_OBJECTIVES",
-            "SUM_OBJECTIVES"
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS"
         ],
-        "NON_ZERO_OBJECTIVES": {
-            "non_zero_count": 80274,
-            "zero_count": 3851
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.0035483325908972213
         },
         "SUM_OBJECTIVES": {
-            "sum": 829223
+            "sum": 134763199377
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
         }
     },
     {
-        "problem_path": "results/sample-experiment/meta_02-23T15-08-16_0646_krakow_2024_MES.json",
+        "problem_path": "results/sample-experiment/meta_06-30T11-48-59_7fbd_krakow_2024_COST_ORDINAL_MES_ADD1.json",
         "metrics": [
-            "NON_ZERO_OBJECTIVES",
-            "SUM_OBJECTIVES"
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS"
         ],
-        "NON_ZERO_OBJECTIVES": {
-            "non_zero_count": 64520,
-            "zero_count": 581
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.003241117647962397
         },
         "SUM_OBJECTIVES": {
-            "sum": 195983
+            "sum": 279444152847
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        }
+    },
+    {
+        "problem_path": "results/sample-experiment/meta_06-30T12-21-02_91e3_poland_krakow_2024_bronowice_COST_ORDINAL_MES_ADD1.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.06663025669033315
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 4351588280
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        }
+    },
+    {
+        "problem_path": "results/sample-experiment/meta_06-30T11-48-55_ad88_krakow_2024_APPROVAL_MES_ADD1.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.0032718391422558793
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 219239
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 167
         }
     }
 ]
