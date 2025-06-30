@@ -6,6 +6,7 @@ __pycache__/
 /resources/**/*
 .ipynb_checkpoints/
 .idea/
+.fleet/
 /documentation/site/
 dist/
 /experiments/resources/results/

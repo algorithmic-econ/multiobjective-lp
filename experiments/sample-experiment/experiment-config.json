@@ -1,18 +1,31 @@
 {
-  "concurrency": 2,
+  "concurrency": 3,
   "experiment_results_base_path": "results/sample-experiment/",
   "runner_configs": [
     {
-      "solver_type": "MES_UTILS",
+      "solver_type": "MES_ADD1",
       "source_type": "PABUTOOLS",
-      "utility_type": "ORDINAL",
+      "utility_type": "COST",
       "source_directory_path": "input/krakow_2024"
     },
     {
-      "solver_type": "MES_UTILS",
+      "solver_type": "MES_ADD1",
       "source_type": "PABUTOOLS",
-      "utility_type": "COST",
-      "source_directory_path": "input/warszawa_2024",
+      "utility_type": "APPROVAL",
+      "source_directory_path": "input/krakow_2024"
+    },
+    {
+      "solver_type": "MES_ADD1",
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST_ORDINAL",
+      "source_directory_path": "input/krakow_2024",
+      "constraints_configs_path": "empty-constraints-config.json"
+    },
+    {
+      "solver_type": "MES_ADD1",
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST_ORDINAL",
+      "source_directory_path": "input/krakow_2024/poland_krakow_2024_bronowice.pb",
       "constraints_configs_path": "empty-constraints-config.json"
     }
   ]

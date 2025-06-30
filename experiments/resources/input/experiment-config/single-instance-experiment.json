@@ -3,14 +3,12 @@
   "experiment_results_base_path": "../resources/experiment-results/single-run/",
   "runner_configs": [
     {
-      "solver_type": "MES_CONSTRAINT",
-      "solver_options": {
-        "cost_modification_base": 1.005,
-        "max_iterations": 3
-      },
+      "solver_type": "MES_UTILS",
+      "solver_options": {},
       "source_type": "PABUTOOLS",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024",
-      "constraints_configs_path": "../resources/input/constraint-config/sample-constraints.json"
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024",
+      "results_base_path": "../resources/experiment-results/single-run/"
     }
   ]
 }
