@@ -20,9 +20,7 @@ def equal_shares_fixed_budget(
     total_budget: float,
 ):
     print("PYTHON MES UTILS")
-    budget = {
-        i: total_budget / len(voters) for i in voters
-    }  # Dict[VoterId, float]
+    budget = {i: total_budget / len(voters) for i in voters}  # Dict[VoterId, float]
     remaining = {}  # remaining candidate -> previous effective vote count Dict[CandidateId, int]
     for c in projects:
         if cost[c] > 0 and len(approvers[c]) > 0:
@@ -32,9 +30,7 @@ def equal_shares_fixed_budget(
         best = []
         best_eff_vote_count = 0
         # go through remaining candidates in order of decreasing previous effective vote count
-        remaining_sorted = sorted(
-            remaining, key=lambda c: remaining[c], reverse=True
-        )
+        remaining_sorted = sorted(remaining, key=lambda c: remaining[c], reverse=True)
         for c in remaining_sorted:
             previous_eff_vote_count = remaining[c]
             if previous_eff_vote_count < best_eff_vote_count:
@@ -47,8 +43,7 @@ def equal_shares_fixed_budget(
                 continue
             # calculate the effective vote count of c
             approvers[c].sort(
-                key=lambda voter_utility: budget[voter_utility[0]]
-                / voter_utility[1]
+                key=lambda voter_utility: budget[voter_utility[0]] / voter_utility[1]
             )
             paid_so_far = 0
             denominator = remaining[c]  # total utility of c
