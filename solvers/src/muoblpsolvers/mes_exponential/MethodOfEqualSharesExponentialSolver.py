@@ -1,14 +1,15 @@
-# import time
 from typing import TypedDict
 
 from pulp import LpSolver
-# from muoblpbindings import equal_shares_utils
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-# from muoblpsolvers.common import (
-#     prepare_mes_parameters,
-# )
+from muoblpsolvers.common import (
+    prepare_mes_parameters,
+)
+from muoblpsolvers.mes_exponential.mes_exponential import (
+    equal_shares_exponential,
+)
 
 
 class SolverOptions(TypedDict):
@@ -23,7 +24,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
 
     def __init__(self, solver_options):
         super().__init__()
-        self.solver_options = solver_options
+        self.solver_options: SolverOptions = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         print(
@@ -33,6 +34,21 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
         """
-        # projects, costs, voters, approvals_utilities, total_utilities, total_budget = (
-        #     prepare_mes_parameters(lp)
-        # )
+        (
+            projects,
+            costs,
+            voters,
+            approvals_utilities,
+            total_utilities,
+            total_budget,
+        ) = prepare_mes_parameters(lp)
+
+        equal_shares_exponential(
+            voters,
+            projects,
+            costs,
+            approvals_utilities,
+            total_utilities,
+            lp,
+            self.solver_options["budget_init"],
+        )

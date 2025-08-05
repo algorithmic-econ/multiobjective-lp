@@ -1,19 +1,90 @@
 [
     {
-        "problem_path": "../resources/experiment-results/single-run/meta_06-04T20-13-41_3e75_krakow_2024_APPROVAL_MES_UTILS.json",
+        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-25-06_e039_krakow_2024_COST_MES_EXPONENTIAL.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
-            "EJR_PLUS"
+            "EJR_PLUS",
+            "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.03440807360870033
+            "exclusion_ratio": 0.053977665473648635
         },
         "SUM_OBJECTIVES": {
-            "sum": 139694
+            "sum": 62774857172
         },
         "EJR_PLUS": {
-            "ejr_plus": 319
+            "ejr_plus": 16
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-23-17_f056_krakow_2024_COST_MES_ADD1.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.0035483325908972213
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 134763199377
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 1
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-27-02_9c05_krakow_2024_COST_MES_EXPONENTIAL.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.041412574307614324
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 59160198185
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 11
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-21-47_c086_krakow_2024_COST_MES_EXPONENTIAL.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.16032011797053808
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 77180085909
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 120
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
         }
     }
 ]

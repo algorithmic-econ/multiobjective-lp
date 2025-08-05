@@ -29,7 +29,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
 
     def __init__(self, solver_options):
         super().__init__()
-        self.solver_options = solver_options
+        self.solver_options: SolverOptions = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         print(
@@ -53,7 +53,12 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
             # Run MES
             start_time = time.time()
             selected = equal_shares_utils(
-                voters, projects, costs, approvals_utilities, total_budget
+                voters,
+                projects,
+                costs,
+                approvals_utilities,
+                total_utilities,
+                total_budget,
             )
             print(f"FINISHED MES {time.time() - start_time:.2f} s\n")
             set_selected_candidates(lp, selected)

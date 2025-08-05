@@ -24,6 +24,8 @@ def get_metric_strategy(
         return sum_objectives
     if metric == "EJR_PLUS":
         return ejr_plus
+    if metric == "CONSTRAINTS":
+        return invalid_constraints
 
     raise Exception("Metric not implemented")
 
@@ -41,6 +43,16 @@ def sum_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     }
 
 
+def invalid_constraints(problem: MultiObjectiveLpProblem) -> Dict:
+    total_budget_constraint = get_total_budget_constraint(problem)
+    return {
+        "total_budget": total_budget_constraint.valid(),
+        "invalid_count": sum(
+            [1 if not c.valid() else 0 for c in problem.constraints.values()]
+        ),
+    }
+
+
 def ejr_plus(problem: MultiObjectiveLpProblem) -> Dict:
     # TODO: Check if utility was COST based
     # TODO: Introduce metric options, i.e., pass up_to_one as config parameter
@@ -52,7 +64,7 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> Dict:
         for candidate, cost in constraint.items()
     }
 
-    total_budget = get_total_budget_constraint(problem)
+    total_budget = abs(get_total_budget_constraint(problem).constant)
 
     voter_satisfaction = sorted(
         [(voter, voter.value()) for voter in problem.objectives],

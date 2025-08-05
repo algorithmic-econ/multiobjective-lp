@@ -1,6 +1,8 @@
 from typing import List, TypedDict, Literal
 
-Metric = Literal["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS"]
+Metric = Literal[
+    "EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS", "CONSTRAINTS"
+]
 
 
 class AnalyzerConfig(TypedDict):

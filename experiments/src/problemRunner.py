@@ -33,7 +33,10 @@ def problem_runner(config: RunnerConfig) -> None:
         constraints_configs_path,
     )
     solver = get_solver(solver_type, solver_options)
-    problem.solve(solver)
+    try:
+        problem.solve(solver)
+    except Exception as err:
+        print(f"Problem {source_directory_path} failed - {err}")
 
     end_time = time.time()
 

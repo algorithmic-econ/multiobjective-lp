@@ -1,5 +1,5 @@
 [project]
-version = "0.0.9"
+version = "0.0.10"
 name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
@@ -24,7 +24,7 @@ packages = [{include = "muoblpsolvers", from = "src"}]
 [tool.poetry.dependencies]
 muoblp = "1.0.1"
 pulp = "2.9.0"
-muoblpbindings = "0.0.13"
+muoblpbindings = "0.0.16"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

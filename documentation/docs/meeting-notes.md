@@ -1,5 +1,10 @@
 # Notes
 
+## Test example
+* Showcase core library without Pabulib, i.e., create model from scratch
+  * Use MES with Bounded Overspending, Section 2, Table 1
+* Implement greedy PB as solver
+
 GH org - algorithmic-econ
 ## PropRank
 py implementation is only for PB
