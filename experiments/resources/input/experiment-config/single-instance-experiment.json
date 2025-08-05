@@ -1,14 +1,16 @@
 {
   "concurrency": 1,
-  "experiment_results_base_path": "../resources/experiment-results/single-run/",
+  "experiment_results_base_path": "resources/experiment-results/single-run/",
   "runner_configs": [
     {
-      "solver_type": "MES_UTILS",
-      "solver_options": {},
+      "solver_type": "MES_EXPONENTIAL",
+      "solver_options": {
+        "budget_init": 10
+      },
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
       "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024",
-      "results_base_path": "../resources/experiment-results/single-run/"
+      "results_base_path": "resources/experiment-results/single-run/"
     }
   ]
 }

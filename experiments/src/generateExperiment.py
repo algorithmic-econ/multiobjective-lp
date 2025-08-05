@@ -62,9 +62,11 @@ if __name__ == "__main__":
     utilities_to_use: list[Utility] = ["COST"]
 
     # Optional: path to constraints config if MES_CONSTRAINT is used
-    constraints_path = (
-        "../resources/input/constraint-config/sample-constraints.json"
-    )
+    # constraints_path = (
+    #     "../resources/input/constraint-config/sample-constraints.json"
+    # )
+
+    constraints_path = None
 
     generated_config = generate_experiment_config(
         root_dir,
@@ -72,7 +74,7 @@ if __name__ == "__main__":
         solvers_to_use,
         utilities_to_use,
         "../resources/experiment-results/",
-        constraints_configs_path=constraints_path,
+        # constraints_configs_path=constraints_path,
     )
 
     # Output the generated configuration to a JSON file

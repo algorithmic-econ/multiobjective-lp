@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraintLE
+from pulp import LpConstraintLE, LpConstraint
 
 from muoblpsolvers.types import (
     CandidateId,
@@ -12,7 +12,7 @@ from muoblpsolvers.types import (
 )
 
 
-def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> TotalBudget:
+def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
     all_candidates: set[CandidateId] = set(
         [
             variable.name
@@ -23,7 +23,7 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> TotalBudget:
     for constraint in lp.constraints.values():
         candidates = set([variable.name for variable, _ in constraint.items()])
         if candidates == all_candidates and constraint.sense == LpConstraintLE:
-            return abs(constraint.constant)
+            return constraint
 
     raise Exception("Problem does not have PB constraint")
 
@@ -67,7 +67,17 @@ def prepare_mes_parameters(
         for candidate, voters_utilities in approvals_utilities.items()
     }
 
-    total_budget = get_total_budget_constraint(lp)
+    no_vote_projects = []
+    for project in projects:
+        if project not in approvals_utilities:
+            no_vote_projects.append(project)
+
+    for project in no_vote_projects:
+        print(f"Removing project with zero votes {project}")
+        projects.remove(project)
+        del costs[project]
+
+    total_budget = abs(get_total_budget_constraint(lp).constant)
     return (
         projects,
         costs,
