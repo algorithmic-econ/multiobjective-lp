@@ -20,4 +20,4 @@ def test_get_total_budget_constraint(basic_pb: MultiObjectiveLpProblem):
     constraint = get_total_budget_constraint(basic_pb)
 
     # then
-    assert constraint.value() == -100000
+    assert constraint.value() == -1000000
