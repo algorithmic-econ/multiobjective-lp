@@ -27,6 +27,11 @@ For details and installation guide see the READMEs for each package linked above
 * [Ruff](https://docs.astral.sh/ruff/) - linter and formatter
 * [pre-commit](https://pre-commit.com/#intro) - git hooks
 
+### Prerequisites
+```sh
+pre-commit install
+```
+
 ## GitHub Workflows
 
 ### Code quality checks

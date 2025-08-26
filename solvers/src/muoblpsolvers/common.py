@@ -34,8 +34,6 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
     return pb_constraints[0]
 
 
-
-
 def prepare_mes_parameters(
     lp: MultiObjectiveLpProblem,
 ) -> tuple[
