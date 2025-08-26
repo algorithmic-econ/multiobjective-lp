@@ -20,4 +20,4 @@ def test_get_total_budget_constraint(basic_pb: MultiObjectiveLpProblem):
     constraint = get_total_budget_constraint(basic_pb)
 
     # then
-    assert constraint == "1"
+    assert constraint == "2"

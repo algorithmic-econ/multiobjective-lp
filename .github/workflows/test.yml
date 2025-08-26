@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.12"]
@@ -28,14 +28,15 @@ jobs:
         cache: 'poetry'
         cache-dependency-path: 'solvers/poetry.lock'
 
-    - name: Install dependencies
-      working-directory: solvers
+    - name: Install Poetry
       run: |
         python -m pip install --upgrade pip
         pip install poetry
-        poetry install
+
+    - name: Install dependencies
+      working-directory: solvers
+      run: poetry install
 
     - name: Run tests
       working-directory: solvers
-      run: |
-        poetry run pytest
+      run: poetry run pytest
