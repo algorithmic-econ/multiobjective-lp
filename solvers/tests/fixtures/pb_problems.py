@@ -1,6 +1,12 @@
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpVariable, LpAffineExpression, LpConstraint, lpSum, LpConstraintLE
+from pulp import (
+    LpVariable,
+    LpAffineExpression,
+    LpConstraint,
+    lpSum,
+    LpConstraintLE,
+)
 
 
 @pytest.fixture
@@ -48,10 +54,12 @@ def basic_pb(empty_pb: MultiObjectiveLpProblem) -> MultiObjectiveLpProblem:
     ]
 
     pb_constraint = LpConstraint(
-        e=lpSum(variables[project] * cost for project, cost in projects.items()),
+        e=lpSum(
+            variables[project] * cost for project, cost in projects.items()
+        ),
         sense=LpConstraintLE,
         rhs=budget,
-        name='pb'
+        name="pb",
     )
 
     empty_pb.addVariables(variables.values())
