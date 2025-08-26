@@ -1,6 +1,6 @@
 site_name: "Multi-objective Linear Programming"
 site_description: "Multi-objective Linear Programming Project"
-repo_url: "https://github.com/jasieksz/multiobjective-lp"
+repo_url: "https://github.com/algorithmic-econ/multiobjective-lp"
 repo_name: "multiobjective-lp"
 theme:
   name: material
@@ -61,7 +61,7 @@ markdown_extensions:
       custom_fences:
           - name: mermaid
             class: mermaid
-            format: !!python/name:pymdownx.superfences.fence_code_format
+            format: python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tasklist:
       custom_checkbox: true
   - attr_list
