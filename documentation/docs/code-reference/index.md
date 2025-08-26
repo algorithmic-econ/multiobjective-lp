@@ -3,4 +3,3 @@
 
 ### Example custom solver:
 - [SummedObjectivesLpSolver](summed-objectives-lp-solver)
-
