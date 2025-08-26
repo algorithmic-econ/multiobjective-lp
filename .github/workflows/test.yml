@@ -50,6 +50,4 @@ jobs:
 
     - name: Run tests
       working-directory: solvers
-      run: |
-        source .venv/bin/activate
-        poetry run pytest
+      run: poetry run pytest
