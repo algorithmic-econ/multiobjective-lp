@@ -15,9 +15,22 @@ def test_get_total_budget_constraint_throws_missing_pb(
     assert "Problem does not have PB constraint" in str(err.value)
 
 
-def test_get_total_budget_constraint(basic_pb: MultiObjectiveLpProblem):
+def test_get_total_budget_constraint_throws_too_many_pb(
+    invalid_pb: MultiObjectiveLpProblem,
+):
     # when
-    constraint = get_total_budget_constraint(basic_pb)
+    with pytest.raises(Exception) as err:
+        _ = get_total_budget_constraint(invalid_pb)
+
+    # then
+    assert "Problem has too many PB constraint" in str(err.value)
+
+
+def test_get_total_budget_constraint(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    # when
+    constraint = get_total_budget_constraint(basic_pb_approval)
 
     # then
     assert constraint.value() == -1000000

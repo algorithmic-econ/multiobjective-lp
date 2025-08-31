@@ -1,3 +1,5 @@
+from typing import Callable
+
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import (
@@ -16,9 +18,8 @@ def empty_pb() -> MultiObjectiveLpProblem:
 
 
 @pytest.fixture
-def basic_pb(empty_pb: MultiObjectiveLpProblem) -> MultiObjectiveLpProblem:
+def bos_pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
     budget = 1000000
-
     projects = {
         "A": 300000,
         "B": 400000,
@@ -27,7 +28,6 @@ def basic_pb(empty_pb: MultiObjectiveLpProblem) -> MultiObjectiveLpProblem:
         "E": 170000,
         "F": 100000,
     }
-
     ballots = {
         "v1": ["A"],
         "v2": ["A", "B", "C", "E"],
@@ -40,30 +40,65 @@ def basic_pb(empty_pb: MultiObjectiveLpProblem) -> MultiObjectiveLpProblem:
         "v9": ["D", "E", "F"],
         "v10": ["C", "D", "F"],
     }
+    return (projects, ballots, budget)
 
-    variables = LpVariable.dicts("", projects.keys(), cat="Binary")
-    for variable in variables.values():
-        variable.setInitialValue(0)
 
-    objectives = [
-        LpAffineExpression(
-            [[variables[candidate], 1] for candidate in approvals],
-            name=voter,
+@pytest.fixture()
+def basic_pb_factory(
+    empty_pb: MultiObjectiveLpProblem, bos_pb_data
+) -> Callable[[str], MultiObjectiveLpProblem]:
+    projects, ballots, budget = bos_pb_data
+
+    def _factory(utility_type):
+        variables = LpVariable.dicts("", projects.keys(), cat="Binary")
+        for variable in variables.values():
+            variable.setInitialValue(0)
+
+        coef = {
+            "APPROVAL": lambda candidate: 1,
+            "COST": lambda candidate: projects[candidate],
+        }
+        objectives = [
+            LpAffineExpression(
+                [
+                    [variables[candidate], coef[utility_type](candidate)]
+                    for candidate in approvals
+                ],
+                name=voter,
+            )
+            for voter, approvals in ballots.items()
+        ]
+
+        pb_constraint = LpConstraint(
+            e=lpSum(
+                variables[project] * cost for project, cost in projects.items()
+            ),
+            sense=LpConstraintLE,
+            rhs=budget,
+            name="pb",
         )
-        for voter, approvals in ballots.items()
-    ]
 
-    pb_constraint = LpConstraint(
-        e=lpSum(
-            variables[project] * cost for project, cost in projects.items()
-        ),
-        sense=LpConstraintLE,
-        rhs=budget,
-        name="pb",
-    )
+        empty_pb.addVariables(variables.values())
+        empty_pb.setObjectives(objectives)
+        empty_pb.addConstraint(pb_constraint)
 
-    empty_pb.addVariables(variables.values())
-    empty_pb.setObjectives(objectives)
-    empty_pb.addConstraint(pb_constraint)
+        return empty_pb
 
-    return empty_pb
+    return _factory
+
+
+@pytest.fixture
+def basic_pb_approval(
+    basic_pb_factory: Callable[[str], MultiObjectiveLpProblem],
+) -> MultiObjectiveLpProblem:
+    return basic_pb_factory("APPROVAL")
+
+
+@pytest.fixture
+def invalid_pb(
+    basic_pb_approval: MultiObjectiveLpProblem,
+) -> MultiObjectiveLpProblem:
+    pb_constraint_copy = basic_pb_approval.constraints["pb"].copy()
+    basic_pb_approval.addConstraint(pb_constraint_copy)
+
+    return basic_pb_approval
