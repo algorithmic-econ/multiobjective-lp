@@ -20,12 +20,18 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
             if variable.name != "__dummy"
         ]
     )
+
+    pb_constraints = []
     for constraint in lp.constraints.values():
         candidates = set([variable.name for variable, _ in constraint.items()])
         if candidates == all_candidates and constraint.sense == LpConstraintLE:
-            return constraint
+            pb_constraints.append(constraint)
 
-    raise Exception("Problem does not have PB constraint")
+    if len(pb_constraints) == 0:
+        raise Exception("Problem does not have PB constraint")
+    if len(pb_constraints) > 1:
+        raise Exception("Problem has too many PB constraint")
+    return pb_constraints[0]
 
 
 def prepare_mes_parameters(
