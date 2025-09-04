@@ -20,15 +20,21 @@ from helpers.analyzers.analysis_table import (
 
 def method_name(
     runner_result_path: Path, metrics: List[Metric]
-) -> AnalyzerResult:
-    solver_result: RunnerResult = read_from_json(runner_result_path)
-    problem = read_lp_file(solver_result["problem_path"])
-    problem = enhance_problem_from_solver_result(solver_result, problem)
-    analyzer_result = get_metrics(metrics, problem)
-    return {"problem_path": runner_result_path.as_posix()} | analyzer_result
+) -> AnalyzerResult | None:
+    try:
+        solver_result: RunnerResult = read_from_json(runner_result_path)
+        problem = read_lp_file(solver_result["problem_path"])
+        problem = enhance_problem_from_solver_result(solver_result, problem)
+        analyzer_result = get_metrics(metrics, problem)
+        return {
+            "problem_path": runner_result_path.as_posix()
+        } | analyzer_result
+    except Exception as err:
+        # TODO: return empty result with metadata isntead of None
+        print(f"Metrics for {runner_result_path} failed - {err}")
 
 
-def main(config: AnalyzerConfig):
+def main(config: AnalyzerConfig, console_output_limit: int = None):
     runner_results = [
         result_path
         for result_path in Path(
@@ -39,18 +45,20 @@ def main(config: AnalyzerConfig):
 
     Path(config["analyzer_result_path"]).mkdir(parents=True, exist_ok=True)
 
-    with multiprocessing.Pool(processes=1) as pool:
+    with multiprocessing.Pool(processes=2) as pool:
         analysis = pool.starmap(
             method_name, zip(runner_results, repeat(config["metrics"]))
         )
         result_path = f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
         write_to_json(result_path, analysis)
 
-    markdown_output = transform_metrics_to_markdown_table(result_path)
+    markdown_output = transform_metrics_to_markdown_table(
+        result_path, console_output_limit
+    )
     print(markdown_output)
 
 
 if __name__ == "__main__":
     # Example: python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
     analyzer_config: AnalyzerConfig = read_from_json(sys.argv[1])
-    main(analyzer_config)
+    main(analyzer_config, 25)

@@ -1,5 +1,5 @@
 [project]
-version = "0.0.10"
+version = "0.0.11"
 name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
@@ -22,7 +22,7 @@ documentation = "https://jasieksz.github.io/multiobjective-lp"
 packages = [{include = "muoblpsolvers", from = "src"}]
 
 [tool.poetry.dependencies]
-muoblp = "1.0.1"
+muoblp = "1.0.2"
 pulp = "2.9.0"
 muoblpbindings = "0.0.16"
 

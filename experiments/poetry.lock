@@ -65,14 +65,14 @@ tests = ["cython", "hypothesis", "mpmath", "pytest", "setuptools"]
 
 [[package]]
 name = "muoblp"
-version = "1.0.1"
+version = "1.0.2"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "muoblp-1.0.1-py3-none-any.whl", hash = "sha256:0239a9a763206a64347e7a2ec70cda37d359358e5e64651fd92792bae2bc278c"},
-    {file = "muoblp-1.0.1.tar.gz", hash = "sha256:6ecb65ea8e6ec64a140746c3448e01fcf97559baed4efc47b159e131faae37f8"},
+    {file = "muoblp-1.0.2-py3-none-any.whl", hash = "sha256:8e7820ec909caa3dc8ff2eea5ad8e6b147c53853c1afceffd034f169943fb5ab"},
+    {file = "muoblp-1.0.2.tar.gz", hash = "sha256:473edbb9e3c4e033e109d0068e929be367719feb706641d7facdd04a8297edb9"},
 ]
 
 [package.dependencies]
@@ -132,7 +132,7 @@ files = []
 develop = true
 
 [package.dependencies]
-muoblp = "1.0.1"
+muoblp = "1.0.2"
 muoblpbindings = "0.0.16"
 pulp = "2.9.0"
 
@@ -467,4 +467,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "d38f57ee2898378c2b3185616bef551785f5e6b8ac0d61be8cd80e49da85ff27"
+content-hash = "464a359212ba0ed7fd0cdea49c79974263a5e92463b125e27fab45368c6327ab"
