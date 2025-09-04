@@ -24,7 +24,7 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 pabutools = {version = "1.2.2"}
-muoblp = {version = "1.0.1"}
+muoblp = {version = "1.0.2"}
 muoblpsolvers = {path = "../solvers", develop = true}
 pandas = "2.3.1"
 tabulate = "0.9.0"

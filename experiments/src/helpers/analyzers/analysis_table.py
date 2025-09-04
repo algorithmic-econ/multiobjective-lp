@@ -6,7 +6,9 @@ from helpers.utils.utils import read_from_json
 from helpers.runners.model import Solver, Utility
 
 
-def transform_metrics_to_markdown_table(json_file_path: str) -> str:
+def transform_metrics_to_markdown_table(
+    json_file_path: str, limit: int | None
+) -> str:
     data = read_from_json(json_file_path)
 
     solver_pattern = "|".join(
@@ -27,6 +29,9 @@ def transform_metrics_to_markdown_table(json_file_path: str) -> str:
     all_rows_data = []
 
     for item in data:
+        if item is None:
+            print("Warn skipping unknown item from table")
+            continue
         problem_path = item["problem_path"]
         filename = os.path.basename(problem_path)
 
@@ -85,4 +90,5 @@ def transform_metrics_to_markdown_table(json_file_path: str) -> str:
 
     df = df.sort_values(by=["Location-Year", "Type", "Method"], ascending=True)
 
-    return df.to_markdown(index=False)
+    df_limited = df.head(limit) if limit is not None else df
+    return df_limited.to_markdown(index=False)
