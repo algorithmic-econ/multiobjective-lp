@@ -57,7 +57,7 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         c_lhs = [
             (problem_data["variables"][var], int(coef))
             for coef_var in c_lhs_str.split("+")
-            for coef, var in [coef_var.strip().split(" ")]
+            for coef, var in [parse_str_variable_with_coefficient(coef_var)]
         ]
 
         c_sense = (
@@ -109,4 +109,13 @@ def parse_variable_with_coefficient(
         return [variables[parts[0]], 1]
     if len(parts) == 2:
         return [variables[parts[1]], int(parts[0])]
+    raise Exception("Unexpected variable parts")
+
+
+def parse_str_variable_with_coefficient(variable: str) -> tuple[int, str]:
+    parts = variable.strip().split(" ")
+    if len(parts) == 1:
+        return 1, parts[0]
+    if len(parts) == 2:
+        return int(parts[0]), parts[1]
     raise Exception("Unexpected variable parts")
