@@ -20,12 +20,19 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
             if variable.name != "__dummy"
         ]
     )
+
+    pb_constraints = []
     for constraint in lp.constraints.values():
         candidates = set([variable.name for variable, _ in constraint.items()])
         if candidates == all_candidates and constraint.sense == LpConstraintLE:
-            return constraint
+            pb_constraints.append(constraint)
 
-    raise Exception("Problem does not have PB constraint")
+    if len(pb_constraints) == 0:
+        raise Exception("Problem does not have PB constraint")
+    if len(pb_constraints) > 1:
+        pass  # TODO - fix duplicated constraints for single district and city wide
+        # raise Exception("Problem has too many PB constraint")
+    return pb_constraints[0]
 
 
 def prepare_mes_parameters(
@@ -47,7 +54,8 @@ def prepare_mes_parameters(
     costs: dict[CandidateId, Cost] = {
         candidate.name: cost
         # TODO: some constraints have repeated variables, but we just override them with the same value
-        for constraint in lp.constraints.values()  # [C_ub_Bieńczyce: 25000 V_BO.D16.10_24 + 40500 V_BO.D16.11_24 <= 100000, ...]
+        for constraint in lp.constraints.values()
+        # [C_ub_Bieńczyce: 25000 V_BO.D16.10_24 + 40500 V_BO.D16.11_24 <= 100000, ...]
         for candidate, cost in constraint.items()
     }
 
