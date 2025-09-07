@@ -18,7 +18,7 @@ def empty_pb() -> MultiObjectiveLpProblem:
 
 
 @pytest.fixture
-def bos_pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
+def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
     budget = 1000000
     projects = {
         "A": 300000,
@@ -45,9 +45,9 @@ def bos_pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
 
 @pytest.fixture()
 def basic_pb_factory(
-    empty_pb: MultiObjectiveLpProblem, bos_pb_data
+    empty_pb: MultiObjectiveLpProblem, pb_data
 ) -> Callable[[str], MultiObjectiveLpProblem]:
-    projects, ballots, budget = bos_pb_data
+    projects, ballots, budget = pb_data
 
     def _factory(utility_type):
         variables = LpVariable.dicts("", projects.keys(), cat="Binary")
