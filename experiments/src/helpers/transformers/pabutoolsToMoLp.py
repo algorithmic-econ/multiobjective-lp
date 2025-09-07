@@ -197,6 +197,10 @@ def create_baseline_constraints(
         all_projects_costs,
         sum(budgets.values()),
     )
+
+    if len(instances) == 1:
+        return [total_budget_constraint]
+
     return [
         define_constraint(
             district,
