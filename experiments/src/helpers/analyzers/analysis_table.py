@@ -4,6 +4,9 @@ import re
 
 from helpers.utils.utils import read_from_json
 from helpers.runners.model import Solver, Utility
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def transform_metrics_to_markdown_table(
@@ -28,9 +31,12 @@ def transform_metrics_to_markdown_table(
 
     all_rows_data = []
 
-    for item in data:
+    for idx, item in enumerate(data):
         if item is None:
-            print("Warn skipping unknown item from table")
+            logger.warning(
+                "Skip unknown item from result table",
+                extra={"result_item": idx},
+            )
             continue
         problem_path = item["problem_path"]
         filename = os.path.basename(problem_path)
@@ -41,6 +47,10 @@ def transform_metrics_to_markdown_table(
                 match.groups()
             )
         else:
+            logger.error(
+                "Filename did not match regex",
+                extra={"file": filename, "problem_path": problem_path},
+            )
             raise Exception(
                 f"Filename '{filename}' did not match the regex pattern."
             )
@@ -54,6 +64,7 @@ def transform_metrics_to_markdown_table(
         }
 
         for metric_name in item.get("metrics", []):
+            logger.debug(f"Calculating metric {metric_name}")
             metric_details = item.get(metric_name)
 
             if metric_details is None:
@@ -82,6 +93,7 @@ def transform_metrics_to_markdown_table(
         df["Location-Year"] = df["City"].astype(str).str.replace("_", " ")
         df = df.drop(columns=["City"])
 
+    # TODO: handle errors if Location-Year column is missing
     if "Location-Year" in df.columns:
         cols = df.columns.tolist()
         if "Location-Year" in cols:

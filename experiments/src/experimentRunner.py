@@ -2,17 +2,16 @@ import multiprocessing
 import sys
 import time
 from pathlib import Path
-from typing import List, TypedDict
 
-from helpers.runners.model import RunnerConfig
+from helpers.utils.logger import setup_logging
+
 from helpers.utils.utils import read_from_json
 from problemRunner import problem_runner
+from helpers.runners.model import ExperimentConfig
 
+import logging
 
-class ExperimentConfig(TypedDict):
-    concurrency: int
-    experiment_results_base_path: str
-    runner_configs: List[RunnerConfig]
+logger = logging.getLogger(__name__)
 
 
 def main(experiment: ExperimentConfig):
@@ -27,18 +26,24 @@ def main(experiment: ExperimentConfig):
             ]
 
     start_time = time.time()
-    print(
-        f"Starting experiment - "
-        f"concurrency: {experiment['concurrency']},"
-        f" experiment_results_base_path: {experiment['experiment_results_base_path']}"
+    logger.info(
+        "Start experiment",
+        extra={
+            "concurrency": experiment["concurrency"],
+            "experiment_results_base_path": experiment[
+                "experiment_results_base_path"
+            ],
+        },
     )
     with multiprocessing.Pool(
-        processes=int(experiment["concurrency"])
+        processes=int(experiment["concurrency"]), initializer=setup_logging
     ) as pool:
         pool.map(problem_runner, experiment["runner_configs"])
-    print(f"finished experiment {time.time() - start_time}")
+
+    logger.info("Finish experiment", extra={"time": time.time() - start_time})
 
 
 if __name__ == "__main__":
+    setup_logging()
     config: ExperimentConfig = read_from_json(sys.argv[1])
     main(config)

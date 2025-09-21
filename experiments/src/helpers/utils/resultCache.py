@@ -3,6 +3,9 @@ import re
 
 from helpers.runners.model import RunnerConfig
 from helpers.utils.utils import read_from_json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def is_metadata_content_matching(
@@ -53,6 +56,7 @@ def is_result_present(problem_config: RunnerConfig) -> bool:
             if is_metadata_content_matching(
                 metadata_file_path, problem_config
             ):
+                logger.info(f"Found result {filename}")
                 return True
 
     return False

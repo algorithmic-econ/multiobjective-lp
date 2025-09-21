@@ -3,7 +3,7 @@ from pathlib import Path
 
 from helpers.utils.utils import write_to_json
 from helpers.runners.model import Solver, Utility, RunnerConfig
-from experimentRunner import ExperimentConfig
+from helpers.runners.model import ExperimentConfig
 
 
 def generate_experiment_config(

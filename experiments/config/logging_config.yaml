@@ -1,0 +1,41 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  simple:
+    format: "[%(levelname)s] %(message)s"
+  detailed:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s"
+  json:
+    class: pythonjsonlogger.jsonlogger.JsonFormatter
+    format: "%(levelname)s %(module)s %(message)s"
+    # TODO: rename_fields doesn't work when using dictConfig
+    # rename_fields:
+    #   levelname: level
+    #   asctime: time
+    #   name: logger_name
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: json
+    stream: ext://sys.stdout
+
+  # TODO - Add queue handler to deal with concurrent processes writing to the same file
+  # file_rotating:
+  #   class: logging.handlers.RotatingFileHandler
+  #   level: DEBUG
+  #   formatter: detailed
+  #   filename: out.log
+  #   maxBytes: 1048576 # 1 MB
+  #   backupCount: 5
+  #   encoding: utf8
+
+root:
+  level: DEBUG
+  handlers: [console]
+
+loggers:
+  muoblpsolvers:
+    level: DEBUG

@@ -11,6 +11,10 @@ from muoblpsolvers.mes_exponential.mes_exponential import (
     equal_shares_exponential,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class SolverOptions(TypedDict):
     budget_init: int
@@ -27,9 +31,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         self.solver_options: SolverOptions = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
-        print(
-            f"Starting MethodOfEqualSharesExponentialSolver {self.solver_options}"
-        )
+        logger.debug("Start solver", extra={"options": self.solver_options})
         """
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
