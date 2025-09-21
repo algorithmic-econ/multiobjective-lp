@@ -9,6 +9,9 @@ from helpers.runners.solverStrategy import get_solver
 from helpers.runners.sourceStrategy import load_and_transform_strategy
 from helpers.utils.utils import write_to_json
 from helpers.utils.resultCache import is_result_present
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def problem_runner(config: RunnerConfig) -> None:
@@ -20,7 +23,7 @@ def problem_runner(config: RunnerConfig) -> None:
     constraints_configs_path = config.get("constraints_configs_path")
     results_base_path = config["results_base_path"]
 
-    print(f"Starting problem - {config}")
+    logger.debug("Start problem", extra={"config": config})
     if is_result_present(config):
         print(f"Result already present - {results_base_path}")
         return
@@ -36,7 +39,10 @@ def problem_runner(config: RunnerConfig) -> None:
     try:
         problem.solve(solver)
     except Exception as err:
-        print(f"Problem {source_directory_path} failed - {err}")
+        logger.error(
+            "Problem failed",
+            extra={"source": source_directory_path, "error": err},
+        )
 
     end_time = time.time()
 

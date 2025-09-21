@@ -2,6 +2,10 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.types import CandidateId, VoterId
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def break_ties(
     cost: dict[CandidateId, float],
@@ -14,12 +18,10 @@ def break_ties(
     best_count = max(total_utility[c] for c in remaining)
     remaining = [c for c in remaining if total_utility[c] == best_count]
     if len(remaining) > 1:
-        print(
-            "Tie-breakign failed: tie between projects {remaining}. Selecting first one."
+        logger.warning(
+            "Tie-breakign failed: tie between projects. Selecting first one.",
+            extra={"remaining": remaining},
         )
-        # raise Exception(
-        #     f"Tie-breaking failed: tie between projects {remaining} could not be resolved. Another tie-breaking needs to be added."
-        # )
     return remaining[0]
 
 

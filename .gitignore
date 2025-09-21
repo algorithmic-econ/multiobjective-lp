@@ -7,6 +7,7 @@ __pycache__/
 .ipynb_checkpoints/
 .idea/
 .fleet/
+.zed/
 /documentation/site/
 dist/
 /experiments/resources/results/

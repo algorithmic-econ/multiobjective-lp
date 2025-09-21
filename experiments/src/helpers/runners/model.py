@@ -24,6 +24,12 @@ class RunnerConfig(TypedDict):
     results_base_path: str
 
 
+class ExperimentConfig(TypedDict):
+    concurrency: int
+    experiment_results_base_path: str
+    runner_configs: List[RunnerConfig]
+
+
 class ConstraintConfig(TypedDict):
     key: Literal["CATEGORY", "DISTRICT"]
     value: str

@@ -28,6 +28,8 @@ muoblp = {version = "1.0.2"}
 muoblpsolvers = {path = "../solvers", develop = true}
 pandas = "2.3.1"
 tabulate = "0.9.0"
+pyyaml = "6.0.2"
+python-json-logger = "3.3.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
