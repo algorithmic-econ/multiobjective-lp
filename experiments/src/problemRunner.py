@@ -11,6 +11,8 @@ from helpers.utils.utils import write_to_json
 from helpers.utils.resultCache import is_result_present
 import logging
 
+from helpers.transformers.molpToSimpleElection import molp_to_simple_election
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,6 +23,7 @@ def problem_runner(config: RunnerConfig) -> None:
     utility_type = config.get("utility_type", "APPROVAL")
     source_directory_path = config["source_directory_path"]
     constraints_configs_path = config.get("constraints_configs_path")
+    coefficients_override = config.get("coefficients_override")
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
@@ -34,10 +37,11 @@ def problem_runner(config: RunnerConfig) -> None:
         utility_type,
         source_directory_path,
         constraints_configs_path,
+        coefficients_override,
     )
     solver = get_solver(solver_type, solver_options)
     try:
-        problem.solve(solver)
+        problem.solve(solver, election=molp_to_simple_election(problem))
     except Exception as err:
         logger.error(
             "Problem failed",

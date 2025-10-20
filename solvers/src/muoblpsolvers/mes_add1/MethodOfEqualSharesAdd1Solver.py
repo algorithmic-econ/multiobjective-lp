@@ -19,7 +19,7 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
     def __init__(self):
         super().__init__()
 
-    def actualSolve(self, lp: MultiObjectiveLpProblem):
+    def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
         (
             projects,
             costs,

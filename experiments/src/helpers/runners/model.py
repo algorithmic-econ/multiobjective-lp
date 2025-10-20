@@ -1,7 +1,12 @@
 from typing import List, TypedDict, Literal, Dict
 
 Solver = Literal[
-    "SUMMING", "MES_ADD1", "MES_CONSTRAINT", "MES_UTILS", "MES_EXPONENTIAL"
+    "SUMMING",
+    "MES_ADD1",
+    "MES_CONSTRAINT",
+    "MES_UTILS",
+    "MES_EXPONENTIAL",
+    "GREEDY",
 ]
 Source = Literal["PABUTOOLS"]
 Utility = Literal[
@@ -21,6 +26,7 @@ class RunnerConfig(TypedDict):
     utility_type: Utility
     source_directory_path: str
     constraints_configs_path: str | None
+    coefficients_override: Dict | None
     results_base_path: str
 
 

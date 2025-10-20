@@ -9,8 +9,9 @@
       },
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024",
-      "results_base_path": "resources/experiment-results/single-run/"
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/",
+      "coefficients_override": {}
     }
   ]
 }

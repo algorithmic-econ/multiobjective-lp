@@ -17,6 +17,7 @@ def load_and_transform_strategy(
     utility_type: Utility,
     source_directory_path: str,
     constraints_config_path: str | None,
+    coefficients_override: dict | None,
 ) -> Tuple[MultiObjectiveLpProblem, List[ConstraintConfig]]:
     if source_type == "PABUTOOLS":
         instances, profiles = load_pabutools_by_district(source_directory_path)
@@ -28,7 +29,13 @@ def load_and_transform_strategy(
 
         return (
             pabutools_to_multi_objective_lp(
-                instances, profiles, constraints_configs, utility_type
+                instances,
+                profiles,
+                constraints_configs,
+                utility_type,
+                coefficients_override
+                if coefficients_override is not None
+                else {},
             ),
             constraints_configs,
         )

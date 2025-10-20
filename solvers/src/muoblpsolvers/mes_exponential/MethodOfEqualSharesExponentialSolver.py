@@ -30,7 +30,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         super().__init__()
         self.solver_options: SolverOptions = solver_options
 
-    def actualSolve(self, lp: MultiObjectiveLpProblem):
+    def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
         logger.debug("Start solver", extra={"options": self.solver_options})
         """
         Parameters:
