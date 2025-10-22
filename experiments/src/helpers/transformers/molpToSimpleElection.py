@@ -1,7 +1,7 @@
 from collections import defaultdict
-from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-
 from typing import TypedDict
+
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 
 class Election(TypedDict):

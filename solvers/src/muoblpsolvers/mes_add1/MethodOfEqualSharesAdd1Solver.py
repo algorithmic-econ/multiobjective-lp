@@ -1,21 +1,19 @@
+import logging
 import time
-from pulp import LpSolver
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpbindings import equal_shares_add1
+from pulp import LpSolver
 
 from muoblpsolvers.common import (
     prepare_mes_parameters,
     set_selected_candidates,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class MethodOfEqualSharesAdd1Solver(LpSolver):
-    """
-    Info:
-        Methods of Equal Shares Add1 solver
-    """
-
     def __init__(self):
         super().__init__()
 
@@ -30,7 +28,7 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
         ) = prepare_mes_parameters(lp)
 
         start_time = time.time()
-        print(f"STARTING MES_ADD1 {start_time}")
+        logger.info("Start solver")
         selected = equal_shares_add1(
             voters,
             projects,
@@ -39,7 +37,7 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
             total_utilities,
             total_budget,
         )
-        print(f"FINISHED MES_ADD1 {time.time() - start_time}")
+        logger.info("Finish solver", extra={"time": time.time() - start_time})
 
         set_selected_candidates(lp, selected)
         return

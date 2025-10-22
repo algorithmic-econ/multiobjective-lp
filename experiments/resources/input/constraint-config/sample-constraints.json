@@ -1,6 +1,0 @@
-[
-  {"key": "CATEGORY", "value": "education", "bound": "LOWER", "budget_ratio": 0.8},
-  {"key": "CATEGORY", "value": "sport", "bound": "UPPER", "budget_ratio": 0.30},
-  {"key": "CATEGORY", "value": "ignored", "bound": "UPPER", "budget_ratio": 0.30},
-  {"key": "DISTRICT", "value": "Wawer", "bound": "LOWER", "budget_ratio": 0.20}
-]

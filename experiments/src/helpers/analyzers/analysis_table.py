@@ -1,16 +1,18 @@
-import pandas as pd
+import logging
 import os
 import re
+from pathlib import Path
 
-from helpers.utils.utils import read_from_json
+import pandas as pd
+
 from helpers.runners.model import Solver, Utility
-import logging
+from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
 
 
 def transform_metrics_to_markdown_table(
-    json_file_path: str, limit: int | None
+    json_file_path: Path, limit: int | None
 ) -> str:
     data = read_from_json(json_file_path)
 

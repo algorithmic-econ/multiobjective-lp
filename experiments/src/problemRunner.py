@@ -1,17 +1,16 @@
+import logging
 import time
 from datetime import datetime
-from uuid import uuid4
-
+from pathlib import Path
 from typing import Literal
+from uuid import uuid4
 
 from helpers.runners.model import RunnerConfig, RunnerResult
 from helpers.runners.solverStrategy import get_solver
 from helpers.runners.sourceStrategy import load_and_transform_strategy
-from helpers.utils.utils import write_to_json
-from helpers.utils.resultCache import is_result_present
-import logging
-
 from helpers.transformers.molpToSimpleElection import molp_to_simple_election
+from helpers.utils.resultCache import is_result_present
+from helpers.utils.utils import write_to_json
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +40,10 @@ def problem_runner(config: RunnerConfig) -> None:
     )
     solver = get_solver(solver_type, solver_options)
     try:
-        problem.solve(solver, election=molp_to_simple_election(problem))
+        if solver_type == "GREEDY":
+            problem.solve(solver, election=molp_to_simple_election(problem))
+        else:
+            problem.solve(solver)
     except Exception as err:
         logger.error(
             "Problem failed",
@@ -82,4 +84,4 @@ def problem_runner(config: RunnerConfig) -> None:
     result["problem_path"] = f"{results_base_path}{problem_file}"
     problem.writeLP(result["problem_path"])
     meta_file = get_file_name("meta", "json", problem_id)
-    write_to_json(f"{results_base_path}{meta_file}", result)
+    write_to_json(Path(f"{results_base_path}{meta_file}"), result)
