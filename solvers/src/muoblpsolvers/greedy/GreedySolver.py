@@ -1,31 +1,30 @@
 import logging
 import time
-from collections import defaultdict
-from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpSolver
+
+from muoblpsolvers.base_solvers.ElectionSolver import Election, ElectionSolver
 
 logger = logging.getLogger(__name__)
 
 
-class Election(TypedDict):
-    candidates: dict[str, int]
-    voters: dict[str, list[str]]
-
-
-class GreedySolver(LpSolver):
+class GreedySolver(ElectionSolver):
     def __init__(self):
         super().__init__()
 
-    def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
-        start_time = time.time()
-        election: Election = kwargs["election"]
+    def _solve_election(
+        self,
+        lp: MultiObjectiveLpProblem,
+        election: Election,
+        **kwargs,
+    ):
         candidates = election["candidates"]
         voters = election["voters"]
 
+        start_time = time.time()
+
         logger.info(
-            "Start solver",
+            "SOLVER START",
             extra={"candidates": len(candidates), "voters": len(voters)},
         )
 
@@ -52,31 +51,4 @@ class GreedySolver(LpSolver):
             if not lp.valid():
                 candidate_variable.setInitialValue(0)
 
-        logger.info("Finish solver", extra={"time": time.time() - start_time})
-
-
-def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
-    voters: dict[str, list[str]] = defaultdict(list)
-
-    projects: list[str] = [
-        candidate.name
-        for candidate in lp.variables()
-        if candidate.name != "__dummy"
-    ]
-
-    costs: dict[str, float] = {
-        candidate.name: cost
-        for constraint in lp.constraints.values()
-        for candidate, cost in constraint.items()
-    }
-
-    if len(set(projects).difference(set(costs.keys()))) != 0:
-        raise Exception(
-            "Candidates mismatch between variables and constraints"
-        )
-
-    for voter in lp.objectives:
-        for candidate, _ in voter.items():
-            voters[voter.name].append(candidate.name)
-
-    return {"candidates": costs, "voters": voters}
+        logger.info("SOLVER END", extra={"time": (time.time() - start_time)})

@@ -30,8 +30,6 @@ def analyze_runner_result(
         solver_result: RunnerResult = read_from_json(runner_result_path)
         problem = read_lp_file(solver_result["problem_path"])
         problem = enhance_problem_from_solver_result(solver_result, problem)
-        for v, c in problem.coefficients_override.items():
-            print(f"{v}:{c}")
         analyzer_result = get_metrics(metrics, problem)
         return {
             "problem_path": runner_result_path.as_posix()

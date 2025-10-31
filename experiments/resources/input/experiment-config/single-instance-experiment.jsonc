@@ -8,28 +8,7 @@
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
       "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/",
-      "coefficients_override": {}
-    },
-    {
-      "solver_type": "MES_ADD1",
-      "solver_options": {},
-      "source_type": "PABUTOOLS",
-      "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/",
-      "coefficients_override": {}
-    },
-    {
-      "solver_type": "MES_EXPONENTIAL",
-      "solver_options": {
-        "budget_init": 100
-      },
-      "source_type": "PABUTOOLS",
-      "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/",
-      "coefficients_override": {}
+      "results_base_path": "resources/experiment-results/single-run/"
     }
   ]
 }

@@ -5,7 +5,6 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.greedy.GreedySolver import (
     GreedySolver,
-    molp_to_simple_election,
 )
 from muoblpsolvers.types import Utility
 
@@ -24,7 +23,7 @@ def test_greedy_solver(
     # when
     solver = GreedySolver()
     problem = basic_pb_factory(utility_type)
-    problem.solve(solver, election=molp_to_simple_election(problem))
+    problem.solve(solver)
 
     # then
     selected = [

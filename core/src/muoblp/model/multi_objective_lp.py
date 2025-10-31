@@ -1,7 +1,7 @@
 from typing import List
 
 import pulp
-from pulp import LpProblem, LpAffineExpression, LpMaximize, LpMinimize
+from pulp import LpAffineExpression, LpMaximize, LpMinimize, LpProblem
 
 from muoblp.utils.lpWriterUtils import expression_to_lp_format
 
@@ -15,11 +15,9 @@ class MultiObjectiveLpProblem(LpProblem):
         name: str,
         sense: LpMaximize | LpMinimize = LpMaximize,
         objectives: list[LpAffineExpression] = [],
-        coefficients_override: dict[str, int] = {},  # variable i
     ) -> None:
         super().__init__(name, sense=sense)
         self._objectives = objectives
-        self._coefficients_override = coefficients_override
 
     @property
     def objectives(self) -> List[LpAffineExpression]:
@@ -27,15 +25,6 @@ class MultiObjectiveLpProblem(LpProblem):
 
     def setObjectives(self, objectives: List[LpAffineExpression]) -> None:
         self._objectives = objectives
-
-    @property
-    def coefficients_override(self) -> dict[str, int]:
-        return self._coefficients_override
-
-    def set_coefficients_override(
-        self, coefficients_override: dict[str, int]
-    ) -> None:
-        self._coefficients_override = coefficients_override
 
     # TODO: Decide how to handle fixObjective and restoreObjective
 
@@ -46,10 +35,6 @@ class MultiObjectiveLpProblem(LpProblem):
             for objective in self.objectives:
                 file.write(expression_to_lp_format(objective))
             file.write("END_OBJECTIVES:\n")
-            file.write("COEFS_OVERRIDE:\n")
-            for variable, coef in self.coefficients_override.items():
-                file.write(f"{variable}:{coef}\n")
-            file.write("END_COEFS_OVERRIDE:\n")
         return
 
     # TODO: override __iadd__ to append objective to the list of objectives

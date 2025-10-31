@@ -8,8 +8,6 @@ from uuid import uuid4
 from helpers.runners.model import RunnerConfig, RunnerResult
 from helpers.runners.solverStrategy import get_solver
 from helpers.runners.sourceStrategy import load_and_transform_strategy
-from helpers.transformers.molpToSimpleElection import molp_to_simple_election
-from helpers.utils.resultCache import is_result_present
 from helpers.utils.utils import write_to_json
 
 logger = logging.getLogger(__name__)
@@ -22,13 +20,12 @@ def problem_runner(config: RunnerConfig) -> None:
     utility_type = config.get("utility_type", "APPROVAL")
     source_directory_path = config["source_directory_path"]
     constraints_configs_path = config.get("constraints_configs_path")
-    coefficients_override = config.get("coefficients_override")
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
-    if is_result_present(config):
-        print(f"Result already present - {results_base_path}")
-        return
+    # if is_result_present(config):
+    #     print(f"Result already present - {results_base_path}")
+    #     return
 
     start_time = time.time()
     problem, constraints_configs = load_and_transform_strategy(
@@ -36,14 +33,10 @@ def problem_runner(config: RunnerConfig) -> None:
         utility_type,
         source_directory_path,
         constraints_configs_path,
-        coefficients_override,
     )
     solver = get_solver(solver_type, solver_options)
     try:
-        if solver_type == "GREEDY":
-            problem.solve(solver, election=molp_to_simple_election(problem))
-        else:
-            problem.solve(solver)
+        problem.solve(solver)
     except Exception as err:
         logger.error(
             "Problem failed",

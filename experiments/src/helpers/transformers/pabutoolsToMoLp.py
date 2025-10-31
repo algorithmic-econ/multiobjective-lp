@@ -1,31 +1,31 @@
 from collections import defaultdict
 from functools import reduce
-from operator import itemgetter, ior
-from typing import Dict, TypeAlias, List, Tuple
+from operator import ior, itemgetter
+from typing import Dict, List, Tuple, TypeAlias
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import (
+    CumulativeProfile,
     Instance,
+    OrdinalProfile,
     Profile,
     Project,
-    OrdinalProfile,
-    CumulativeProfile,
 )
 from pulp import (
-    LpVariable,
     LpAffineExpression,
     LpConstraint,
-    lpSum,
-    LpConstraintLE,
     LpConstraintGE,
+    LpConstraintLE,
+    LpVariable,
+    lpSum,
 )
 
-from .pabutoolsConstants import (
-    VARIABLE_PREFIX,
-    TARGET_PREFIX,
-    CONSTRAINT_PREFIX,
-)
 from ..runners.model import ConstraintConfig, Utility
+from .pabutoolsConstants import (
+    CONSTRAINT_PREFIX,
+    TARGET_PREFIX,
+    VARIABLE_PREFIX,
+)
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -36,25 +36,17 @@ def pabutools_to_multi_objective_lp(
     profiles: Dict[District, Profile],
     constraints_configs: List[ConstraintConfig],
     utility: Utility,
-    coefficients_override: dict[str, int],
 ) -> MultiObjectiveLpProblem:
     problem = MultiObjectiveLpProblem("election")
 
     project_variables = create_projects_variables(instances)
     problem.addVariables(project_variables.values())
 
-    problem.set_coefficients_override(
-        {
-            project_variables[k].name: v
-            for k, v in coefficients_override.items()
-        }
-    )
-
     objectives = create_voter_objectives(utility, profiles, project_variables)
     problem.setObjectives(list(objectives.values()))
 
     district_constraints = create_baseline_constraints(
-        instances, project_variables, coefficients_override
+        instances, project_variables
     )
     for constraint in district_constraints:
         problem.addConstraint(constraint)
@@ -63,7 +55,6 @@ def pabutools_to_multi_objective_lp(
         constraints_configs,
         instances,
         project_variables,
-        coefficients_override,
     )
     for constraint in additional_constraints:
         problem.addConstraint(constraint)
@@ -182,7 +173,6 @@ def define_voter_objective(
 def create_baseline_constraints(
     instances: Dict[District, Instance],
     projects_variables: Dict[AgentId, LpVariable],
-    coefficients_override: dict[AgentId, int],  # LpVariable.name
 ) -> List[LpConstraint]:
     budgets: Dict[District, int] = {
         district: (
@@ -202,9 +192,6 @@ def create_baseline_constraints(
         for district_projects_costs in projects_costs.values()
         for k, v in district_projects_costs.items()
     }
-
-    for variable, coeff in coefficients_override.items():
-        all_projects_costs[variable] = coeff
 
     total_budget_constraint = define_constraint(
         "total_budget",
@@ -233,7 +220,6 @@ def create_constraints_from_config(
     constraints_configs: List[ConstraintConfig],
     instances: Dict[District, Instance],
     projects_variables: Dict[AgentId, LpVariable],
-    coefficients_override: dict[AgentId, int],  # LpVariable.name
 ) -> List[LpConstraint]:
     total_budget: int = sum(
         [
@@ -262,7 +248,6 @@ def create_constraints_from_config(
                     projects_variables,
                     projects,
                     total_budget,
-                    coefficients_override,
                 )
             )
         if (
@@ -278,7 +263,6 @@ def create_constraints_from_config(
                         for project in instances[constraint_config["value"]]
                     ],
                     total_budget,
-                    coefficients_override,
                 )
             )
     return constraints
@@ -289,7 +273,6 @@ def create_category_constraint(
     projects_variables: Dict[AgentId, LpVariable],
     projects: List[Project],
     total_budget: int,
-    coefficients_override: dict[AgentId, int],  # LpVariable.name
 ) -> LpConstraint:
     category, bound, budget_ratio = itemgetter(
         "value", "bound", "budget_ratio"
@@ -303,9 +286,6 @@ def create_category_constraint(
         ],
         {},
     )
-    for variable, coeff in coefficients_override.items():
-        if variable in projects_costs:
-            projects_costs[variable] = coeff
 
     constraint_limit = int(budget_ratio * total_budget)
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
@@ -319,7 +299,6 @@ def create_district_constraint(
     projects_variables: Dict[AgentId, LpVariable],
     district_projects: List[Project],
     total_budget: int,
-    coefficients_override: dict[AgentId, int],  # LpVariable.name
 ) -> LpConstraint:
     district, bound, budget_ratio = itemgetter(
         "value", "bound", "budget_ratio"
@@ -329,9 +308,6 @@ def create_district_constraint(
         [{project.name: int(project.cost)} for project in district_projects],
         {},
     )
-    for variable, coeff in coefficients_override.items():
-        if variable in projects_costs:
-            projects_costs[variable] = coeff
 
     constraint_limit = int(budget_ratio * total_budget)
     # TODO: Validate constraint config, district upper bound is created in baseline constraints

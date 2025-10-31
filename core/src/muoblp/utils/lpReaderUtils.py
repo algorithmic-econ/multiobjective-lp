@@ -1,14 +1,14 @@
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 from pulp import (
+    LpAffineExpression,
+    LpBinary,
+    LpConstraint,
+    LpConstraintGE,
+    LpConstraintLE,
     LpMaximize,
     LpMinimize,
     LpVariable,
-    LpBinary,
-    LpConstraintLE,
-    LpConstraintGE,
-    LpConstraint,
-    LpAffineExpression,
 )
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -29,7 +29,6 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         "constraints": [],
         "variables": {},
         "objectives": [],
-        "coefficients_override": {},
     }
 
     with open(filename, "r") as f:
@@ -92,21 +91,10 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         )
         problem_data["objectives"].append(target)
 
-    for coef_line in lines[
-        lines.index("COEFS_OVERRIDE:\n") + 1 : lines.index(
-            "END_COEFS_OVERRIDE:\n"
-        )
-    ]:
-        name_right_idx = coef_line.index(":")
-        v_name = coef_line[:name_right_idx]
-        coef = coef_line[name_right_idx + 1 :]
-        problem_data["coefficients_override"][v_name] = int(coef.strip())
-
     problem = MultiObjectiveLpProblem(
         problem_data["name"],
         problem_data["sense"],
         problem_data["objectives"],
-        problem_data["coefficients_override"],
     )
     problem.addVariables(problem_data["variables"].values())
     for constraint in problem_data["constraints"]:
