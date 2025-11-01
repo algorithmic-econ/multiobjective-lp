@@ -110,15 +110,13 @@ description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "muoblp-1.0.3-py3-none-any.whl", hash = "sha256:1c0dee9fcf3133d42d16e813204f4a95e8cc6598f2122f635255cbcd4be0423b"},
+    {file = "muoblp-1.0.3.tar.gz", hash = "sha256:0941d40d697e104991178c4e8809dad083a04faaaf2e530c3092a8e4cdc2c96e"},
+]
 
 [package.dependencies]
 pulp = "2.9.0"
-
-[package.source]
-type = "directory"
-url = "../core"
 
 [[package]]
 name = "muoblpbindings"
@@ -165,7 +163,7 @@ files = [
 
 [[package]]
 name = "muoblpsolvers"
-version = "0.0.13"
+version = "0.0.12"
 description = "Solvers for multi objective linear programming"
 optional = false
 python-versions = ">=3.11"
@@ -174,7 +172,7 @@ files = []
 develop = true
 
 [package.dependencies]
-muoblp = {path = "../core", develop = true}
+muoblp = "1.0.3"
 muoblpbindings = "0.0.16"
 pulp = "2.9.0"
 pytest = "8.4.1"
@@ -653,4 +651,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "5e17cfc7257e23e152507c04c5164bdfada7df2abc231200ff9ad867dba7d862"
+content-hash = "5a40c8f27bba7c7183f39678939b005dc00e74dd593a4f394da56caca1f2ff26"
