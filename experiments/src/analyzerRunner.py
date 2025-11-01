@@ -1,3 +1,4 @@
+import logging
 import multiprocessing
 import sys
 from itertools import repeat
@@ -6,19 +7,17 @@ from typing import List
 
 from muoblp.utils.lpReaderUtils import read_lp_file
 
-from helpers.analyzers.model import AnalyzerResult, AnalyzerConfig, Metric
+from helpers.analyzers.analysis_table import (
+    transform_metrics_to_markdown_table,
+)
 from helpers.analyzers.metrics import get_metrics
+from helpers.analyzers.model import AnalyzerConfig, AnalyzerResult, Metric
 from helpers.runners.model import RunnerResult
 from helpers.utils.enhanceFromSolverResult import (
     enhance_problem_from_solver_result,
 )
-from helpers.utils.utils import read_from_json, write_to_json
-from helpers.analyzers.analysis_table import (
-    transform_metrics_to_markdown_table,
-)
-
 from helpers.utils.logger import setup_logging
-import logging
+from helpers.utils.utils import read_from_json, write_to_json
 
 logger = logging.getLogger(__name__)
 
@@ -55,12 +54,14 @@ def main(config: AnalyzerConfig, console_output_limit: int | None = None):
 
     Path(config["analyzer_result_path"]).mkdir(parents=True, exist_ok=True)
 
-    with multiprocessing.Pool(processes=2, initializer=setup_logging) as pool:
+    with multiprocessing.Pool(processes=3, initializer=setup_logging) as pool:
         analysis = pool.starmap(
             analyze_runner_result,
             zip(runner_results, repeat(config["metrics"])),
         )
-        result_path = f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
+        result_path = Path(
+            f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
+        )
         write_to_json(result_path, analysis)
 
     markdown_output = transform_metrics_to_markdown_table(
@@ -72,5 +73,5 @@ def main(config: AnalyzerConfig, console_output_limit: int | None = None):
 if __name__ == "__main__":
     # Example: python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
     setup_logging()
-    analyzer_config: AnalyzerConfig = read_from_json(sys.argv[1])
+    analyzer_config: AnalyzerConfig = read_from_json(Path(sys.argv[1]))
     main(analyzer_config, 25)

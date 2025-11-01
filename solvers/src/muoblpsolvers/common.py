@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraintLE, LpConstraint
+from pulp import LpConstraint, LpConstraintLE
 
 from muoblpsolvers.types import (
     CandidateId,

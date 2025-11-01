@@ -1,7 +1,12 @@
-from typing import List, TypedDict, Literal, Dict
+from typing import Dict, List, Literal, TypedDict
 
 Solver = Literal[
-    "SUMMING", "MES_ADD1", "MES_CONSTRAINT", "MES_UTILS", "MES_EXPONENTIAL"
+    "SUMMING",
+    "MES_ADD1",
+    "MES_CONSTRAINT",
+    "MES_UTILS",
+    "MES_EXPONENTIAL",
+    "GREEDY",
 ]
 Source = Literal["PABUTOOLS"]
 Utility = Literal[

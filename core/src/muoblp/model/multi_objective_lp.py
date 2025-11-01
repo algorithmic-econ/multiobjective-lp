@@ -1,7 +1,7 @@
 from typing import List
 
 import pulp
-from pulp import LpProblem, LpAffineExpression, LpMaximize, LpMinimize
+from pulp import LpAffineExpression, LpMaximize, LpMinimize, LpProblem
 
 from muoblp.utils.lpWriterUtils import expression_to_lp_format
 
@@ -14,7 +14,7 @@ class MultiObjectiveLpProblem(LpProblem):
         self,
         name: str,
         sense: LpMaximize | LpMinimize = LpMaximize,
-        objectives: List[LpAffineExpression] = None,
+        objectives: list[LpAffineExpression] = [],
     ) -> None:
         super().__init__(name, sense=sense)
         self._objectives = objectives

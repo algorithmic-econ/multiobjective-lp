@@ -2,14 +2,13 @@ from typing import List, Tuple
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
+from helpers.runners.model import Source, Utility
 from helpers.transformers.pabutoolsToMoLp import (
-    pabutools_to_multi_objective_lp,
     ConstraintConfig,
+    pabutools_to_multi_objective_lp,
 )
-
 from helpers.transformers.pabutoolsUtils import load_pabutools_by_district
 from helpers.utils.utils import read_from_json
-from helpers.runners.model import Source, Utility
 
 
 def load_and_transform_strategy(
@@ -28,7 +27,10 @@ def load_and_transform_strategy(
 
         return (
             pabutools_to_multi_objective_lp(
-                instances, profiles, constraints_configs, utility_type
+                instances,
+                profiles,
+                constraints_configs,
+                utility_type,
             ),
             constraints_configs,
         )

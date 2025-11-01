@@ -1,6 +1,6 @@
 [
     {
-        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-25-06_e039_krakow_2024_COST_MES_EXPONENTIAL.json",
+        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-55-35_5ccc_warszawa_2023_test_COST_GREEDY.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -8,43 +8,21 @@
             "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.053977665473648635
+            "exclusion_ratio": 0.05633139030137666
         },
         "SUM_OBJECTIVES": {
-            "sum": 62774857172
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 16
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
-    },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-23-17_f056_krakow_2024_COST_MES_ADD1.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.0035483325908972213
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 134763199377
+            "sum": 329517363348
         },
         "EJR_PLUS": {
             "ejr_plus": 0
         },
         "CONSTRAINTS": {
             "total_budget": true,
-            "invalid_count": 1
+            "invalid_count": 0
         }
     },
     {
-        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-27-02_9c05_krakow_2024_COST_MES_EXPONENTIAL.json",
+        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-50-59_122f_warszawa_2023_test_COST_GREEDY.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -52,13 +30,13 @@
             "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.041412574307614324
+            "exclusion_ratio": 0.05633139030137666
         },
         "SUM_OBJECTIVES": {
-            "sum": 59160198185
+            "sum": 329517363348
         },
         "EJR_PLUS": {
-            "ejr_plus": 11
+            "ejr_plus": 0
         },
         "CONSTRAINTS": {
             "total_budget": true,
@@ -66,7 +44,7 @@
         }
     },
     {
-        "problem_path": "resources/experiment-results/single-run/meta_07-30T22-21-47_c086_krakow_2024_COST_MES_EXPONENTIAL.json",
+        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-49-08_2c3b_warszawa_2023_test_COST_GREEDY.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -74,13 +52,13 @@
             "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.16032011797053808
+            "exclusion_ratio": 0.05633139030137666
         },
         "SUM_OBJECTIVES": {
-            "sum": 77180085909
+            "sum": 329517363348
         },
         "EJR_PLUS": {
-            "ejr_plus": 120
+            "ejr_plus": 0
         },
         "CONSTRAINTS": {
             "total_budget": true,

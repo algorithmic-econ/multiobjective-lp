@@ -1,5 +1,28 @@
 # Notes
 
+## 25/09
+* make prepare_mes_parameters more generic
+* in general MUOBLP model allow adding proportianality coefs for variables - they should override coefs provided in constraints
+* fallback if coefs not provided:
+  normalize constraints - 7v_a + 5v_b <= 10 -> 7/10v_a + 5/10v_b <= 1
+
+---
+greedy:
+1. sort projecst by count(obj) / cost
+2. set projects to 1 (selected)
+3. repeat 2 until infeasible
+
+---
+change solver input to accept as parameters
+* election (generic one, without budget, candidates, voters, costs)
+* ILP - control feasibility (constraints)
+
+---
+* figure out how to pass ILP from python to c++
+---
+
+
+
 ## Test example
 * Showcase core library without Pabulib, i.e., create model from scratch
   * Use MES with Bounded Overspending, Section 2, Table 1

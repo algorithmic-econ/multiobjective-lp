@@ -1,15 +1,16 @@
+import logging
 import os
 import re
+from pathlib import Path
 
 from helpers.runners.model import RunnerConfig
 from helpers.utils.utils import read_from_json
-import logging
 
 logger = logging.getLogger(__name__)
 
 
 def is_metadata_content_matching(
-    meta_path: str, problem_config: RunnerConfig
+    meta_path: Path, problem_config: RunnerConfig
 ) -> bool:
     existing_result = read_from_json(meta_path)
 
@@ -22,7 +23,7 @@ def is_metadata_content_matching(
     # Check if constraints match
     constraints_configs_path = problem_config.get("constraints_configs_path")
     if constraints_configs_path:
-        current_constraints = read_from_json(constraints_configs_path)
+        current_constraints = read_from_json(Path(constraints_configs_path))
     else:
         current_constraints = []
 
@@ -52,7 +53,7 @@ def is_result_present(problem_config: RunnerConfig) -> bool:
     for filename in os.listdir(base_path):
         pattern = f"meta_[0-9]{{2}}-[0-9]{{2}}T[0-9]{{2}}-[0-9]{{2}}-[0-9]{{2}}_[a-z0-9]{{4}}_{data_source}_{utility_type}_{solver_type}.json"
         if re.match(pattern, filename):
-            metadata_file_path = os.path.join(base_path, filename)
+            metadata_file_path = Path(os.path.join(base_path, filename))
             if is_metadata_content_matching(
                 metadata_file_path, problem_config
             ):

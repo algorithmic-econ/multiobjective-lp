@@ -24,12 +24,14 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 pabutools = {version = "1.2.2"}
-muoblp = {version = "1.0.2"}
+# muoblp = {version = "1.0.2"}
+muoblp = {path = "../core", develop = true}
 muoblpsolvers = {path = "../solvers", develop = true}
 pandas = "2.3.1"
 tabulate = "0.9.0"
 pyyaml = "6.0.2"
 python-json-logger = "3.3.0"
+json5 = "^0.12.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,31 +1,31 @@
 from collections import defaultdict
 from functools import reduce
-from operator import itemgetter, ior
-from typing import Dict, TypeAlias, List, Tuple
+from operator import ior, itemgetter
+from typing import Dict, List, Tuple, TypeAlias
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import (
+    CumulativeProfile,
     Instance,
+    OrdinalProfile,
     Profile,
     Project,
-    OrdinalProfile,
-    CumulativeProfile,
 )
 from pulp import (
-    LpVariable,
     LpAffineExpression,
     LpConstraint,
-    lpSum,
-    LpConstraintLE,
     LpConstraintGE,
+    LpConstraintLE,
+    LpVariable,
+    lpSum,
 )
 
-from .pabutoolsConstants import (
-    VARIABLE_PREFIX,
-    TARGET_PREFIX,
-    CONSTRAINT_PREFIX,
-)
 from ..runners.model import ConstraintConfig, Utility
+from .pabutoolsConstants import (
+    CONSTRAINT_PREFIX,
+    TARGET_PREFIX,
+    VARIABLE_PREFIX,
+)
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -52,7 +52,9 @@ def pabutools_to_multi_objective_lp(
         problem.addConstraint(constraint)
 
     additional_constraints = create_constraints_from_config(
-        constraints_configs, instances, project_variables
+        constraints_configs,
+        instances,
+        project_variables,
     )
     for constraint in additional_constraints:
         problem.addConstraint(constraint)
@@ -190,6 +192,7 @@ def create_baseline_constraints(
         for district_projects_costs in projects_costs.values()
         for k, v in district_projects_costs.items()
     }
+
     total_budget_constraint = define_constraint(
         "total_budget",
         LpConstraintLE,
@@ -283,6 +286,7 @@ def create_category_constraint(
         ],
         {},
     )
+
     constraint_limit = int(budget_ratio * total_budget)
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(
@@ -304,6 +308,7 @@ def create_district_constraint(
         [{project.name: int(project.cost)} for project in district_projects],
         {},
     )
+
     constraint_limit = int(budget_ratio * total_budget)
     # TODO: Validate constraint config, district upper bound is created in baseline constraints
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE

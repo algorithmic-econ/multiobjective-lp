@@ -1,14 +1,14 @@
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 from pulp import (
+    LpAffineExpression,
+    LpBinary,
+    LpConstraint,
+    LpConstraintGE,
+    LpConstraintLE,
     LpMaximize,
     LpMinimize,
     LpVariable,
-    LpBinary,
-    LpConstraintLE,
-    LpConstraintGE,
-    LpConstraint,
-    LpAffineExpression,
 )
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -92,7 +92,9 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         problem_data["objectives"].append(target)
 
     problem = MultiObjectiveLpProblem(
-        problem_data["name"], problem_data["sense"], problem_data["objectives"]
+        problem_data["name"],
+        problem_data["sense"],
+        problem_data["objectives"],
     )
     problem.addVariables(problem_data["variables"].values())
     for constraint in problem_data["constraints"]:
@@ -106,9 +108,9 @@ def parse_variable_with_coefficient(
 ) -> Tuple[LpVariable, int]:
     parts = var.strip().split(" ")
     if len(parts) == 1:
-        return [variables[parts[0]], 1]
+        return (variables[parts[0]], 1)
     if len(parts) == 2:
-        return [variables[parts[1]], int(parts[0])]
+        return (variables[parts[1]], int(parts[0]))
     raise Exception("Unexpected variable parts")
 
 

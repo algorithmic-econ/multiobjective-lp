@@ -15,6 +15,9 @@ from muoblpsolvers.mes_utils.MethodOfEqualSharesUtilitySolver import (
 from muoblpsolvers.summed.SummedObjectivesLpSolver import (
     SummedObjectivesLpSolver,
 )
+
+from muoblpsolvers.greedy.GreedySolver import GreedySolver
+
 from pulp import LpSolver
 
 from helpers.runners.model import Solver
@@ -31,4 +34,7 @@ def get_solver(solver_type: Solver, solver_options: Dict | None) -> LpSolver:
         return MethodOfEqualSharesConstrainsSolver(solver_options)
     if solver_type == "MES_EXPONENTIAL":
         return MethodOfEqualSharesExponentialSolver(solver_options)
+    if solver_type == "GREEDY":
+        return GreedySolver()
+
     raise Exception("Strategy not implemented for the solver type")

@@ -3,11 +3,11 @@ from typing import Callable
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import (
-    LpVariable,
     LpAffineExpression,
     LpConstraint,
-    lpSum,
     LpConstraintLE,
+    LpVariable,
+    lpSum,
 )
 
 

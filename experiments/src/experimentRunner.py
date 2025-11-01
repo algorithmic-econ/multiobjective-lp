@@ -1,15 +1,13 @@
+import logging
 import multiprocessing
 import sys
 import time
 from pathlib import Path
 
+from helpers.runners.model import ExperimentConfig
 from helpers.utils.logger import setup_logging
-
 from helpers.utils.utils import read_from_json
 from problemRunner import problem_runner
-from helpers.runners.model import ExperimentConfig
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -45,5 +43,5 @@ def main(experiment: ExperimentConfig):
 
 if __name__ == "__main__":
     setup_logging()
-    config: ExperimentConfig = read_from_json(sys.argv[1])
+    config: ExperimentConfig = read_from_json(Path(sys.argv[1]))
     main(config)

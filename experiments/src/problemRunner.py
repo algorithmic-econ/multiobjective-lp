@@ -1,15 +1,14 @@
+import logging
 import time
 from datetime import datetime
-from uuid import uuid4
-
+from pathlib import Path
 from typing import Literal
+from uuid import uuid4
 
 from helpers.runners.model import RunnerConfig, RunnerResult
 from helpers.runners.solverStrategy import get_solver
 from helpers.runners.sourceStrategy import load_and_transform_strategy
 from helpers.utils.utils import write_to_json
-from helpers.utils.resultCache import is_result_present
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +23,9 @@ def problem_runner(config: RunnerConfig) -> None:
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
-    if is_result_present(config):
-        print(f"Result already present - {results_base_path}")
-        return
+    # if is_result_present(config):
+    #     print(f"Result already present - {results_base_path}")
+    #     return
 
     start_time = time.time()
     problem, constraints_configs = load_and_transform_strategy(
@@ -78,4 +77,4 @@ def problem_runner(config: RunnerConfig) -> None:
     result["problem_path"] = f"{results_base_path}{problem_file}"
     problem.writeLP(result["problem_path"])
     meta_file = get_file_name("meta", "json", problem_id)
-    write_to_json(f"{results_base_path}{meta_file}", result)
+    write_to_json(Path(f"{results_base_path}{meta_file}"), result)
