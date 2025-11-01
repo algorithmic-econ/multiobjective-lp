@@ -1,5 +1,5 @@
 {
-  "concurrency": 3,
+  "concurrency": 4,
   "experiment_results_base_path": "resources/experiment-results/single-run/",
   "runner_configs": [
     {
@@ -7,6 +7,72 @@
       "solver_options": {},
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "APPROVAL",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_EXPONENTIAL",
+      "solver_options": {
+        "budget_init": 10
+      },
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_EXPONENTIAL",
+      "solver_options": {
+        "budget_init": 10
+      },
+      "source_type": "PABUTOOLS",
+      "utility_type": "APPROVAL",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_ADD1",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_UTILS",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_CONSTRAINT",
+      "solver_options": {
+        "max_iterations": 100,
+        "cost_modification_base": 1.05
+      },
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "MES_CONSTRAINT",
+      "solver_options": {
+        "max_iterations": 100,
+        "cost_modification_base": 1.05
+      },
+      "source_type": "PABUTOOLS",
+      "utility_type": "APPROVAL",
       "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
       "results_base_path": "resources/experiment-results/single-run/"
     }

@@ -8,6 +8,7 @@ from uuid import uuid4
 from helpers.runners.model import RunnerConfig, RunnerResult
 from helpers.runners.solverStrategy import get_solver
 from helpers.runners.sourceStrategy import load_and_transform_strategy
+from helpers.utils.resultCache import is_result_present
 from helpers.utils.utils import write_to_json
 
 logger = logging.getLogger(__name__)
@@ -23,9 +24,9 @@ def problem_runner(config: RunnerConfig) -> None:
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
-    # if is_result_present(config):
-    #     print(f"Result already present - {results_base_path}")
-    #     return
+    if is_result_present(config):
+        logger.info(f"Result already present - {results_base_path}")
+        return
 
     start_time = time.time()
     problem, constraints_configs = load_and_transform_strategy(

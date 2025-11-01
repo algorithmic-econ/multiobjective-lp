@@ -1,19 +1,21 @@
+import logging
 import time
 from typing import TypedDict
 
-from pulp import LpSolver
-from muoblpbindings import equal_shares_utils
-
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblpbindings import equal_shares_utils
+from pulp import LpSolver
 
 from muoblpsolvers.common import (
     prepare_mes_parameters,
     set_selected_candidates,
 )
 from muoblpsolvers.mes_constrains.utils import (
-    get_infeasible_constraints,
     get_feasibility_ratio,
+    get_infeasible_constraints,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class SolverOptions(TypedDict):
@@ -32,9 +34,8 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         self.solver_options: SolverOptions = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
-        print(
-            f"Starting MethodOfEqualSharesConstrainsSolver {self.solver_options}"
-        )
+        start_time = time.time()
+        logger.info("SOLVER START", extra={"options": self.solver_options})
         """
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
@@ -60,18 +61,18 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 total_utilities,
                 total_budget,
             )
-            print(f"FINISHED MES {time.time() - start_time:.2f} s\n")
+            logger.debug(f"FINISHED MES {time.time() - start_time:.2f} s\n")
             set_selected_candidates(lp, selected)
 
             # Check constraints
             infeasible = get_infeasible_constraints(lp)
             for constraint in infeasible:
-                print(
+                logger.debug(
                     f"FEAS_RATIO|{iteration}|{constraint.name}|{get_feasibility_ratio(constraint):.6f}"
                 )
 
             if len(infeasible) == 0:
-                print(
+                logger.debug(
                     "============== all constraints fulfilled =============="
                 )
                 break
@@ -88,7 +89,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 affected_candidates = [
                     candidate.name for candidate in constraint.keys()
                 ]
-                print(
+                logger.debug(
                     f"Modifying cost of {len(affected_candidates)} variables with ratio {cost_modification_ratio:.4f}"
                 )
                 for candidate in affected_candidates:
@@ -97,3 +98,4 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                     )
 
             iteration += 1
+        logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
