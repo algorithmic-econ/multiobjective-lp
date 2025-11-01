@@ -1,6 +1,72 @@
 [
     {
-        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-55-35_5ccc_warszawa_2023_test_COST_GREEDY.json",
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-49_ddda_warszawa_2023_test_COST_MES_CONSTRAINT.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.060523378395138286
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 579436395017
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-39_a4ef_warszawa_2023_test_APPROVAL_GREEDY.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.05633139030137666
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 467091
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 32
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-34-10_d956_warszawa_2023_test_COST_MES_ADD1.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.054036958948282275
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 726800986917
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 1
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-39_1698_warszawa_2023_test_COST_GREEDY.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -22,7 +88,7 @@
         }
     },
     {
-        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-50-59_122f_warszawa_2023_test_COST_GREEDY.json",
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-50_ec73_warszawa_2023_test_APPROVAL_MES_CONSTRAINT.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -30,13 +96,13 @@
             "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.05633139030137666
+            "exclusion_ratio": 0.059084707925089915
         },
         "SUM_OBJECTIVES": {
-            "sum": 329517363348
+            "sum": 386231
         },
         "EJR_PLUS": {
-            "ejr_plus": 0
+            "ejr_plus": 93
         },
         "CONSTRAINTS": {
             "total_budget": true,
@@ -44,7 +110,7 @@
         }
     },
     {
-        "problem_path": "resources/experiment-results/single-run/meta_10-31T22-49-08_2c3b_warszawa_2023_test_COST_GREEDY.json",
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-46_ee22_warszawa_2023_test_COST_MES_EXPONENTIAL.json",
         "metrics": [
             "EXCLUSION_RATION",
             "SUM_OBJECTIVES",
@@ -52,13 +118,57 @@
             "CONSTRAINTS"
         ],
         "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.05633139030137666
+            "exclusion_ratio": 0.06180081855388813
         },
         "SUM_OBJECTIVES": {
-            "sum": 329517363348
+            "sum": 596679156080
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 2
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-45_5616_warszawa_2023_test_COST_MES_UTILS.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.05800570507255364
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 595290885017
         },
         "EJR_PLUS": {
             "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "total_budget": true,
+            "invalid_count": 1
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-43_32d9_warszawa_2023_test_APPROVAL_MES_EXPONENTIAL.json",
+        "metrics": [
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07406672454421431
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 325746
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 118
         },
         "CONSTRAINTS": {
             "total_budget": true,

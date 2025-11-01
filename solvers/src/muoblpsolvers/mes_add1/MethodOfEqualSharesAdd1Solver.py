@@ -28,7 +28,8 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
         ) = prepare_mes_parameters(lp)
 
         start_time = time.time()
-        logger.info("Start solver")
+        logger.info("SOLVER START")
+
         selected = equal_shares_add1(
             voters,
             projects,
@@ -37,7 +38,6 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
             total_utilities,
             total_budget,
         )
-        logger.info("Finish solver", extra={"time": time.time() - start_time})
-
         set_selected_candidates(lp, selected)
-        return
+
+        logger.info("SOLVER END", extra={"time": time.time() - start_time})

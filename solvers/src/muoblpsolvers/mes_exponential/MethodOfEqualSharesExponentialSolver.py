@@ -25,7 +25,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         self.solver_options: SolverOptions = solver_options
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
-        logger.info("Start solver", extra={"options": self.solver_options})
+        logger.info("SOLVER START", extra={"options": self.solver_options})
 
         start_time = time.time()
         (
@@ -47,4 +47,4 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             self.solver_options["budget_init"],
         )
 
-        logger.info("Finish solver", extra={"time": time.time() - start_time})
+        logger.info("SOLVER END", extra={"time": time.time() - start_time})

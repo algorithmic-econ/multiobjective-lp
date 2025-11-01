@@ -1,5 +1,6 @@
 from typing import Dict
 
+from muoblpsolvers.greedy.GreedySolver import GreedySolver
 from muoblpsolvers.mes_add1.MethodOfEqualSharesAdd1Solver import (
     MethodOfEqualSharesAdd1Solver,
 )
@@ -15,9 +16,6 @@ from muoblpsolvers.mes_utils.MethodOfEqualSharesUtilitySolver import (
 from muoblpsolvers.summed.SummedObjectivesLpSolver import (
     SummedObjectivesLpSolver,
 )
-
-from muoblpsolvers.greedy.GreedySolver import GreedySolver
-
 from pulp import LpSolver
 
 from helpers.runners.model import Solver
