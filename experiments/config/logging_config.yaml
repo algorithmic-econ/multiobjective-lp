@@ -8,7 +8,7 @@ formatters:
     format: "%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s"
   json:
     class: pythonjsonlogger.jsonlogger.JsonFormatter
-    format: "%(levelname)s %(module)s %(message)s"
+    format: "%(levelname)s %(process)d %(module)s %(message)s"
     # TODO: rename_fields doesn't work when using dictConfig
     # rename_fields:
     #   levelname: level

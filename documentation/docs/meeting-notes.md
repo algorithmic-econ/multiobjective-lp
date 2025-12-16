@@ -20,7 +20,6 @@ Metrics (start with):
 * Exclusion ratio
 
 
-
 ## 25/09
 * make prepare_mes_parameters more generic
 * in general MUOBLP model allow adding proportianality coefs for variables - they should override coefs provided in constraints

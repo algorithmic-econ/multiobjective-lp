@@ -5,12 +5,15 @@ from typing import TypedDict
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpConstraint, LpConstraintLE, LpSolver
 
+from muoblpsolvers.types import CandidateId, Cost, Utility, VoterId
+
 logger = logging.getLogger(__name__)
 
 
 class Election(TypedDict):
-    candidates: dict[str, int]
-    voters: dict[str, list[str]]
+    profile: dict[CandidateId, dict[VoterId, Utility]]
+    candidates: dict[CandidateId, Cost]
+    voters: set[VoterId]
 
 
 class ElectionSolver(LpSolver):
@@ -53,26 +56,38 @@ def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
 
 
 def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
-    voters: dict[str, list[str]] = defaultdict(list)
+    approvals_utilities: dict[CandidateId, dict[VoterId, Utility]] = (
+        defaultdict(dict)
+    )
 
-    candidates: list[str] = [
-        candidate.name
-        for candidate in lp.variables()
-        if candidate.name != "__dummy"
-    ]
+    voters = set()
+    for voter in (
+        lp.objectives
+    ):  # [T_6080: 80550 V_BO.D10.14_24 + 340000 V_BO.D10.1_24, ....]
+        voters.add(voter.name)
+        for candidate, utility in voter.items():
+            approvals_utilities[candidate.name][voter.name] = utility
+
+    candidates = set(
+        [
+            candidate.name
+            for candidate in lp.variables()
+            if candidate.name != "__dummy"
+        ]
+    )
 
     pb_constraint = validate_pb_constraint(lp)
-    candidates_coefs: dict[str, float] = {
+    candidates_costs: dict[str, float] = {
         candidate.name: coef for candidate, coef in pb_constraint.items()
     }
 
-    if len(set(candidates).difference(set(candidates_coefs.keys()))) != 0:
+    if len(set(candidates).difference(set(candidates_costs.keys()))) != 0:
         raise Exception(
             "Candidates mismatch between variables and constraints"
         )
 
-    for voter in lp.objectives:
-        for candidate, _ in voter.items():
-            voters[voter.name].append(candidate.name)
-
-    return {"candidates": candidates_coefs, "voters": voters}
+    return {
+        "profile": approvals_utilities,
+        "candidates": candidates_costs,
+        "voters": voters,
+    }

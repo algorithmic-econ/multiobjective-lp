@@ -19,15 +19,22 @@ def empty_pb() -> MultiObjectiveLpProblem:
 
 @pytest.fixture
 def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
-    budget = 1000000
+    budget = 100
     projects = {
-        "A": 300000,
-        "B": 400000,
-        "C": 300000,
-        "D": 240000,
-        "E": 170000,
-        "F": 100000,
+        "A": 30,
+        "B": 40,
+        "C": 30,
+        "D": 24,
+        "E": 17,
+        "F": 10,
     }
+
+    # A: 1,2,3,4,5,6 | 6
+    # B: 2,3,4,5,6   | 5
+    # C: 2,3,4,5,10  | 5
+    # D: 7,8,9,10    | 4
+    # E: 2,7,8,9     | 4
+    # F: 6,9,10      | 3
     ballots = {
         "v1": ["A"],
         "v2": ["A", "B", "C", "E"],
@@ -45,7 +52,8 @@ def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
 
 @pytest.fixture()
 def basic_pb_factory(
-    empty_pb: MultiObjectiveLpProblem, pb_data
+    empty_pb: MultiObjectiveLpProblem,
+    pb_data: tuple[dict[str, int], dict[str, list[str]], int],
 ) -> Callable[[str], MultiObjectiveLpProblem]:
     projects, ballots, budget = pb_data
 

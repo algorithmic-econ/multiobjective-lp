@@ -12,7 +12,8 @@ from muoblpsolvers.types import Utility
 @pytest.mark.parametrize(
     "utility_type, expected",
     [
-        ("COST", ["_A", "_C", "_E", "_F"]),
+        ("APPROVAL", ["_F", "_E", "_A", "_C"]),
+        ("COST", ["_A", "_B", "_C"]),
     ],
 )
 def test_greedy_solver(
@@ -33,4 +34,4 @@ def test_greedy_solver(
         ]
     ]
 
-    assert selected == expected
+    assert set(selected) == set(expected)

@@ -7,6 +7,7 @@ Solver = Literal[
     "MES_UTILS",
     "MES_EXPONENTIAL",
     "GREEDY",
+    "PHRAGMEN",
 ]
 Source = Literal["PABUTOOLS"]
 Utility = Literal[
@@ -50,5 +51,6 @@ class RunnerResult(TypedDict):
     utility_type: Utility
     source_path: str
     constraints_configs: List[ConstraintConfig]
-    selected: List[str]
     problem_path: str
+    instance_size: int
+    selected: List[str]
