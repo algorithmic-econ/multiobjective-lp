@@ -19,14 +19,14 @@ def empty_pb() -> MultiObjectiveLpProblem:
 
 @pytest.fixture
 def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
-    budget = 100
+    budget = 1000000
     projects = {
-        "A": 30,
-        "B": 40,
-        "C": 30,
-        "D": 24,
-        "E": 17,
-        "F": 10,
+        "A": 300000,
+        "B": 400000,
+        "C": 300000,
+        "D": 240000,
+        "E": 170000,
+        "F": 100000,
     }
 
     # A: 1,2,3,4,5,6 | 6
