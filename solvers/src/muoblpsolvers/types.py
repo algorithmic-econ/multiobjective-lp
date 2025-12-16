@@ -1,6 +1,6 @@
 from typing import TypeAlias
 
-Utility: TypeAlias = int
+Utility: TypeAlias = float
 Cost: TypeAlias = float
 TotalBudget: TypeAlias = float
 CandidateId: TypeAlias = str

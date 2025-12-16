@@ -28,6 +28,13 @@ def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
         "E": 170000,
         "F": 100000,
     }
+
+    # A: 1,2,3,4,5,6 | 6
+    # B: 2,3,4,5,6   | 5
+    # C: 2,3,4,5,10  | 5
+    # D: 7,8,9,10    | 4
+    # E: 2,7,8,9     | 4
+    # F: 6,9,10      | 3
     ballots = {
         "v1": ["A"],
         "v2": ["A", "B", "C", "E"],
@@ -45,7 +52,8 @@ def pb_data() -> tuple[dict[str, int], dict[str, list[str]], int]:
 
 @pytest.fixture()
 def basic_pb_factory(
-    empty_pb: MultiObjectiveLpProblem, pb_data
+    empty_pb: MultiObjectiveLpProblem,
+    pb_data: tuple[dict[str, int], dict[str, list[str]], int],
 ) -> Callable[[str], MultiObjectiveLpProblem]:
     projects, ballots, budget = pb_data
 

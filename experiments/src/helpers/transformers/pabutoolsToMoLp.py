@@ -37,7 +37,7 @@ def pabutools_to_multi_objective_lp(
     constraints_configs: List[ConstraintConfig],
     utility: Utility,
 ) -> MultiObjectiveLpProblem:
-    problem = MultiObjectiveLpProblem("election")
+    problem = MultiObjectiveLpProblem(f"election-{'-'.join(instances.keys())}")
 
     project_variables = create_projects_variables(instances)
     problem.addVariables(project_variables.values())

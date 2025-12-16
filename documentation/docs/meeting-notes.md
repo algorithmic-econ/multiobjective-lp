@@ -1,5 +1,25 @@
 # Notes
 
+## 14/11
+* transfer phragmen from pabulib-analyzer - search for TODO: JASIEK
+
+### Experiments
+* See mes bounded Overspending - chapter 6 - Empiricial Analysis - graphs in Fig. 1
+1. Phargmen vs Greedy
+  * one constraint - PB
+  * problem instance per district
+  * group by instance size, avg by instances
+
+2. More complex - Phargmen vs Greedy
+  * multiple constraints (per district) + PB
+  * problem instance per city
+  * group by city, avg by year
+
+Metrics (start with):
+* EJR+
+* Exclusion ratio
+
+
 ## 25/09
 * make prepare_mes_parameters more generic
 * in general MUOBLP model allow adding proportianality coefs for variables - they should override coefs provided in constraints

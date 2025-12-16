@@ -4,6 +4,7 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.base_solvers.ElectionSolver import Election, ElectionSolver
+from muoblpsolvers.types import CandidateId
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,7 @@ class GreedySolver(ElectionSolver):
     ):
         candidates = election["candidates"]
         voters = election["voters"]
+        profile = election["profile"]
 
         start_time = time.time()
 
@@ -28,24 +30,23 @@ class GreedySolver(ElectionSolver):
             extra={"candidates": len(candidates), "voters": len(voters)},
         )
 
-        vote_counts: dict[str, int] = {}
+        total_utility: dict[CandidateId, float] = {}
+        for candidate, votes in profile.items():
+            total_utility[candidate] = sum(votes.values())
 
-        for candidate in candidates.keys():
-            vote_counts[candidate] = 0
-
-        for approved in voters.values():
-            for candidate in approved:
-                vote_counts[candidate] += 1
-
-        sorted_candidates = list(vote_counts.items())
+        sorted_candidates = list(candidates.keys())
         sorted_candidates.sort(
-            key=lambda cand_count: candidates[cand_count[0]] / cand_count[1],
+            key=lambda candidate: total_utility[candidate]
+            / candidates[candidate],
+            reverse=True,
         )
         sorted_candidates = [
-            cand_count for cand_count in sorted_candidates if cand_count[1] > 0
+            candidate
+            for candidate in sorted_candidates
+            if total_utility[candidate] > 0
         ]
 
-        for candidate, _ in sorted_candidates:
+        for candidate in sorted_candidates:
             candidate_variable = lp.variablesDict()[candidate]
             candidate_variable.setInitialValue(1)
             if not lp.valid():

@@ -13,4 +13,4 @@ dist/
 /experiments/resources/results/
 /solvers/**/binding/build/
 
-/experiments/sample-experiment/results/sample-experiment/*
+experiments/sample-experiment/results
