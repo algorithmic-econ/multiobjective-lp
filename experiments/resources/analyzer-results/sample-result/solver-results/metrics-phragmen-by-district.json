@@ -1,0 +1,1180 @@
+[
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-48_2925_poland_warszawa_2023_targowek_COST_PHRAGMEN.json",
+        "time": 16.269119024276733,
+        "city": "poland_warszawa_2023_targowek",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 97
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.1371794871794872
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 3919349649
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_5b9b_poland_warszawa_2023_targowek_COST_GREEDY.json",
+        "time": 0.2604520320892334,
+        "city": "poland_warszawa_2023_targowek",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 97
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.19658119658119658
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 5126503548
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 5
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-49_ec6c_poland_warszawa_2023_zoliborz_COST_PHRAGMEN.json",
+        "time": 3.0804688930511475,
+        "city": "poland_warszawa_2023_zoliborz",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 31
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.12330407023144453
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1467757200
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_f77e_poland_warszawa_2023_wawer_COST_GREEDY.json",
+        "time": 0.22013282775878906,
+        "city": "poland_warszawa_2023_wawer",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 79
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.22038892162639953
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 3310833500
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 1
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-46_9c99_poland_warszawa_2023_wola_COST_PHRAGMEN.json",
+        "time": 16.202287912368774,
+        "city": "poland_warszawa_2023_wola",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 67
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07011834319526628
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 10282999720
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-13-24_5631_poland_warszawa_2023_bemowo_COST_PHRAGMEN.json",
+        "time": 17.086600065231323,
+        "city": "poland_warszawa_2023_bemowo",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 83
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.026447876447876446
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 5068305951
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_4111_poland_warszawa_2023_wilanow_COST_GREEDY.json",
+        "time": 0.09460020065307617,
+        "city": "poland_warszawa_2023_wilanow",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 35
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.08015267175572519
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1501223107
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_238e_poland_warszawa_2023_ochota_COST_GREEDY.json",
+        "time": 0.2540731430053711,
+        "city": "poland_warszawa_2023_ochota",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07240437158469945
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 4719883020
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 3
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-24_289a_poland_warszawa_2023_rembertow_COST_PHRAGMEN.json",
+        "time": 1.3323566913604736,
+        "city": "poland_warszawa_2023_rembertow",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 38
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.06996587030716724
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 429021585
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-23_2770_poland_warszawa_2023_wesola_COST_PHRAGMEN.json",
+        "time": 1.2637262344360352,
+        "city": "poland_warszawa_2023_wesola",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 29
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.05165114309906858
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 399321295
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_5e7d_poland_warszawa_2023_bemowo_COST_GREEDY.json",
+        "time": 0.2601900100708008,
+        "city": "poland_warszawa_2023_bemowo",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 83
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.0472972972972973
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 6348763097
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 2
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-10-15_4883_poland_warszawa_2023_bielany_COST_PHRAGMEN.json",
+        "time": 16.60829496383667,
+        "city": "poland_warszawa_2023_bielany",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 98
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.08817594834543988
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 5520127250
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 1
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_de83_poland_warszawa_2023_praga-poludnie_COST_GREEDY.json",
+        "time": 0.5285680294036865,
+        "city": "poland_warszawa_2023_praga-poludnie",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.10849585294776956
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 18845838538
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 7
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_c448_poland_warszawa_2023_praga-polnoc_COST_GREEDY.json",
+        "time": 0.13547587394714355,
+        "city": "poland_warszawa_2023_praga-polnoc",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 91
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.20617459190915544
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 2168634523
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 24
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_b3da_poland_warszawa_2023_wlochy_COST_GREEDY.json",
+        "time": 0.0918729305267334,
+        "city": "poland_warszawa_2023_wlochy",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 43
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.05225225225225225
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1366005978
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 1
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-12_21e8_poland_warszawa_2023_ursynow_COST_PHRAGMEN.json",
+        "time": 14.700671911239624,
+        "city": "poland_warszawa_2023_ursynow",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 64
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.03881789137380192
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 13648952165
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_3ed8_poland_warszawa_2023_ursus_COST_GREEDY.json",
+        "time": 0.212568998336792,
+        "city": "poland_warszawa_2023_ursus",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 72
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.12369993361363134
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 2698228700
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 5
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-31_cf90_poland_warszawa_2023_srodmiescie_COST_PHRAGMEN.json",
+        "time": 7.249634742736816,
+        "city": "poland_warszawa_2023_srodmiescie",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 47
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.08009271182075714
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 4715873221
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_4ef4_poland_warszawa_2023_rembertow_COST_GREEDY.json",
+        "time": 0.0500180721282959,
+        "city": "poland_warszawa_2023_rembertow",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 38
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.10665529010238908
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 495047885
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-13-07_f2eb_poland_warszawa_2023__COST_PHRAGMEN.json",
+        "time": 188.58225893974304,
+        "city": "poland_warszawa_2023_",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 138
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.04576447328399067
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 581038435653
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-57_7ddb_poland_warszawa_2023_ursus_COST_PHRAGMEN.json",
+        "time": 9.423607110977173,
+        "city": "poland_warszawa_2023_ursus",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 72
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.08254038504093826
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 2203002506
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-09_d46a_poland_warszawa_2023__COST_GREEDY.json",
+        "time": 3.357473134994507,
+        "city": "poland_warszawa_2023_",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 138
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07915948494372908
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 680866365000
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 12
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-03_5f64_poland_warszawa_2023_praga-polnoc_COST_PHRAGMEN.json",
+        "time": 6.5707690715789795,
+        "city": "poland_warszawa_2023_praga-polnoc",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 91
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.06458481192334989
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1701746423
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-26_cea0_poland_warszawa_2023_wilanow_COST_PHRAGMEN.json",
+        "time": 2.4759209156036377,
+        "city": "poland_warszawa_2023_wilanow",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 35
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07124681933842239
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1376004807
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-22_737d_poland_warszawa_2023_wawer_COST_PHRAGMEN.json",
+        "time": 10.140832901000977,
+        "city": "poland_warszawa_2023_wawer",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 79
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.17285405617756827
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 2956589490
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_5326_poland_warszawa_2023_mokotow_COST_GREEDY.json",
+        "time": 0.5414772033691406,
+        "city": "poland_warszawa_2023_mokotow",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.17321767416644077
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 20357873090
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 6
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_96b5_poland_warszawa_2023_wesola_COST_GREEDY.json",
+        "time": 0.05051612854003906,
+        "city": "poland_warszawa_2023_wesola",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 29
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.03979678238780694
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 437095155
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_5ddf_poland_warszawa_2023_zoliborz_COST_GREEDY.json",
+        "time": 0.06258583068847656,
+        "city": "poland_warszawa_2023_zoliborz",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 31
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.019553072625698324
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1797315800
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-12-30_1793_poland_warszawa_2023_wlochy_COST_PHRAGMEN.json",
+        "time": 3.6862430572509766,
+        "city": "poland_warszawa_2023_wlochy",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 43
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.05630630630630631
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 1202832678
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_d3e6_poland_warszawa_2023_wola_COST_GREEDY.json",
+        "time": 0.22620701789855957,
+        "city": "poland_warszawa_2023_wola",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 67
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.1871301775147929
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 11781120127
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 8
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_2978_poland_warszawa_2023_bialoleka_COST_GREEDY.json",
+        "time": 0.39534497261047363,
+        "city": "poland_warszawa_2023_bialoleka",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 72
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.12209745993677096
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 11838617000
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 2
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-13-39_9a1d_poland_warszawa_2023_bialoleka_COST_PHRAGMEN.json",
+        "time": 15.16905689239502,
+        "city": "poland_warszawa_2023_bialoleka",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 72
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.09811403030633381
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 10211241270
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 1
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_5a4e_poland_warszawa_2023_srodmiescie_COST_GREEDY.json",
+        "time": 0.15358591079711914,
+        "city": "poland_warszawa_2023_srodmiescie",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 47
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.09889260880762298
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 5151493871
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 1
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-07_5b03_poland_warszawa_2023_ursynow_COST_GREEDY.json",
+        "time": 0.32637715339660645,
+        "city": "poland_warszawa_2023_ursynow",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 64
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.06980830670926517
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 15877370415
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 3
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-11-23_aab2_poland_warszawa_2023_praga-poludnie_COST_PHRAGMEN.json",
+        "time": 19.348108053207397,
+        "city": "poland_warszawa_2023_praga-poludnie",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.07621609504595382
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 17456786958
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-10-57_5ac8_poland_warszawa_2023_ochota_COST_PHRAGMEN.json",
+        "time": 11.18299913406372,
+        "city": "poland_warszawa_2023_ochota",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.03961748633879782
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 3985982670
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-10T19-10-45_316d_poland_warszawa_2023_mokotow_COST_PHRAGMEN.json",
+        "time": 30.835381984710693,
+        "city": "poland_warszawa_2023_mokotow",
+        "solver": "PHRAGMEN",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 81
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.06541971627360621
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 18099030235
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 0
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    },
+    {
+        "problem_path": "resources/experiment-results/phragmen-by-district/meta_12-21T20-02-06_3661_poland_warszawa_2023_bielany_COST_GREEDY.json",
+        "time": 0.27577710151672363,
+        "city": "poland_warszawa_2023_bielany",
+        "solver": "GREEDY",
+        "solver_options": {},
+        "utility": "COST",
+        "metrics": [
+            "INSTANCE_SIZE",
+            "EXCLUSION_RATION",
+            "SUM_OBJECTIVES",
+            "EJR_PLUS",
+            "CONSTRAINTS"
+        ],
+        "INSTANCE_SIZE": {
+            "size": 98
+        },
+        "EXCLUSION_RATION": {
+            "exclusion_ratio": 0.12126715092816788
+        },
+        "SUM_OBJECTIVES": {
+            "sum": 6272048994
+        },
+        "EJR_PLUS": {
+            "ejr_plus": 5
+        },
+        "CONSTRAINTS": {
+            "pb_constraint": true,
+            "invalid_count": 0
+        }
+    }
+]

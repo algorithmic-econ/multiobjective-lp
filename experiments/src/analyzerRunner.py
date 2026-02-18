@@ -32,7 +32,14 @@ def analyze_runner_result(
         problem = enhance_problem_from_solver_result(solver_result, problem)
         analyzer_result = get_metrics(metrics, problem)
         return {
-            "problem_path": runner_result_path.as_posix()
+            "problem_path": runner_result_path.as_posix(),
+            "time": solver_result["time"],
+            "city": solver_result["source_path"]
+            .split("/")[-1]
+            .replace(".pb", ""),
+            "solver": solver_result["solver"],
+            "solver_options": solver_result["solver_options"],
+            "utility": solver_result["utility_type"],
         } | analyzer_result
     except Exception as err:
         # TODO: return empty result with metadata isntead of None

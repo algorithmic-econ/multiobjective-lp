@@ -1,178 +1,552 @@
 [
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-49_ddda_warszawa_2023_test_COST_MES_CONSTRAINT.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.060523378395138286
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 579436395017
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 0
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-17_667a_poland_warszawa_2023_ochota_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.03961748633879782
     },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-39_a4ef_warszawa_2023_test_APPROVAL_GREEDY.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.05633139030137666
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 467091
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 32
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
+    "SUM_OBJECTIVES": {
+      "sum": 3985982670
     },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-34-10_d956_warszawa_2023_test_COST_MES_ADD1.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.054036958948282275
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 726800986917
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 0
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 1
-        }
+    "EJR_PLUS": {
+      "ejr_plus": 0
     },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-39_1698_warszawa_2023_test_COST_GREEDY.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.05633139030137666
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 329517363348
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 0
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
-    },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-50_ec73_warszawa_2023_test_APPROVAL_MES_CONSTRAINT.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.059084707925089915
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 386231
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 93
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
-    },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-46_ee22_warszawa_2023_test_COST_MES_EXPONENTIAL.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.06180081855388813
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 596679156080
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 2
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
-    },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-45_5616_warszawa_2023_test_COST_MES_UTILS.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.05800570507255364
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 595290885017
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 0
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 1
-        }
-    },
-    {
-        "problem_path": "resources/experiment-results/single-run/meta_11-01T09-32-43_32d9_warszawa_2023_test_APPROVAL_MES_EXPONENTIAL.json",
-        "metrics": [
-            "EXCLUSION_RATION",
-            "SUM_OBJECTIVES",
-            "EJR_PLUS",
-            "CONSTRAINTS"
-        ],
-        "EXCLUSION_RATION": {
-            "exclusion_ratio": 0.07406672454421431
-        },
-        "SUM_OBJECTIVES": {
-            "sum": 325746
-        },
-        "EJR_PLUS": {
-            "ejr_plus": 118
-        },
-        "CONSTRAINTS": {
-            "total_budget": true,
-            "invalid_count": 0
-        }
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
     }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-46_30e2_poland_warszawa_2023_targowek_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.1371794871794872
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 3919349649
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-47_22ea_poland_warszawa_2023_zoliborz_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.12330407023144453
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 1467757200
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-42_4e44_poland_warszawa_2023_wilanow_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.07124681933842239
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 1376004807
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-38_1d4c_poland_warszawa_2023_ursus_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.08254038504093826
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 2203002506
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-44_92ab_poland_warszawa_2023_wlochy_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.05630630630630631
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 1202832678
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-46_a20e_poland_warszawa_2023_ursynow_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.03881789137380192
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 13648952165
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-38_51f6_poland_warszawa_2023_praga-poludnie_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.07621609504595382
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 17456786958
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-43_80c0_poland_warszawa_2023_wawer_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.17285405617756827
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 2956589490
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-39_5919_poland_warszawa_2023_wesola_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.05165114309906858
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 399321295
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-09T21-40-31_8385_warszawa_2024_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.05982702413028269
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 86744160233
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 1
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-09T20-41-54_2be7_warszawa_2023_test_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.045528959444375544
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 599137465888
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-09T20-52-41_d343_warszawa_2023_test_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.0464219273223366
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 601093601028
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-26_1a7d_poland_warszawa_2023_bemowo_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.026447876447876446
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 5068305951
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-11_1a85_poland_warszawa_2023_praga-polnoc_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.06458481192334989
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 1701746423
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-19_5ba3_poland_warszawa_2023_rembertow_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.06996587030716724
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 429021585
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T11-26-57_6492_warszawa_2023_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.04565509085533647
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 685950850564
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 2
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-25_5d1f_poland_warszawa_2023_bielany_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.08817594834543988
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 5520127250
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 1
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-29_5c8d_poland_warszawa_2023_srodmiescie_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.08009271182075714
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 4715873221
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-24_b22d_poland_warszawa_2023_bialoleka_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.09811403030633381
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 10211241270
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 1
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-13-59_0119_poland_warszawa_2023_wola_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.07011834319526628
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 10282999720
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-02T20-38-45_30a4_warszawa_2023_test_COST_GREEDY.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.06585638099962793
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 161100565000
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 4
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-05-18_fb94_poland_warszawa_2023_mokotow_COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.06541971627360621
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 18099030235
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-02T20-38-45_3bee_warszawa_2023_test_APPROVAL_GREEDY.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.12189011534168423
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 212944
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 94
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  },
+  {
+    "problem_path": "resources/experiment-results/single-run/meta_12-10T18-16-22_ca16_poland_warszawa_2023__COST_PHRAGMEN.json",
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS"
+    ],
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.04576447328399067
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 581038435653
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "CONSTRAINTS": {
+      "total_budget": true,
+      "invalid_count": 0
+    }
+  }
 ]

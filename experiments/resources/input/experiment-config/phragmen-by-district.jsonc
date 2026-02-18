@@ -1,0 +1,310 @@
+{
+  "concurrency": 8,
+  "experiment_results_base_path": "resources/experiment-results/phragmen-by-district/",
+  "runner_configs": [
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bemowo.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bialoleka.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bielany.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_mokotow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ochota.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-polnoc.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-poludnie.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_rembertow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_srodmiescie.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_targowek.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursus.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursynow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wawer.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wesola.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wilanow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wlochy.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wola.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_zoliborz.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bemowo.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bialoleka.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bielany.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_mokotow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ochota.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-polnoc.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-poludnie.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_rembertow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_srodmiescie.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_targowek.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursus.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursynow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wawer.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wesola.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wilanow.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wlochy.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wola.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    },
+    {
+      "solver_type": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_zoliborz.pb",
+      "results_base_path": "resources/experiment-results/phragmen-by-district/"
+    }
+  ]
+}

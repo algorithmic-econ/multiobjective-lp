@@ -1,0 +1,573 @@
+{
+    "concurrency": 5,
+    "experiment_results_base_path": "resources/experiment-results/greedy-phragmen-grouped/",
+    "runner_configs": [
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2022"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2020"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2024"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2023"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/lodz_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2020"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2020"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2021"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2021"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/zabrze_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2023"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2022"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2022"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2024"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2024"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2025"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2025"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/czestochowa_2025"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2022"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/amsterdam_2022"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2020"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2020"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2020"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2021"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": true
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2021"
+        },
+        {
+            "solver_type": "PHRAGMEN",
+            "solver_options": {
+                "kappa": 1.0,
+                "increasing_scalings": false
+            },
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2021"
+        },
+        {
+            "solver_type": "GREEDY",
+            "solver_options": {},
+            "source_type": "PABUTOOLS",
+            "utility_type": "COST",
+            "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/krakow_2021"
+        }
+    ]
+}

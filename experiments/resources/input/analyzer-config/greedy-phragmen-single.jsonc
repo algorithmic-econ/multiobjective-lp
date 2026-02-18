@@ -1,0 +1,11 @@
+{
+  "analyzer_result_path": "resources/analyzer-results/greedy-phragmen-single/",
+  "experiment_results_base_path": "resources/experiment-results/greedy-phragmen-single/",
+  "metrics": [
+    "INSTANCE_SIZE",
+    "EXCLUSION_RATION",
+    "SUM_OBJECTIVES",
+    "EJR_PLUS",
+    "CONSTRAINTS"
+  ]
+}

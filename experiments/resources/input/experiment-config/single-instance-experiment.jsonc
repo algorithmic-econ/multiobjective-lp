@@ -1,79 +1,157 @@
 {
-  "concurrency": 4,
+  "concurrency": 6,
   "experiment_results_base_path": "resources/experiment-results/single-run/",
   "runner_configs": [
     {
-      "solver_type": "GREEDY",
+      "solver_type": "PHRAGMEN",
       "solver_options": {},
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_.pb",
       "results_base_path": "resources/experiment-results/single-run/"
     },
     {
-      "solver_type": "GREEDY",
-      "solver_options": {},
-      "source_type": "PABUTOOLS",
-      "utility_type": "APPROVAL",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/"
-    },
-    {
-      "solver_type": "MES_EXPONENTIAL",
-      "solver_options": {
-        "budget_init": 10
-      },
-      "source_type": "PABUTOOLS",
-      "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/"
-    },
-    {
-      "solver_type": "MES_EXPONENTIAL",
-      "solver_options": {
-        "budget_init": 10
-      },
-      "source_type": "PABUTOOLS",
-      "utility_type": "APPROVAL",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
-      "results_base_path": "resources/experiment-results/single-run/"
-    },
-    {
-      "solver_type": "MES_ADD1",
+      "solver_type": "PHRAGMEN",
       "solver_options": {},
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bemowo.pb",
       "results_base_path": "resources/experiment-results/single-run/"
     },
     {
-      "solver_type": "MES_UTILS",
+      "solver_type": "PHRAGMEN",
       "solver_options": {},
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bialoleka.pb",
       "results_base_path": "resources/experiment-results/single-run/"
     },
     {
-      "solver_type": "MES_CONSTRAINT",
-      "solver_options": {
-        "max_iterations": 100,
-        "cost_modification_base": 1.05
-      },
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
       "source_type": "PABUTOOLS",
       "utility_type": "COST",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_bielany.pb",
       "results_base_path": "resources/experiment-results/single-run/"
     },
     {
-      "solver_type": "MES_CONSTRAINT",
-      "solver_options": {
-        "max_iterations": 100,
-        "cost_modification_base": 1.05
-      },
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
       "source_type": "PABUTOOLS",
-      "utility_type": "APPROVAL",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/multiobjective-lp/experiments/resources/input/warszawa_2023_test",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_mokotow.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ochota.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-polnoc.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_praga-poludnie.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_rembertow.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_srodmiescie.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_targowek.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursus.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_ursynow.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wawer.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wesola.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wilanow.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wlochy.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_wola.pb",
+      "results_base_path": "resources/experiment-results/single-run/"
+    },
+    {
+      "solver_type": "PHRAGMEN",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST",
+      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_zoliborz.pb",
       "results_base_path": "resources/experiment-results/single-run/"
     }
   ]

@@ -73,13 +73,13 @@ def transform_metrics_to_markdown_table(
                 continue
 
             if metric_name == "EXCLUSION_RATION":
-                row_data["EXCLUSION_RATION"] = metric_details.get(
-                    "exclusion_ratio"
+                row_data["Exclusion ratio"] = round(
+                    metric_details.get("exclusion_ratio"), 4
                 )
             elif metric_name == "SUM_OBJECTIVES":
-                row_data["SUM_OBJECTIVES"] = metric_details.get("sum")
+                row_data["Sum objectives"] = metric_details.get("sum")
             elif metric_name == "EJR_PLUS":
-                row_data["EJR_PLUS"] = metric_details.get("ejr_plus")
+                row_data["EJR+ violations"] = metric_details.get("ejr_plus")
             else:
                 for sub_key, sub_value in metric_details.items():
                     row_data[f"{metric_name}_{sub_key}"] = sub_value

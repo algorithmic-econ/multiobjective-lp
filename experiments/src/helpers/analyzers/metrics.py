@@ -1,9 +1,9 @@
-from typing import Dict, Callable, List
+from typing import Callable, Dict, List
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.common import get_total_budget_constraint
 
-from helpers.analyzers.model import Metric, AnalyzerResult
+from helpers.analyzers.model import AnalyzerResult, Metric
 
 
 def get_metrics(
@@ -26,6 +26,8 @@ def get_metric_strategy(
         return ejr_plus
     if metric == "CONSTRAINTS":
         return invalid_constraints
+    if metric == "INSTANCE_SIZE":
+        return instance_size
 
     raise Exception("Metric not implemented")
 
@@ -46,11 +48,15 @@ def sum_objectives(problem: MultiObjectiveLpProblem) -> Dict:
 def invalid_constraints(problem: MultiObjectiveLpProblem) -> Dict:
     total_budget_constraint = get_total_budget_constraint(problem)
     return {
-        "total_budget": total_budget_constraint.valid(),
+        "pb_constraint": total_budget_constraint.valid(),
         "invalid_count": sum(
             [1 if not c.valid() else 0 for c in problem.constraints.values()]
         ),
     }
+
+
+def instance_size(problem: MultiObjectiveLpProblem) -> Dict:
+    return {"size": len(problem.variables())}
 
 
 def ejr_plus(problem: MultiObjectiveLpProblem) -> Dict:
