@@ -63,9 +63,9 @@ def update_local_scalings(
 ):
     for candidate in remaining:
         scaling_for_c = 0
-        sum_money = sum(
-            [(timestamp - m_spent[v]) for v, _ in sorted_utils[candidate]]
-        )
+        sum_money = sum([
+            (timestamp - m_spent[v]) for v, _ in sorted_utils[candidate]
+        ])
         for voter, utility in sorted_utils[candidate]:
             alpha = sum_money / candidates[candidate]
             scaling_for_c = max(alpha * utility, scaling_for_c)
@@ -127,9 +127,9 @@ def phragmen_cardinal(
     timestamp_low = 0
     timestamp_high = timestamp_low + timestamp_step
     rank = []
-    remaining = set(
-        [candidate for candidate in profile.keys() if candidate not in rank]
-    )
+    remaining = set([
+        candidate for candidate in profile.keys() if candidate not in rank
+    ])
 
     local_caps = {
         candidate: {voter: 0 for voter in profile[candidate].keys()}
@@ -224,8 +224,10 @@ def phragmen_cardinal(
             if bos_version:
                 supporters_sorted = sorted(
                     list(election["profile"][candidate].keys()),
-                    key=lambda voter: local_caps[candidate][voter]
-                    / election["profile"][candidate][voter],
+                    key=lambda voter: (
+                        local_caps[candidate][voter]
+                        / election["profile"][candidate][voter]
+                    ),
                 )
                 total_utility = sum(election["profile"][candidate].values())
                 money_used = 0
@@ -283,8 +285,9 @@ def phragmen_cardinal(
             ] * (1 - eps):
                 supporters_sorted = sorted(
                     profile[candidate],
-                    key=lambda v: local_caps[candidate][v]
-                    / profile[candidate][v],
+                    key=lambda v: (
+                        local_caps[candidate][v] / profile[candidate][v]
+                    ),
                 )
                 price = election["candidates"][candidate]
                 total_utility = sum(profile[candidate].values())

@@ -74,8 +74,9 @@ def equal_shares_exponential(
 
                 # calculate the effective vote count of c
                 approvals_utilities[candidate].sort(
-                    key=lambda voter_utility: budget[voter_utility[0]]
-                    / voter_utility[1]
+                    key=lambda voter_utility: (
+                        budget[voter_utility[0]] / voter_utility[1]
+                    )
                 )
                 paid_so_far = 0
                 denominator = remaining[candidate]  # total utility of c

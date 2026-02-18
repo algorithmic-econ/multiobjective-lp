@@ -36,8 +36,9 @@ class GreedySolver(ElectionSolver):
 
         sorted_candidates = list(candidates.keys())
         sorted_candidates.sort(
-            key=lambda candidate: total_utility[candidate]
-            / candidates[candidate],
+            key=lambda candidate: (
+                total_utility[candidate] / candidates[candidate]
+            ),
             reverse=True,
         )
         sorted_candidates = [
