@@ -33,6 +33,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 79
+preview = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/conftest.py" = ["F401"]
@@ -42,4 +43,9 @@ minversion = "8.0"
 addopts = "-ra -q --import-mode=importlib"
 testpaths = [
     "tests",
+]
+
+[dependency-groups]
+dev = [
+    "ruff (>=0.15.1,<0.16.0)"
 ]

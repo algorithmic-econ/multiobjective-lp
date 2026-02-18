@@ -13,13 +13,11 @@ from muoblpsolvers.types import (
 
 
 def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
-    all_candidates: set[CandidateId] = set(
-        [
-            variable.name
-            for variable in lp.variables()
-            if variable.name != "__dummy"
-        ]
-    )
+    all_candidates: set[CandidateId] = set([
+        variable.name
+        for variable in lp.variables()
+        if variable.name != "__dummy"
+    ])
 
     pb_constraints = []
     for constraint in lp.constraints.values():

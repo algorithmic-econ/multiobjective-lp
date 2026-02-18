@@ -85,8 +85,8 @@ def problem_runner(config: RunnerConfig) -> None:
         write_to_json(Path(f"{results_base_path}{meta_file}"), result)
 
     except Exception as err:
-        raise err
         logger.error(
             "Problem failed",
             extra={"source": source_directory_path, "error": err},
         )
+        raise err

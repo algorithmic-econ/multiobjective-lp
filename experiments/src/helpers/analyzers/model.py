@@ -1,7 +1,14 @@
-from typing import List, TypedDict, Literal
+from typing import List, Literal, TypedDict
+
+from helpers.runners.model import Solver, Utility
 
 Metric = Literal[
-    "EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS", "CONSTRAINTS"
+    "EXCLUSION_RATION",
+    "SUM_OBJECTIVES",
+    "EJR_PLUS",
+    "CONSTRAINTS",
+    "INSTANCE_SIZE",
+    "METADATA",
 ]
 
 
@@ -14,3 +21,7 @@ class AnalyzerConfig(TypedDict):
 class AnalyzerResult(TypedDict):
     problem_path: str
     metrics: List[Metric]
+    time: float
+    solver: Solver
+    solver_options: dict
+    utility: Utility

@@ -34,13 +34,11 @@ class ElectionSolver(LpSolver):
 
 
 def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
-    all_candidates: set[str] = set(
-        [
-            variable.name
-            for variable in lp.variables()
-            if variable.name != "__dummy"
-        ]
-    )
+    all_candidates: set[str] = set([
+        variable.name
+        for variable in lp.variables()
+        if variable.name != "__dummy"
+    ])
 
     pb_constraints = []
     for constraint in lp.constraints.values():
@@ -68,13 +66,11 @@ def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
         for candidate, utility in voter.items():
             approvals_utilities[candidate.name][voter.name] = utility
 
-    candidates = set(
-        [
-            candidate.name
-            for candidate in lp.variables()
-            if candidate.name != "__dummy"
-        ]
-    )
+    candidates = set([
+        candidate.name
+        for candidate in lp.variables()
+        if candidate.name != "__dummy"
+    ])
 
     pb_constraint = validate_pb_constraint(lp)
     candidates_costs: dict[str, float] = {

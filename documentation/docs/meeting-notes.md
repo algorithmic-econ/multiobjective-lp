@@ -1,4 +1,15 @@
 # Notes
+## Phargmen parameters
+kappa 0 and 1
+increased scaling true false
+==> 4 warianty
+bos zawsze false
+
+## Phragmen + Lower bounds
+* With LB constraints, simple feasibility check is not enough
+* Replace is_feasible function
+* Inside run regular LP solver (e.g. Gurobi) to find potential solution
+
 
 ## 14/11
 * transfer phragmen from pabulib-analyzer - search for TODO: JASIEK

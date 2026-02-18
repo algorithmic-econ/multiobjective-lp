@@ -1,7 +1,8 @@
 {
   "analyzer_result_path": "resources/analyzer-results/sample-result/solver-results/",
-  "experiment_results_base_path": "resources/experiment-results/single-run/",
+  "experiment_results_base_path": "resources/experiment-results/phragmen-by-district/",
   "metrics": [
+    "INSTANCE_SIZE",
     "EXCLUSION_RATION",
     "SUM_OBJECTIVES",
     "EJR_PLUS",
