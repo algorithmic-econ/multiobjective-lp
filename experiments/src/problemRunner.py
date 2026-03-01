@@ -18,23 +18,24 @@ def problem_runner(config: RunnerConfig) -> None:
     solver_type = config["solver_type"]
     solver_options = config.get("solver_options", {})
     source_type = config["source_type"]
-    utility_type = config.get("utility_type", "APPROVAL")
+    utility_type = config.get("utility_type")
     source_directory_path = config["source_directory_path"]
     constraints_configs_path = config.get("constraints_configs_path")
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
-    if is_result_present(config):
-        logger.info(f"Result already present - {results_base_path}")
-        return
 
     start_time = time.time()
-    problem, constraints_configs = load_and_transform_strategy(
+    problem, constraints_configs, utility_type = load_and_transform_strategy(
         source_type,
         utility_type,
         source_directory_path,
         constraints_configs_path,
     )
+    if is_result_present(config, utility_type):
+        logger.info(f"Result already present - {results_base_path}")
+        return
+
     solver = get_solver(solver_type, solver_options)
     try:
         problem.solve(solver)

@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, TypedDict
+from typing import Dict, List, Literal, NotRequired, TypedDict
 
 Solver = Literal[
     "SUMMING",
@@ -24,7 +24,7 @@ class RunnerConfig(TypedDict):
     solver_type: Solver
     solver_options: Dict | None
     source_type: Source
-    utility_type: Utility
+    utility_type: NotRequired[Utility]
     source_directory_path: str
     constraints_configs_path: str | None
     results_base_path: str

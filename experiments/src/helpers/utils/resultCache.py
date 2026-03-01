@@ -3,7 +3,7 @@ import os
 import re
 from pathlib import Path
 
-from helpers.runners.model import RunnerConfig
+from helpers.runners.model import RunnerConfig, Utility
 from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
@@ -40,10 +40,11 @@ def is_metadata_content_matching(
     return os.path.exists(lp_path)
 
 
-def is_result_present(problem_config: RunnerConfig) -> bool:
+def is_result_present(
+    problem_config: RunnerConfig, utility_type: Utility
+) -> bool:
     base_path = problem_config["results_base_path"]
     solver_type = problem_config["solver_type"]
-    utility_type = problem_config["utility_type"]
     data_source = (
         problem_config["source_directory_path"]
         .split("/")[-1]
