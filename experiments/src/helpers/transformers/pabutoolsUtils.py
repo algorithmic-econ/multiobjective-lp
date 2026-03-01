@@ -2,8 +2,42 @@ from typing import Dict, Tuple, TypeAlias, Callable, List
 import os
 from pabutools.election import Instance, Profile, parse_pabulib, Project
 
+from helpers.runners.model import Utility
+
 District: TypeAlias = str
 AgentId: TypeAlias = str
+
+_VOTE_TYPE_TO_UTILITY: Dict[str, Utility] = {
+    "approval": "COST",
+    "ordinal": "COST_ORDINAL",
+    "cumulative": "COST_CUMULATIVE",
+    "choose-1": "COST",
+}
+
+
+def detect_utility_from_instances(
+    instances: Dict[District, Instance],
+) -> Utility:
+    vote_types = set()
+    for instance in instances.values():
+        if "vote_type" not in instance.meta:
+            raise ValueError(
+                f"Instance missing vote_type in meta: {instance.meta}"
+            )
+        vote_types.add(instance.meta["vote_type"])
+
+    if len(vote_types) > 1:
+        raise ValueError(
+            f"Inconsistent vote_types across districts: {vote_types}"
+        )
+
+    vote_type = vote_types.pop()
+    if vote_type not in _VOTE_TYPE_TO_UTILITY:
+        raise NotImplementedError(
+            f"vote_type '{vote_type}' has no utility mapping"
+        )
+
+    return _VOTE_TYPE_TO_UTILITY[vote_type]
 
 
 def load_pabutools_by_district(
