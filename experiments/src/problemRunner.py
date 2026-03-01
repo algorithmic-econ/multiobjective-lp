@@ -24,9 +24,6 @@ def problem_runner(config: RunnerConfig) -> None:
     results_base_path = config["results_base_path"]
 
     logger.debug("Start problem", extra={"config": config})
-    if is_result_present(config):
-        logger.info(f"Result already present - {results_base_path}")
-        return
 
     start_time = time.time()
     problem, constraints_configs, utility_type = load_and_transform_strategy(
@@ -35,6 +32,10 @@ def problem_runner(config: RunnerConfig) -> None:
         source_directory_path,
         constraints_configs_path,
     )
+    if is_result_present(config, utility_type):
+        logger.info(f"Result already present - {results_base_path}")
+        return
+
     solver = get_solver(solver_type, solver_options)
     try:
         problem.solve(solver)
