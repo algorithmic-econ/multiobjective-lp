@@ -1,4 +1,12 @@
 # Notes
+
+## Graphs feedback
+* objective sum - relative to greedy, i.e., solver X total sum divided by greedy total sum
+
+* detect utlity type automatically based on pabulib instnace
+
+* invoke gurobi inside custom solver to find feasible candidates
+
 ## Phargmen parameters
 kappa 0 and 1
 increased scaling true false
