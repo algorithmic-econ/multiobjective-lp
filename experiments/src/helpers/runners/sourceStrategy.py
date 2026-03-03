@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Tuple
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -28,7 +29,7 @@ def load_and_transform_strategy(
             else detect_utility_from_instances(instances)
         )
         constraints_configs: List[ConstraintConfig] = (
-            read_from_json(constraints_config_path)
+            read_from_json(Path(constraints_config_path))
             if constraints_config_path is not None
             else []
         )

@@ -39,6 +39,7 @@ def analyze_runner_result(
             .replace(".pb", ""),
             "solver": solver_result["solver"],
             "solver_options": solver_result["solver_options"],
+            "constraints_configs": solver_result["constraints_configs"],
             "utility": solver_result["utility_type"],
         } | analyzer_result
     except Exception as err:
