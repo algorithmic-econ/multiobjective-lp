@@ -1,5 +1,12 @@
 # Notes
 
+## Q
+Phase 1 ILP picks one feasible seed among potentially many. Which objective should it use?
+1. Minimize cost
+2. Maximize utility
+3. Minimize seed size
+
+
 ## Graphs feedback
 * objective sum - relative to greedy, i.e., solver X total sum divided by greedy total sum
 

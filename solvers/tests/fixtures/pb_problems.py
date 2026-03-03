@@ -5,6 +5,7 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import (
     LpAffineExpression,
     LpConstraint,
+    LpConstraintGE,
     LpConstraintLE,
     LpVariable,
     lpSum,
@@ -91,6 +92,59 @@ def basic_pb_factory(
         empty_pb.addConstraint(pb_constraint)
 
         return empty_pb
+
+    return _factory
+
+
+@pytest.fixture()
+def pb_with_lb_factory(
+    pb_data: tuple[dict[str, int], dict[str, list[str]], int],
+) -> Callable[[str], MultiObjectiveLpProblem]:
+    """Like basic_pb_factory but adds GE constraint forcing E (cost=170000) to be selected.
+    E's utility/cost ratio (4/170000) is lower than F's (3/100000), so greedy alone skips E.
+    """
+    projects, ballots, budget = pb_data
+
+    def _factory(utility_type):
+        problem = MultiObjectiveLpProblem("pb_with_lb")
+        variables = LpVariable.dicts("", projects.keys(), cat="Binary")
+        for variable in variables.values():
+            variable.setInitialValue(0)
+
+        coef = {
+            "APPROVAL": lambda candidate: 1,
+            "COST": lambda candidate: projects[candidate],
+        }
+        objectives = [
+            LpAffineExpression(
+                [
+                    [variables[candidate], coef[utility_type](candidate)]
+                    for candidate in approvals
+                ],
+                name=voter,
+            )
+            for voter, approvals in ballots.items()
+        ]
+
+        pb_constraint = LpConstraint(
+            e=lpSum(variables[p] * c for p, c in projects.items()),
+            sense=LpConstraintLE,
+            rhs=budget,
+            name="pb",
+        )
+        lb_constraint = LpConstraint(
+            e=variables["E"] * projects["E"],
+            sense=LpConstraintGE,
+            rhs=projects["E"],
+            name="lb_edu",
+        )
+
+        problem.addVariables(variables.values())
+        problem.setObjectives(objectives)
+        problem.addConstraint(pb_constraint)
+        problem.addConstraint(lb_constraint)
+
+        return problem
 
     return _factory
 
