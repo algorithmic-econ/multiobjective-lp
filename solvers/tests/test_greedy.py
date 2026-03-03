@@ -2,6 +2,7 @@ from typing import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pulp import LpConstraint, LpConstraintGE, lpSum
 
 from muoblpsolvers.greedy.GreedySolver import (
     GreedySolver,
