@@ -1,10 +1,8 @@
 # Notes
 
-## Q
-Phase 1 ILP picks one feasible seed among potentially many. Which objective should it use?
-1. Minimize cost
-2. Maximize utility
-3. Minimize seed size
+* instead of intial seed, return boolen feasbile and do not change selection
+* when conifguring LB constraint check if it's possbile if not transofrm it into minimum (take all)
+* alternative to constraint path accept array in config
 
 
 ## Graphs feedback

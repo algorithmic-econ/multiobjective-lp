@@ -24,8 +24,9 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
     metric_display_map = {
         "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
         "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
+        "TOTAL_COST": ("total_cost", "Total Cost"),
         "EJR_PLUS": ("ejr_plus", "EJR Plus"),
-        "CONSTRAINTS": ("invalid_count", "Constraints (Invalid)"),
+        # "CONSTRAINTS": ("invalid_count", "Constraints (Invalid)"),
     }
 
     for entry in data_source:
@@ -47,6 +48,7 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
                             "Solver": solver_label,
                             "Metric": display_name,
                             "Value": val,
+                            "City": entry.get("city"),
                         }
                     )
 
@@ -57,10 +59,47 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
                     "Solver": solver_label,
                     "Metric": "running time (s.)",
                     "Value": entry["time"],
+                    "City": entry.get("city"),
                 }
             )
 
     df = pd.DataFrame(processed_data)
+
+    # Normalize SUM_OBJECTIVES relative to GREEDY baseline
+    sum_obj_label = metric_display_map["SUM_OBJECTIVES"][1]
+    mask = df["Metric"] == sum_obj_label
+    sum_df = df[mask]
+    greedy_baseline = sum_df[
+        sum_df["Solver"].str.startswith("GREEDY")
+    ].set_index("City")["Value"]
+    df.loc[mask, "Value"] = df.loc[mask].apply(
+        lambda row: (
+            row["Value"] / greedy_baseline[row["City"]]
+            if row["City"] in greedy_baseline.index
+            else row["Value"]
+        ),
+        axis=1,
+    )
+    df.loc[mask, "Value"] = df.loc[mask, "Value"].clip(upper=5.0)
+    df.loc[mask, "Metric"] = "Sum Objectives (rel. to Greedy)"
+
+    # Normalize TOTAL_COST relative to GREEDY baseline
+    cost_label = metric_display_map["TOTAL_COST"][1]
+    cost_mask = df["Metric"] == cost_label
+    cost_df = df[cost_mask]
+    greedy_cost_baseline = cost_df[
+        cost_df["Solver"].str.startswith("GREEDY")
+    ].set_index("City")["Value"]
+    df.loc[cost_mask, "Value"] = df.loc[cost_mask].apply(
+        lambda row: (
+            row["Value"] / greedy_cost_baseline[row["City"]]
+            if row["City"] in greedy_cost_baseline.index
+            else row["Value"]
+        ),
+        axis=1,
+    )
+    df.loc[cost_mask, "Value"] = df.loc[cost_mask, "Value"].clip(upper=5.0)
+    df.loc[cost_mask, "Metric"] = "Total Cost (rel. to Greedy)"
 
     if df.empty:
         logger.warning("No data found to plot.")
@@ -80,6 +119,29 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
 
     # Sort by Bucket to ensure proper line connections
     df_agg = df_agg.sort_values(by="Bucket")
+
+    # Add zoomed Total Cost panel (IQR-filtered, no outliers)
+    cost_rows = df_agg[
+        df_agg["Metric"] == "Total Cost (rel. to Greedy)"
+    ].copy()
+    if not cost_rows.empty:
+        q1 = cost_rows["Value"].quantile(0.25)
+        q3 = cost_rows["Value"].quantile(0.75)
+        iqr = q3 - q1
+        lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+        zoomed = cost_rows[
+            (cost_rows["Value"] >= lo) & (cost_rows["Value"] <= hi)
+        ].copy()
+        zoomed["Metric"] = "Total Cost (zoomed)"
+        df_agg = pd.concat([df_agg, zoomed], ignore_index=True)
+
+    # Order "Total Cost (zoomed)" directly after "Total Cost (rel. to Greedy)"
+    desired_order = []
+    for m in df_agg["Metric"].unique():
+        desired_order.append(m)
+        if m == "Total Cost (rel. to Greedy)":
+            desired_order.append("Total Cost (zoomed)")
+    col_order = list(dict.fromkeys(desired_order))
 
     # --- 3. Jitter / Dodge Logic ---
 
@@ -128,6 +190,7 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
         x="Bucket Plot",  # Use the shifted bucket values
         y="Value",
         col="Metric",
+        col_order=col_order,
         hue="Solver",
         style="Solver",
         kind="line",
@@ -172,7 +235,7 @@ def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
 
     g.fig.subplots_adjust(bottom=0.18, wspace=0.25, hspace=0.3)
 
-    output_filename = "../resources/experiment_results_academic_grouped.png"
+    output_filename = "../resources/pabulib-all-single-auto.png"
     plt.savefig(output_filename, dpi=300, bbox_inches="tight")
     logger.info(f"Chart saved to {output_filename}")
 

@@ -2,7 +2,6 @@ from typing import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraint, LpConstraintGE, lpSum
 
 from muoblpsolvers.greedy.GreedySolver import (
     GreedySolver,
@@ -73,22 +72,3 @@ def test_greedy_solver_lb_respects_upper_bound(
     selected = {var.name for var in problem.variables() if var.value() == 1.0}
     total_cost = sum(projects_costs[n] for n in selected)
     assert total_cost <= 1000000
-
-
-def test_greedy_solver_lb_infeasible(
-    pb_with_lb_factory: Callable[[Utility], MultiObjectiveLpProblem],
-):
-    """Infeasible GE constraint (requires spending more than budget) must raise."""
-    problem = pb_with_lb_factory("APPROVAL")
-    infeasible_constraint = LpConstraint(
-        e=lpSum(
-            var * 1 for var in problem.variables() if var.name != "__dummy"
-        ),
-        sense=LpConstraintGE,
-        rhs=999,  # requires ALL candidates selected but budget prevents it
-        name="lb_infeasible",
-    )
-    problem.addConstraint(infeasible_constraint)
-
-    with pytest.raises(Exception, match="No feasible solution"):
-        problem.solve(GreedySolver())
