@@ -28,6 +28,8 @@ def get_metric_strategy(
         return invalid_constraints
     if metric == "INSTANCE_SIZE":
         return instance_size
+    if metric == "TOTAL_COST":
+        return total_cost
 
     raise Exception("Metric not implemented")
 
@@ -42,6 +44,15 @@ def exclusion_ratio(problem: MultiObjectiveLpProblem) -> Dict:
 def sum_objectives(problem: MultiObjectiveLpProblem) -> Dict:
     return {
         "sum": sum([obj.value() for obj in problem.objectives]),
+    }
+
+
+def total_cost(problem: MultiObjectiveLpProblem) -> Dict:
+    pb_constraint = get_total_budget_constraint(problem)
+    costs = {candidate.name: cost for candidate, cost in pb_constraint.items()}
+    selected = [v for v in problem.variables() if v.value() == 1.0]
+    return {
+        "total_cost": sum(costs[c.name] for c in selected),
     }
 
 

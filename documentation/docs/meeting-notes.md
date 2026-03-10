@@ -1,5 +1,10 @@
 # Notes
 
+* instead of intial seed, return boolen feasbile and do not change selection
+* when conifguring LB constraint check if it's possbile if not transofrm it into minimum (take all)
+* alternative to constraint path accept array in config
+
+
 ## Graphs feedback
 * objective sum - relative to greedy, i.e., solver X total sum divided by greedy total sum
 

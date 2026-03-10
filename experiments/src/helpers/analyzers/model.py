@@ -8,6 +8,7 @@ Metric = Literal[
     "EJR_PLUS",
     "CONSTRAINTS",
     "INSTANCE_SIZE",
+    "TOTAL_COST",
     "METADATA",
 ]
 

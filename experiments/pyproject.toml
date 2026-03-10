@@ -33,6 +33,7 @@ python-json-logger = "3.3.0"
 json5 = "0.12.1"
 seaborn = "0.13.2"
 matplotlib = "3.10.8"
+notebook = "^7.5.4"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -40,3 +41,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 79
+
+[tool.ruff.format]
+exclude = ["src/explore.ipynb"]
