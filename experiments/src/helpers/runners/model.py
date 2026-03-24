@@ -1,5 +1,11 @@
 from typing import Dict, List, Literal, NotRequired, TypedDict
 
+Strategy = Literal[
+    "district_budget_minus_max",
+    "category_vote_share",
+    "category_cost_share",
+]
+
 Solver = Literal[
     "SUMMING",
     "MES_ADD1",
@@ -38,9 +44,10 @@ class ExperimentConfig(TypedDict):
 
 class ConstraintConfig(TypedDict):
     key: Literal["CATEGORY", "DISTRICT"]
-    value: str
+    value: str  # specific value or "*" for all
     bound: Literal["UPPER", "LOWER"]
-    budget_ratio: float
+    budget_ratio: NotRequired[float]
+    strategy: NotRequired[Strategy]
 
 
 class RunnerResult(TypedDict):

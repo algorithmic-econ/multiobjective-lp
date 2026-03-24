@@ -4,5 +4,19 @@
     "value": "education",
     "bound": "LOWER",
     "budget_ratio": 0.2
+  },
+  // LB for all districts: district budget minus most expensive project
+  {
+    "key": "DISTRICT",
+    "value": "*",
+    "bound": "LOWER",
+    "strategy": "district_budget_minus_max"
+  },
+  // LB for specific category: vote-proportional share minus most expensive project
+  {
+    "key": "CATEGORY",
+    "value": "education",
+    "bound": "LOWER",
+    "strategy": "category_vote_share"
   }
 ]
