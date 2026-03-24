@@ -1,9 +1,29 @@
 # Notes
 
+## LB experiments design
+
+* LB for DISTRICT
+  * strategy A: LB = district total budget minus most expensive project in the given district
+* LB for CATEGORY
+  * preprocessing, what was proportion of votes casted for given category
+  * for approval, if voter has "total/n" money to spend and voted for A,B,C -> assign corresponding category of A,B,C (total/n)/3
+  * for ordinal or cumulative divide proportionally to points
+
+##
 * instead of intial seed, return boolen feasbile and do not change selection
 * when conifguring LB constraint check if it's possbile if not transofrm it into minimum (take all)
 * alternative to constraint path accept array in config
+* second strategy split vote proportionally to cost utilities
+* after calculating category total voted substract most expensive project in given cat
 
+Experiments:
+1. LB DISTRICT
+2. LB Category split by points
+3. LB Category split by cost
+4. LB District + LB Category split by points
+5. LB District + LB Category split by cost
+
+Find out which cities have categories
 
 ## Graphs feedback
 * objective sum - relative to greedy, i.e., solver X total sum divided by greedy total sum
