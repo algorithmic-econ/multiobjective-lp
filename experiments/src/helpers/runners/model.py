@@ -32,7 +32,8 @@ class RunnerConfig(TypedDict):
     source_type: Source
     utility_type: NotRequired[Utility]
     source_directory_path: str
-    constraints_configs_path: str | None
+    constraints_configs_path: NotRequired[str]
+    constraints_configs: NotRequired[List["ConstraintConfig"]]
     results_base_path: str
 
 
