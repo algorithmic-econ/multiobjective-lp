@@ -39,8 +39,20 @@ notebook = "^7.5.4"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
 [tool.ruff]
 line-length = 79
 
 [tool.ruff.format]
 exclude = ["src/explore.ipynb"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/conftest.py" = ["F401"]
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4,<9.0)",
+    "pytest-cov (>=7.1.0,<8.0.0)"
+]
