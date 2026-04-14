@@ -86,7 +86,7 @@ def test_cost_cumulative_multiplies(projects):
 
 def test_unknown_utility_raises():
     with pytest.raises(Exception, match="Unknown utility"):
-        ballot_to_expression_strategy("BOGUS")
+        ballot_to_expression_strategy("UNKNOWN")
 
 
 # -- ballot_to_cost_weights --

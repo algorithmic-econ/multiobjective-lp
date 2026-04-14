@@ -97,7 +97,9 @@ def single_district_setup() -> Tuple[
     Dict[str, Project],
     Dict[str, LpVariable],
 ]:
-    """1 district, 3 projects, budget 500, categories {edu, env}."""
+    """1 district, budget=500, cats={edu,env}.
+    p1: $100, {edu} | p2: $200, {env} | p3: $300, {edu,env}
+    v1 → {p1,p2} | v2 → {p2,p3}"""
     p1 = make_project("p1", 100, {"edu"})
     p2 = make_project("p2", 200, {"env"})
     p3 = make_project("p3", 300, {"edu", "env"})
@@ -122,7 +124,10 @@ def multi_district_setup() -> Tuple[
     Dict[str, Project],
     Dict[str, LpVariable],
 ]:
-    """2 districts (d1: budget 300, d2: budget 200), 4 projects, mixed cats."""
+    """2 districts, total budget=500, cats={edu,env}.
+    d1 (budget=300): p1: $100, {edu} | p2: $200, {env}
+    d2 (budget=200): p3: $150, {edu} | p4: $50, {env}
+    v1 → {p1,p2} (d1) | v2 → {p3,p4} (d2)"""
     p1 = make_project("p1", 100, {"edu"})
     p2 = make_project("p2", 200, {"env"})
     p3 = make_project("p3", 150, {"edu"})

@@ -1,14 +1,19 @@
 import pytest
 from pulp import LpConstraintGE, LpConstraintLE
 
+from helpers.transformers.pabutoolsConstants import CONSTRAINT_PREFIX
 from helpers.transformers.pabutoolsToMoLp import (
     create_baseline_constraints,
     create_category_constraint,
     create_constraints_from_config,
     create_district_constraint,
 )
-from helpers.transformers.pabutoolsConstants import CONSTRAINT_PREFIX
 
+from .fixtures.pabutools_factories import (
+    make_approval_profile,
+    make_cumulative_profile,
+    make_ordinal_profile,
+)
 
 # -- create_baseline_constraints --
 
@@ -112,9 +117,42 @@ def test_category_lower_ratio(single_district_setup):
     assert -result.constant == 300
 
 
-def test_category_strategy_vote_share(single_district_setup):
-    instances, profiles, by_name, variables = single_district_setup
+@pytest.mark.parametrize(
+    "utility, profile_factory, ballots, expected_lb",
+    [
+        pytest.param(
+            "APPROVAL",
+            make_approval_profile,
+            {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
+            -113,
+            id="approval: w=1 each → edu_share=187.5",
+        ),
+        pytest.param(
+            "ORDINAL",
+            make_ordinal_profile,
+            {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
+            -92,
+            id="ordinal: w=[2,1] by rank → edu_share=208.3",
+        ),
+        pytest.param(
+            "CUMULATIVE",
+            make_cumulative_profile,
+            {"v1": {"p1": 3, "p2": 2}, "v2": {"p2": 1, "p3": 4}},
+            -50,
+            id="cumulative: w=points → edu_share=250",
+        ),
+    ],
+)
+def test_category_strategy_vote_share(
+    single_district_setup, utility, profile_factory, ballots, expected_lb
+):
+    """vote_share: voter_budget (250/voter) split by weight/total_weight.
+    Multi-cat projects split share across categories.
+    LB = int(edu_share) - max_cost_in_category(300).
+    Negative LB ⇒ trivially satisfied."""
+    instances, _, by_name, variables = single_district_setup
     projects = list(by_name.values())
+    profiles = {"d1": profile_factory(ballots, by_name)}
     config = {
         "key": "CATEGORY",
         "value": "edu",
@@ -123,20 +161,51 @@ def test_category_strategy_vote_share(single_district_setup):
     }
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, utility
     )
 
     assert result.sense == LpConstraintGE
-    # strategy-computed value, not ratio-based
-    assert -result.constant == pytest.approx(
-        -result.constant,
-        abs=1,  # just verify it's an int
-    )
+    assert -result.constant == expected_lb
+    var_names = {v.name for v in result.keys()}
+    assert variables["p1"].name in var_names
+    assert variables["p2"].name not in var_names
+    assert result[variables["p1"]] == 100
+    assert result[variables["p3"]] == 300
 
 
-def test_category_strategy_cost_share(single_district_setup):
-    instances, profiles, by_name, variables = single_district_setup
+@pytest.mark.parametrize(
+    "utility, profile_factory, ballots",
+    [
+        pytest.param(
+            "APPROVAL",
+            make_approval_profile,
+            {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
+            id="approval",
+        ),
+        pytest.param(
+            "ORDINAL",
+            make_ordinal_profile,
+            {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
+            id="ordinal",
+        ),
+        pytest.param(
+            "CUMULATIVE",
+            make_cumulative_profile,
+            {"v1": {"p1": 3, "p2": 2}, "v2": {"p2": 1, "p3": 4}},
+            id="cumulative",
+        ),
+    ],
+)
+def test_category_strategy_cost_share(
+    single_district_setup, utility, profile_factory, ballots
+):
+    """cost_share: voter_budget split by project_cost/total_cost.
+    Utility-independent — same projects in ballot → same LB for all profiles.
+    edu_share = 83.33 (v1→p1) + 75 (v2→p3/2) = 158.33.
+    LB = int(158.33) - 300 = -142."""
+    instances, _, by_name, variables = single_district_setup
     projects = list(by_name.values())
+    profiles = {"d1": profile_factory(ballots, by_name)}
     config = {
         "key": "CATEGORY",
         "value": "edu",
@@ -145,10 +214,17 @@ def test_category_strategy_cost_share(single_district_setup):
     }
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, utility
     )
 
     assert result.sense == LpConstraintGE
+    assert -result.constant == -142
+    var_names = {v.name for v in result.keys()}
+    assert variables["p1"].name in var_names
+    assert variables["p3"].name in var_names
+    assert variables["p2"].name not in var_names
+    assert result[variables["p1"]] == 100
+    assert result[variables["p3"]] == 300
 
 
 def test_category_only_matching_projects(single_district_setup):

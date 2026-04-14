@@ -308,7 +308,7 @@ def create_constraints_from_config(
             int(float(instance.meta["budget"]))
             if "budget" in instance.meta
             else 0
-            for district, instance in instances.items()
+            for _, instance in instances.items()
         ]
     )
     allowed_categories = reduce(
@@ -390,8 +390,7 @@ def create_category_constraint(
     )
 
     if "strategy" in constraint_config:
-        strategy = constraint_config["strategy"]
-        use_cost = strategy == "category_cost_share"
+        use_cost = constraint_config.get("strategy") == "category_cost_share"
         constraint_limit = compute_category_lb(
             category, instances, profiles, utility, total_budget, use_cost
         )
