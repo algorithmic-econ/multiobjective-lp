@@ -277,6 +277,45 @@ def test_category_constraint_name_prefix(single_district_setup):
     assert lb.name.startswith(f"{CONSTRAINT_PREFIX}_lb_")
 
 
+def test_category_lower_ratio_clamped_when_infeasible(single_district_setup):
+    """edu projects: p1=$100, p3=$300 → sum=400.
+    budget_ratio=0.9 × 500 = 450 > 400 → clamp to 400."""
+    instances, profiles, by_name, variables = single_district_setup
+    projects = list(by_name.values())
+    config = {
+        "key": "CATEGORY",
+        "value": "edu",
+        "bound": "LOWER",
+        "budget_ratio": 0.9,
+    }
+
+    result = create_category_constraint(
+        config, variables, projects, 500, instances, profiles, "APPROVAL"
+    )
+
+    assert result.sense == LpConstraintGE
+    assert -result.constant == 400
+
+
+def test_category_upper_ratio_not_clamped(single_district_setup):
+    """UB constraints should not be clamped even if ratio exceeds max possible."""
+    instances, profiles, by_name, variables = single_district_setup
+    projects = list(by_name.values())
+    config = {
+        "key": "CATEGORY",
+        "value": "edu",
+        "bound": "UPPER",
+        "budget_ratio": 0.9,
+    }
+
+    result = create_category_constraint(
+        config, variables, projects, 500, instances, profiles, "APPROVAL"
+    )
+
+    assert result.sense == LpConstraintLE
+    assert -result.constant == 450
+
+
 # -- create_district_constraint --
 
 
@@ -353,6 +392,26 @@ def test_district_only_includes_district_projects(multi_district_setup):
     var_names_in_constraint = {v.name for v in result.keys()}
     assert variables["p3"].name not in var_names_in_constraint
     assert variables["p4"].name not in var_names_in_constraint
+
+
+def test_district_lower_ratio_clamped_when_infeasible(multi_district_setup):
+    """d1 projects: p1=$100, p2=$200 → sum=300.
+    budget_ratio=0.8 × 500 = 400 > 300 → clamp to 300."""
+    instances, _, by_name, variables = multi_district_setup
+    d1_projects = list(instances["d1"])
+    config = {
+        "key": "DISTRICT",
+        "value": "d1",
+        "bound": "LOWER",
+        "budget_ratio": 0.8,
+    }
+
+    result = create_district_constraint(
+        config, variables, d1_projects, 500, instances["d1"]
+    )
+
+    assert result.sense == LpConstraintGE
+    assert -result.constant == 300
 
 
 # -- create_constraints_from_config --

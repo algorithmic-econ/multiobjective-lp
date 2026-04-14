@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from functools import reduce
 from operator import ior
@@ -26,6 +27,8 @@ from .pabutoolsConstants import (
     TARGET_PREFIX,
     VARIABLE_PREFIX,
 )
+
+logger = logging.getLogger(__name__)
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -399,6 +402,14 @@ def create_category_constraint(
             constraint_config["budget_ratio"] * total_budget
         )
 
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB category constraint '{category}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
+
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(
         category, sense, projects_variables, projects_costs, constraint_limit
@@ -426,6 +437,14 @@ def create_district_constraint(
         constraint_limit = int(
             constraint_config["budget_ratio"] * total_budget
         )
+
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB district constraint '{district}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
 
     # TODO: Validate constraint config, district upper bound is created in baseline constraints
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
