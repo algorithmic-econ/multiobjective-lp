@@ -3,7 +3,18 @@ from collections import defaultdict
 from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraint, LpConstraintLE, LpSolver
+from pulp import (
+    PULP_CBC_CMD,
+    LpConstraint,
+    LpConstraintGE,
+    LpConstraintLE,
+    LpMinimize,
+    LpProblem,
+    LpSolver,
+    LpStatusOptimal,
+    LpVariable,
+    lpSum,
+)
 
 from muoblpsolvers.types import CandidateId, Cost, Utility, VoterId
 
@@ -24,6 +35,40 @@ class ElectionSolver(LpSolver):
         election = molp_to_simple_election(lp)
 
         self._solve_election(lp, election, kwargs=kwargs)
+
+    @staticmethod
+    def is_feasible(lp: MultiObjectiveLpProblem) -> bool:
+        has_lowerbound_constraint = any(
+            c.sense == LpConstraintGE for c in lp.constraints.values()
+        )
+        if not has_lowerbound_constraint:
+            return lp.valid()
+
+        candidates = [v.name for v in lp.variables() if v.name != "__dummy"]
+        variables = lp.variablesDict()
+        new_variables = {
+            name: LpVariable(name, cat="Binary") for name in candidates
+        }
+        prob = LpProblem("feasibility", LpMinimize)
+        prob += 0
+        for candidate in candidates:
+            if variables[candidate].varValue == 1:
+                new_variables[candidate].lowBound = 1
+        for name, constraint in lp.constraints.items():
+            items = [
+                (new_variables[v.name], coef)
+                for v, coef in constraint.items()
+                if v.name in new_variables
+            ]
+            if items:
+                prob += LpConstraint(
+                    lpSum(coef * v for v, coef in items),
+                    sense=constraint.sense,
+                    rhs=-constraint.constant,
+                    name=name,
+                )
+        status = prob.solve(PULP_CBC_CMD(msg=False))
+        return status == LpStatusOptimal
 
     def _solve_election(
         self, lp: MultiObjectiveLpProblem, election: Election, **kwargs

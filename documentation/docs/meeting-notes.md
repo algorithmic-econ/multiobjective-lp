@@ -1,8 +1,24 @@
 # Notes
 
-* instead of intial seed, return boolen feasbile and do not change selection
-* when conifguring LB constraint check if it's possbile if not transofrm it into minimum (take all)
-* alternative to constraint path accept array in config
+## LB experiments design
+
+Adapt constraint mechanism, as alternative to hardcoding budget_ratio, allow strategies that set constraint value automatically based on the preprocessed instance of election.
+Strategies:
+* Lower bound for DISTRICT type
+  * strategy LB = district total budget minus most expensive project in the given district
+* Lower bound for CATEGORY type
+  * strategy: after calculating category total voted substract most expensive project in given cat
+  * preprocessing, what was proportion of votes (how much money) casted for given category
+  * for approval, if voter has "total_budget/number_of_voters" money to spend and voted for three projects A,B,C -> assign corresponding category of A,B,C (total_budget/number_of_voters)/3
+    * for ordinal or cumulative divide proportionally to points
+  * second strategy split vote proportionally to cost utilities
+
+Plan design for 5 variants of experiments:
+1. LB District
+2. LB Category split by points
+3. LB Category split by cost
+4. LB District + LB Category split by points
+5. LB District + LB Category split by cost
 
 
 ## Graphs feedback

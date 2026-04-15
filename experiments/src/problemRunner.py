@@ -7,7 +7,10 @@ from uuid import uuid4
 
 from helpers.runners.model import RunnerConfig, RunnerResult
 from helpers.runners.solverStrategy import get_solver
-from helpers.runners.sourceStrategy import load_and_transform_strategy
+from helpers.runners.sourceStrategy import (
+    load_and_transform_strategy,
+    resolve_constraints_configs,
+)
 from helpers.utils.resultCache import is_result_present
 from helpers.utils.utils import write_to_json
 
@@ -20,8 +23,8 @@ def problem_runner(config: RunnerConfig) -> None:
     source_type = config["source_type"]
     utility_type = config.get("utility_type")
     source_directory_path = config["source_directory_path"]
-    constraints_configs_path = config.get("constraints_configs_path")
     results_base_path = config["results_base_path"]
+    constraints_configs = resolve_constraints_configs(config)
 
     logger.debug("Start problem", extra={"config": config})
 
@@ -30,7 +33,7 @@ def problem_runner(config: RunnerConfig) -> None:
         source_type,
         utility_type,
         source_directory_path,
-        constraints_configs_path,
+        constraints_configs,
     )
     if is_result_present(config, utility_type):
         logger.info(f"Result already present - {results_base_path}")

@@ -1,6 +1,7 @@
+import logging
 from collections import defaultdict
 from functools import reduce
-from operator import ior, itemgetter
+from operator import ior
 from typing import Dict, List, Tuple, TypeAlias
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -26,6 +27,8 @@ from .pabutoolsConstants import (
     TARGET_PREFIX,
     VARIABLE_PREFIX,
 )
+
+logger = logging.getLogger(__name__)
 
 District: TypeAlias = str
 AgentId: TypeAlias = str
@@ -54,7 +57,9 @@ def pabutools_to_multi_objective_lp(
     additional_constraints = create_constraints_from_config(
         constraints_configs,
         instances,
+        profiles,
         project_variables,
+        utility,
     )
     for constraint in additional_constraints:
         problem.addConstraint(constraint)
@@ -216,28 +221,122 @@ def create_baseline_constraints(
     ] + [total_budget_constraint]
 
 
+#
+# Strategy Computation
+#
+def ballot_to_cost_weights(ballot):
+    if hasattr(ballot, "items"):
+        return [[str(c), int(c.cost)] for c, _ in ballot.items()]
+    return [[str(c), int(c.cost)] for c in ballot]
+
+
+def compute_voter_category_shares(
+    instances: Dict[District, Instance],
+    profiles: Dict[District, Profile],
+    utility: Utility,
+    total_budget: int,
+    use_cost: bool,
+) -> Dict[str, float]:
+    all_projects = {
+        project.name: project
+        for instance in instances.values()
+        for project in instance
+    }
+    total_voters = sum(len(profile) for profile in profiles.values())
+    if total_voters == 0:
+        return {}
+    voter_budget = total_budget / total_voters
+    weight_fn = (
+        ballot_to_cost_weights
+        if use_cost
+        else ballot_to_expression_strategy(utility)
+    )
+
+    category_shares: Dict[str, float] = defaultdict(float)
+    for profile in profiles.values():
+        for ballot in profile:
+            entries = weight_fn(ballot)
+            total_weight = sum(w for _, w in entries)
+            if total_weight == 0:
+                continue
+            for pid, weight in entries:
+                project = all_projects[pid]
+                proportion = weight / total_weight
+                share = voter_budget * proportion
+                cats = project.categories
+                if cats:
+                    for cat in cats:
+                        category_shares[cat] += share / len(cats)
+    return dict(category_shares)
+
+
+def compute_district_lb(district_instance: Instance) -> int:
+    budget = (
+        int(float(district_instance.meta["budget"]))
+        if "budget" in district_instance.meta
+        else 0
+    )
+    max_cost = max((int(p.cost) for p in district_instance), default=0)
+    return budget - max_cost
+
+
+def compute_category_lb(
+    category: str,
+    instances: Dict[District, Instance],
+    profiles: Dict[District, Profile],
+    utility: Utility,
+    total_budget: int,
+    use_cost: bool,
+) -> int:
+    shares = compute_voter_category_shares(
+        instances, profiles, utility, total_budget, use_cost
+    )
+    all_projects = [p for inst in instances.values() for p in inst]
+    max_cost = max(
+        (int(p.cost) for p in all_projects if category in p.categories),
+        default=0,
+    )
+    return int(shares.get(category, 0)) - max_cost
+
+
 def create_constraints_from_config(
     constraints_configs: List[ConstraintConfig],
     instances: Dict[District, Instance],
+    profiles: Dict[District, Profile],
     projects_variables: Dict[AgentId, LpVariable],
+    utility: Utility,
 ) -> List[LpConstraint]:
     total_budget: int = sum(
         [
             int(float(instance.meta["budget"]))
             if "budget" in instance.meta
             else 0
-            for district, instance in instances.items()
+            for _, instance in instances.items()
         ]
     )
     allowed_categories = reduce(
         ior, [instance.categories for instance in instances.values()], set()
     )
 
+    # expand wildcard configs
+    expanded_configs = []
+    for config in constraints_configs:
+        if config["value"] == "*":
+            targets = (
+                allowed_categories
+                if config["key"] == "CATEGORY"
+                else instances.keys()
+            )
+            for val in targets:
+                expanded_configs.append({**config, "value": val})
+        else:
+            expanded_configs.append(config)
+
     projects = [
         project for instance in instances.values() for project in instance
     ]
     constraints = []
-    for constraint_config in constraints_configs:
+    for constraint_config in expanded_configs:
         if (
             constraint_config["key"] == "CATEGORY"
             and constraint_config["value"] in allowed_categories
@@ -248,6 +347,9 @@ def create_constraints_from_config(
                     projects_variables,
                     projects,
                     total_budget,
+                    instances,
+                    profiles,
+                    utility,
                 )
             )
         if (
@@ -263,6 +365,7 @@ def create_constraints_from_config(
                         for project in instances[constraint_config["value"]]
                     ],
                     total_budget,
+                    instances[constraint_config["value"]],
                 )
             )
     return constraints
@@ -273,10 +376,12 @@ def create_category_constraint(
     projects_variables: Dict[AgentId, LpVariable],
     projects: List[Project],
     total_budget: int,
+    instances: Dict[District, Instance],
+    profiles: Dict[District, Profile],
+    utility: Utility,
 ) -> LpConstraint:
-    category, bound, budget_ratio = itemgetter(
-        "value", "bound", "budget_ratio"
-    )(constraint_config)
+    category = constraint_config["value"]
+    bound = constraint_config["bound"]
     projects_costs = reduce(
         ior,
         [
@@ -287,7 +392,24 @@ def create_category_constraint(
         {},
     )
 
-    constraint_limit = int(budget_ratio * total_budget)
+    if "strategy" in constraint_config:
+        use_cost = constraint_config.get("strategy") == "category_cost_share"
+        constraint_limit = compute_category_lb(
+            category, instances, profiles, utility, total_budget, use_cost
+        )
+    else:
+        constraint_limit = int(
+            constraint_config["budget_ratio"] * total_budget
+        )
+
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB category constraint '{category}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
+
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(
         category, sense, projects_variables, projects_costs, constraint_limit
@@ -299,17 +421,31 @@ def create_district_constraint(
     projects_variables: Dict[AgentId, LpVariable],
     district_projects: List[Project],
     total_budget: int,
+    district_instance: Instance,
 ) -> LpConstraint:
-    district, bound, budget_ratio = itemgetter(
-        "value", "bound", "budget_ratio"
-    )(constraint_config)
+    district = constraint_config["value"]
+    bound = constraint_config["bound"]
     projects_costs = reduce(
         ior,
         [{project.name: int(project.cost)} for project in district_projects],
         {},
     )
 
-    constraint_limit = int(budget_ratio * total_budget)
+    if "strategy" in constraint_config:
+        constraint_limit = compute_district_lb(district_instance)
+    else:
+        constraint_limit = int(
+            constraint_config["budget_ratio"] * total_budget
+        )
+
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB district constraint '{district}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
+
     # TODO: Validate constraint config, district upper bound is created in baseline constraints
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(

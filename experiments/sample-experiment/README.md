@@ -6,26 +6,28 @@
 
 Experiment consists of set of runner configs, where, one runner config describes single instances of Multi-objective LP together with the input data.
 
-#### 1.1 Example [config](experiment-config.json) defines the following experiment:
-* `concurrency: 2`, number of problems from runner config list to run concurrently,
+#### 1.1 Example [config](experiment-config.jsonc) defines the following experiment:
+* `concurrency: 3`, number of problems from runner config list to run concurrently,
 * `experiment_results_base_path: "results/sample-experiment/"`, path to directory where results are going to be saved,
 * `"runner_configs": [{...}, ...]`, list of configurations describing instances of Multi-objective LP.
 
 ```json
 {
-  "concurrency": 2,
+  "concurrency": 3,
   "experiment_results_base_path": "results/sample-experiment/",
   "runner_configs": [
     {
-      "solver_type": "MES",
+      "solver_type": "MES_ADD1",
       "source_type": "PABUTOOLS",
+      "utility_type": "COST",
       "source_directory_path": "input/krakow_2024"
     },
     {
-      "solver_type": "MES",
+      "solver_type": "MES_ADD1",
       "source_type": "PABUTOOLS",
-      "source_directory_path": "input/warszawa_2024",
-      "constraints_configs_path": "empty-constraints-config.json"
+      "utility_type": "COST_ORDINAL",
+      "source_directory_path": "input/krakow_2024",
+      "constraints_configs_path": "empty-constraints-config.jsonc"
     }
   ]
 }
@@ -33,39 +35,49 @@ Experiment consists of set of runner configs, where, one runner config describes
 
 #### 1.2 Single runner config defines the following problem and data:
 
-* `solver_type: "MES"` - which solver to use, here it's MethodOfEqualShares solver, see [solverStrategy.py](../src/helpers/runners/solverStrategy.py) for other values,
+* `solver_type: "MES_ADD1"` - which solver to use, see [solverStrategy.py](../src/helpers/runners/solverStrategy.py) for all values,
 * `source_type: "PABUTOOLS"` - format and type of input data, see [sourceStrategy.py](../src/helpers/runners/sourceStrategy.py) for other values,
-* `source_directory_path: "input/krakow_2024"` - path to directory with input data, in this case to pabutools files describing PB instance.
-* `constraints_configs_path: "empty-constraints-config.json"` - optional path to configuration file defining constraints for a problem
+* `utility_type: "COST"` - optional utility function type (`COST`, `APPROVAL`, `ORDINAL`, `CUMULATIVE`, `COST_ORDINAL`, `COST_CUMULATIVE`), auto-detected from input if omitted,
+* `source_directory_path: "input/krakow_2024"` - path to directory with input data, or path to single `.pb` file,
+* `constraints_configs_path: "empty-constraints-config.jsonc"` - optional path to constraints config file (see 1.3),
+* `constraints_configs: [...]` - optional inline constraints list, alternative to file path (see 1.3). Inline takes priority over file path.
 ```json
 {
-  "solver_type": "MES",
+  "solver_type": "MES_ADD1",
   "source_type": "PABUTOOLS",
+  "utility_type": "COST",
   "source_directory_path": "input/krakow_2024",
-  "constraints_configs_path": "empty-constraints-config.json"
+  "constraints_configs_path": "empty-constraints-config.jsonc"
 }
 ```
 
 ##### Optional runner configuration
 * `solver_options: ["use-gurobi"]` - optional parameter to provide configuration to selected solvers, e.g., Summing solver can internally use Gurobi instead of PULP
 
+x
+#### 1.3 [OPTIONAL] Constraints config
 
-#### 1.3 [OPTIONAL] Constraints config file
-
-* Optional list of constraints to be applied on the Multi-objective LP.
-* Each constraint is defined as object:
+* Optional list of constraints applied to the Multi-objective LP.
+* Provided inline via `constraints_configs` in runner config, or via file path in `constraints_configs_path`. Inline takes priority; if neither is set, no constraints are added.
+* Each constraint is defined as:
   ```python
+  Strategy = Literal["district_budget_minus_max", "category_vote_share", "category_cost_share"]
+
   class ConstraintConfig(TypedDict):
-      type: Literal['CATEGORY']
-      category: str
-      bound: Literal['UPPER', 'LOWER']
-      budget_ratio: float
+      key: Literal["CATEGORY", "DISTRICT"]
+      value: str  # specific value or "*" for all
+      bound: Literal["UPPER", "LOWER"]
+      budget_ratio: NotRequired[float]
+      strategy: NotRequired[Strategy]
   ```
-* If given `category` value is not present, then the constraint will be ignored.
+* `value` can be a specific category/district name or `"*"` to generate constraints for all categories/districts.
+* Either `budget_ratio` (fraction of total budget) or `strategy` (dynamically computed bound) must be provided.
+* If given `value` is not present in the input data, the constraint is ignored.
+* See [sample-constraints.jsonc](../resources/input/constraint-config/sample-constraints.jsonc) for a full example.
   ```json
   [
-    {"type": "CATEGORY","category": "education", "bound": "LOWER", "budget_ratio": 0.15},
-    {"type": "CATEGORY","category": "ignored", "bound": "UPPER", "budget_ratio": 0.30}
+    {"key": "CATEGORY", "value": "education", "bound": "LOWER", "budget_ratio": 0.15},
+    {"key": "DISTRICT", "value": "*", "bound": "LOWER", "strategy": "district_budget_minus_max"}
   ]
   ```
 
@@ -100,7 +112,7 @@ $ ./run.sh
 
 
 ### 5. Define analyzer configuration
-Analyzer configuration file defines (see [example](sample-analysis-config.json)):
+Analyzer configuration file defines (see [example](sample-analysis-config.jsonc)):
 * Base path for saving analyzer results.
 * Experiment results directory as data source (from previous steps).
 * List of metrics to analyze.

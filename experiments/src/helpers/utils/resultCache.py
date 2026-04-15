@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from helpers.runners.model import RunnerConfig, Utility
+from helpers.runners.sourceStrategy import resolve_constraints_configs
 from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
@@ -21,11 +22,7 @@ def is_metadata_content_matching(
         return False
 
     # Check if constraints match
-    constraints_configs_path = problem_config.get("constraints_configs_path")
-    if constraints_configs_path:
-        current_constraints = read_from_json(Path(constraints_configs_path))
-    else:
-        current_constraints = []
+    current_constraints = resolve_constraints_configs(problem_config)
 
     if existing_result["constraints_configs"] != current_constraints:
         return False
