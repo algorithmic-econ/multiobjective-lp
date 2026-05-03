@@ -29,6 +29,7 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         "constraints": [],
         "variables": {},
         "objectives": [],
+        "objectives_weights": {},
     }
 
     with open(filename, "r") as f:
@@ -91,10 +92,19 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
         )
         problem_data["objectives"].append(target)
 
+    for target_line in lines[
+        lines.index("WEIGHTS:\n") + 1 : lines.index("END_WEIGHTS:\n")
+    ]:
+        name_right_idx = target_line.index(":")
+        t_name = target_line[:name_right_idx]
+        weight = int(target_line[name_right_idx + 2 :].strip())
+        problem_data["objectives_weights"][t_name] = weight
+
     problem = MultiObjectiveLpProblem(
         problem_data["name"],
         problem_data["sense"],
         problem_data["objectives"],
+        problem_data["objectives_weights"],
     )
     problem.addVariables(problem_data["variables"].values())
     for constraint in problem_data["constraints"]:

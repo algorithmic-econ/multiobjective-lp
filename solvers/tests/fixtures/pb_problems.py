@@ -88,7 +88,7 @@ def basic_pb_factory(
         )
 
         empty_pb.addVariables(variables.values())
-        empty_pb.setObjectives(objectives)
+        empty_pb.set_objectives(objectives)
         empty_pb.addConstraint(pb_constraint)
 
         return empty_pb
@@ -140,7 +140,7 @@ def pb_with_lb_factory(
         )
 
         problem.addVariables(variables.values())
-        problem.setObjectives(objectives)
+        problem.set_objectives(objectives)
         problem.addConstraint(pb_constraint)
         problem.addConstraint(lb_constraint)
 

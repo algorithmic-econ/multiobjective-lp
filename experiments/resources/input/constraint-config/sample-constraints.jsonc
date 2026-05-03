@@ -15,7 +15,7 @@
   // LB for specific category: vote-proportional share minus most expensive project
   {
     "key": "CATEGORY",
-    "value": "education",
+    "value": "sport",
     "bound": "LOWER",
     "strategy": "category_vote_share"
   }
