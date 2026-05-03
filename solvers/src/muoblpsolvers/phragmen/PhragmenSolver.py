@@ -60,17 +60,19 @@ def update_local_scalings(
     m_spent,
     sorted_utils,
     candidates: dict[CandidateId, Cost],
+    weights: dict[VoterId, int],
 ):
     for candidate in remaining:
         scaling_for_c = 0
         sum_money = sum([
-            (timestamp - m_spent[v]) for v, _ in sorted_utils[candidate]
+            weights[v] * (timestamp - m_spent[v])
+            for v, _ in sorted_utils[candidate]
         ])
         for voter, utility in sorted_utils[candidate]:
             alpha = sum_money / candidates[candidate]
             scaling_for_c = max(alpha * utility, scaling_for_c)
             local_scalings[voter] = max(local_scalings[voter], scaling_for_c)
-            sum_money -= timestamp - m_spent[voter]
+            sum_money -= weights[voter] * (timestamp - m_spent[voter])
 
 
 def compute_local_cap(timestamp, m_spent, ut, local_scaling, kappa, eps=1e-6):
@@ -93,6 +95,7 @@ def phragmen_cardinal(
     eps=1e-6,
 ) -> set[str]:
     timestamp_step = 1
+    weights = election["voters"]
 
     profile: dict[CandidateId, dict[VoterId, float]] = {}
     variables: dict[CandidateId, LpVariable] = lp.variablesDict()
@@ -153,10 +156,13 @@ def phragmen_cardinal(
                 money_spent,
                 sorted_utils,
                 election["candidates"],
+                weights,
             )
             for candidate in remaining:
                 for voter, utility in sorted_utils[candidate]:
-                    local_caps[candidate][voter] = compute_local_cap(
+                    local_caps[candidate][voter] = weights[
+                        voter
+                    ] * compute_local_cap(
                         timestamp=timestamp_high,
                         m_spent=money_spent[voter],
                         ut=utility,
@@ -193,10 +199,13 @@ def phragmen_cardinal(
                 money_spent,
                 sorted_utils,
                 election["candidates"],
+                weights,
             )
             for candidate in remaining:
                 for voter, utility in sorted_utils[candidate]:
-                    local_caps_tmp[candidate][voter] = compute_local_cap(
+                    local_caps_tmp[candidate][voter] = weights[
+                        voter
+                    ] * compute_local_cap(
                         timestamp=timestemp_med,
                         m_spent=money_spent[voter],
                         ut=utility,
@@ -226,10 +235,16 @@ def phragmen_cardinal(
                     list(election["profile"][candidate].keys()),
                     key=lambda voter: (
                         local_caps[candidate][voter]
-                        / election["profile"][candidate][voter]
+                        / (
+                            weights[voter]
+                            * election["profile"][candidate][voter]
+                        )
                     ),
                 )
-                total_utility = sum(election["profile"][candidate].values())
+                total_utility = sum(
+                    weights[v] * u
+                    for v, u in election["profile"][candidate].items()
+                )
                 money_used = 0
                 last_rho = 0
                 new_ratio = float("inf")
@@ -242,7 +257,10 @@ def phragmen_cardinal(
                             + total_utility
                             * (
                                 local_caps[candidate][voter]
-                                / election["profile"][candidate][voter]
+                                / (
+                                    weights[voter]
+                                    * election["profile"][candidate][voter]
+                                )
                             )
                         )
                         / election["candidates"][candidate],
@@ -258,11 +276,12 @@ def phragmen_cardinal(
                             new_ratio = rho / alpha
                             new_rho = rho
                             new_alpha = alpha
-                    total_utility -= election["profile"][candidate][voter]
+                    total_utility -= (
+                        weights[voter] * election["profile"][candidate][voter]
+                    )
                     money_used += local_caps[candidate][voter]
-                    last_rho = (
-                        local_caps[candidate][voter]
-                        / election["profile"][candidate][voter]
+                    last_rho = local_caps[candidate][voter] / (
+                        weights[voter] * election["profile"][candidate][voter]
                     )
                 if new_ratio < lowest_ratio:
                     lowest_ratio = new_ratio
@@ -270,10 +289,14 @@ def phragmen_cardinal(
                     next_candidate = candidate
                     best_alpha = new_alpha
                     # TODO: check best_util calculation
-                    best_util = sum(election["profile"][candidate].values())
+                    best_util = sum(
+                        weights[v] * u
+                        for v, u in election["profile"][candidate].items()
+                    )
                 elif new_ratio == lowest_ratio:
                     total_utility = sum(
-                        election["profile"][candidate].values()
+                        weights[v] * u
+                        for v, u in election["profile"][candidate].items()
                     )
                     if total_utility > best_util:
                         next_candidate = candidate
@@ -286,25 +309,28 @@ def phragmen_cardinal(
                 supporters_sorted = sorted(
                     profile[candidate],
                     key=lambda v: (
-                        local_caps[candidate][v] / profile[candidate][v]
+                        local_caps[candidate][v]
+                        / (weights[v] * profile[candidate][v])
                     ),
                 )
                 price = election["candidates"][candidate]
-                total_utility = sum(profile[candidate].values())
+                total_utility = sum(
+                    weights[v] * u for v, u in profile[candidate].items()
+                )
                 for voter in supporters_sorted:
                     if (
                         local_caps[candidate][voter] * total_utility
-                        >= price * profile[candidate][voter]
+                        >= price * weights[voter] * profile[candidate][voter]
                     ):
                         break
                     price -= local_caps[candidate][voter]
-                    total_utility -= profile[candidate][voter]
+                    total_utility -= weights[voter] * profile[candidate][voter]
                 if price > eps and total_utility > eps:
                     rho = price / total_utility
                 else:
-                    rho = (
-                        local_caps[candidate][supporters_sorted[-1]]
-                        / profile[candidate][supporters_sorted[-1]]
+                    rho = local_caps[candidate][supporters_sorted[-1]] / (
+                        weights[supporters_sorted[-1]]
+                        * profile[candidate][supporters_sorted[-1]]
                     )
                 if rho < lowest_rho:
                     next_candidate = candidate
@@ -336,12 +362,17 @@ def phragmen_cardinal(
             total_overspending = election["candidates"][next_candidate] * (
                 1.0 - best_alpha
             )
-            total_utility = sum(profile[next_candidate].values())
+            total_utility = sum(
+                weights[v] * u for v, u in profile[next_candidate].items()
+            )
             for voter in profile[next_candidate]:
+                per_indiv_cap = (
+                    local_caps[next_candidate][voter] / weights[voter]
+                )
                 payment = (
                     min(
                         lowest_rho * profile[next_candidate][voter],
-                        local_caps[next_candidate][voter],
+                        per_indiv_cap,
                     )
                     + (total_overspending * profile[next_candidate][voter])
                     / total_utility
@@ -350,11 +381,14 @@ def phragmen_cardinal(
                     money_spent[voter] += payment
         else:
             for voter in profile[next_candidate]:
+                per_indiv_cap = (
+                    local_caps[next_candidate][voter] / weights[voter]
+                )
                 payment = min(
                     lowest_rho * profile[next_candidate][voter],
-                    local_caps[next_candidate][voter],
+                    per_indiv_cap,
                 )
-            if payment > eps:
-                money_spent[voter] += payment
+                if payment > eps:
+                    money_spent[voter] += payment
 
     return rank
