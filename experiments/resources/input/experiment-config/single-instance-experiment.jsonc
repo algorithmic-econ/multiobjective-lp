@@ -9,13 +9,6 @@
       "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_.pb",
       "results_base_path": "resources/experiment-results/single-run/",
       "constraints_configs_path": "resources/input/constraint-config/sample-constraints.jsonc"
-    },
-    {
-      "solver_type": "GREEDY",
-      "solver_options": {},
-      "source_type": "PABUTOOLS",
-      "source_directory_path": "/Users/jasiek/Documents/Projects/pabulib/warszawa_2023/poland_warszawa_2023_.pb",
-      "results_base_path": "resources/experiment-results/single-run/"
     }
   ]
 }

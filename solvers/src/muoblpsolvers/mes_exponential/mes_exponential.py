@@ -26,7 +26,7 @@ def break_ties(
 
 
 def equal_shares_exponential(
-    voters: list[VoterId],
+    voters: dict[VoterId, int],
     projects: list[CandidateId],
     cost: dict[CandidateId, float],
     approvals_utilities: dict[CandidateId, list[tuple[VoterId, int]]],
@@ -64,7 +64,7 @@ def equal_shares_exponential(
                     # c cannot be better than the best so far
                     break
                 money_behind_now = sum(
-                    budget[voter]
+                    voters[voter] * budget[voter]
                     for voter, _ in approvals_utilities[candidate]
                 )
                 if money_behind_now < cost[candidate]:
@@ -86,8 +86,8 @@ def equal_shares_exponential(
                     eff_vote_count = cost[candidate] / max_payment
                     if max_payment * utility > budget[voter]:
                         # voter cannot afford the payment, so pays entire remaining budget
-                        paid_so_far += budget[voter]
-                        denominator -= utility
+                        paid_so_far += voters[voter] * budget[voter]
+                        denominator -= voters[voter] * utility
                     else:
                         # i (and all later approvers) can afford the payment; stop here
                         # TODO: make sure not to drop eff_vote_count below zero

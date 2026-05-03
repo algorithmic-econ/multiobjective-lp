@@ -37,7 +37,7 @@ def prepare_mes_parameters(
 ) -> tuple[
     list[CandidateId],
     dict[CandidateId, Cost],
-    list[VoterId],
+    dict[VoterId, int],
     dict[CandidateId, list[tuple[VoterId, Utility]]],
     dict[CandidateId, Utility],
     TotalBudget,
@@ -55,7 +55,10 @@ def prepare_mes_parameters(
         for candidate, cost in constraint.items()
     }
 
-    voters: list[VoterId] = [voter.name for voter in lp.objectives]
+    voters: dict[VoterId, int] = {
+        voter.name: lp.objectives_weights.get(voter.name, 1)
+        for voter in lp.objectives
+    }
 
     approvals_utilities: dict[CandidateId, list[tuple[VoterId, Utility]]] = (
         defaultdict(list)
@@ -67,7 +70,7 @@ def prepare_mes_parameters(
             approvals_utilities[candidate.name] += [(voter.name, utility)]
 
     total_utilities: dict[CandidateId, Utility] = {
-        candidate: sum([u for v, u in voters_utilities])
+        candidate: sum([voters[v] * u for v, u in voters_utilities])
         for candidate, voters_utilities in approvals_utilities.items()
     }
 
