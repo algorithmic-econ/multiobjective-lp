@@ -97,7 +97,7 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
     ]:
         name_right_idx = target_line.index(":")
         t_name = target_line[:name_right_idx]
-        weight = int(target_line[name_right_idx + 2 :].strip())
+        weight = float(target_line[name_right_idx + 2 :].strip())
         problem_data["objectives_weights"][t_name] = weight
 
     problem = MultiObjectiveLpProblem(

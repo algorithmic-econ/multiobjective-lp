@@ -15,7 +15,7 @@ class MultiObjectiveLpProblem(LpProblem):
         name: str,
         sense: LpMaximize | LpMinimize = LpMaximize,
         objectives: list[LpAffineExpression] = [],
-        objectives_weights: dict[str, int] = {},
+        objectives_weights: dict[str, float] = {},
     ) -> None:
         super().__init__(name, sense=sense)
         self._objectives = objectives
@@ -30,11 +30,11 @@ class MultiObjectiveLpProblem(LpProblem):
         self._objectives = objectives
 
     @property
-    def objectives_weights(self) -> dict[str, int]:
+    def objectives_weights(self) -> dict[str, float]:
         return self._objectives_weights
 
     def set_objectives_weights(
-        self, objectives_weights: dict[str, int]
+        self, objectives_weights: dict[str, float]
     ) -> None:
         self._objectives_weights = objectives_weights
 

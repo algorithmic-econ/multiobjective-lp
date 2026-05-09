@@ -34,6 +34,7 @@ class RunnerConfig(TypedDict):
     source_directory_path: str
     constraints_configs_path: NotRequired[str]
     constraints_configs: NotRequired[List["ConstraintConfig"]]
+    deduplicate_objectives: NotRequired[bool]
     results_base_path: str
 
 
@@ -59,6 +60,7 @@ class RunnerResult(TypedDict):
     utility_type: Utility
     source_path: str
     constraints_configs: List[ConstraintConfig]
+    deduplicate_objectives: bool
     problem_path: str
     instance_size: int
     selected: List[str]

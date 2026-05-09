@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class Election(TypedDict):
     profile: dict[CandidateId, dict[VoterId, Utility]]
     candidates: dict[CandidateId, Cost]
-    voters: dict[VoterId, int]
+    voters: dict[VoterId, float]
 
 
 class ElectionSolver(LpSolver):
@@ -103,7 +103,7 @@ def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
         defaultdict(dict)
     )
 
-    voters: dict[VoterId, int] = {}
+    voters: dict[VoterId, float] = {}
     for voter in (
         lp.objectives
     ):  # [T_6080: 80550 V_BO.D10.14_24 + 340000 V_BO.D10.1_24, ....]

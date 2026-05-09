@@ -26,7 +26,7 @@ def break_ties(
 
 
 def equal_shares_exponential(
-    voters: dict[VoterId, int],
+    voters: dict[VoterId, float],
     projects: list[CandidateId],
     cost: dict[CandidateId, float],
     approvals_utilities: dict[CandidateId, list[tuple[VoterId, int]]],
