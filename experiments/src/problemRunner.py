@@ -25,6 +25,7 @@ def problem_runner(config: RunnerConfig) -> None:
     source_directory_path = config["source_directory_path"]
     results_base_path = config["results_base_path"]
     constraints_configs = resolve_constraints_configs(config)
+    deduplicate_objectives = config.get("deduplicate_objectives", False)
 
     logger.debug("Start problem", extra={"config": config})
 
@@ -34,6 +35,7 @@ def problem_runner(config: RunnerConfig) -> None:
         utility_type,
         source_directory_path,
         constraints_configs,
+        deduplicate_objectives,
     )
     if is_result_present(config, utility_type):
         logger.info(f"Result already present - {results_base_path}")
@@ -53,6 +55,7 @@ def problem_runner(config: RunnerConfig) -> None:
             "utility_type": utility_type,
             "source_path": source_directory_path,
             "constraints_configs": constraints_configs,
+            "deduplicate_objectives": deduplicate_objectives,
             "problem_path": None,
             "instance_size": len(
                 [

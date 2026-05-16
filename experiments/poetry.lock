@@ -1835,18 +1835,20 @@ files = [
 
 [[package]]
 name = "muoblp"
-version = "1.0.3"
+version = "1.0.4"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-files = [
-    {file = "muoblp-1.0.3-py3-none-any.whl", hash = "sha256:1c0dee9fcf3133d42d16e813204f4a95e8cc6598f2122f635255cbcd4be0423b"},
-    {file = "muoblp-1.0.3.tar.gz", hash = "sha256:0941d40d697e104991178c4e8809dad083a04faaaf2e530c3092a8e4cdc2c96e"},
-]
+files = []
+develop = true
 
 [package.dependencies]
 pulp = "2.9.0"
+
+[package.source]
+type = "directory"
+url = "../core"
 
 [[package]]
 name = "muoblpbindings"
@@ -1902,7 +1904,7 @@ files = []
 develop = true
 
 [package.dependencies]
-muoblp = "1.0.3"
+muoblp = {path = "../core", develop = true}
 muoblpbindings = "0.0.16"
 pulp = "2.9.0"
 pytest = "8.4.1"
@@ -3445,4 +3447,4 @@ test = ["pytest", "websockets"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "7069c0a19ec797b632dfedea5f81c1eec8c7b628dc3cd2336af7b1bb54037032"
+content-hash = "9373c9bfca41023e8da5c2d05c1ffe1a363023658a35ed35b402318cc1428e37"

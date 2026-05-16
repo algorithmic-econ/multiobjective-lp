@@ -32,7 +32,9 @@ class GreedySolver(ElectionSolver):
 
         total_utility: dict[CandidateId, float] = {}
         for candidate, votes in profile.items():
-            total_utility[candidate] = sum(votes.values())
+            total_utility[candidate] = sum(
+                voters[v] * u for v, u in votes.items()
+            )
 
         sorted_candidates = list(candidates.keys())
         sorted_candidates.sort(
