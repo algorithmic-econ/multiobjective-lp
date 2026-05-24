@@ -33,6 +33,6 @@
     transport_obj = lpSum([trans_cost * flag for trans_cost, flag in zip(transport_costs, build_warehouse_flag)])
     fix_obj = lpSum([fix_cost * flag for fix_cost, flag in zip(warehouse_fixed_costs, build_warehouse_flag)])
 
-    model.setObjectives([transport_obj, fix_obj])
+    model.set_objectives([transport_obj, fix_obj])
     model.solve(solver=SummedObjectivesLpSolver())
     ```

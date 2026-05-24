@@ -5,7 +5,7 @@ from itertools import repeat
 from pathlib import Path
 from typing import List
 
-from muoblp.utils.lpReaderUtils import read_lp_file
+from muoblp.utils.lp_reader_utils import read_lp_file
 
 from helpers.analyzers.analysis_table import (
     transform_metrics_to_markdown_table,
