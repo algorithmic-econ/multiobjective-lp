@@ -3,32 +3,35 @@ from pathlib import Path
 from pulp import LpVariable, LpBinary, lpSum
 import re
 
+
 def parse_line(line: str):
-    left, right = line.split(':', 1)
+    left, right = line.split(":", 1)
     count = int(left.strip())
 
     ranking = []
-    token = ''
+    token = ""
     inside = False
 
     for ch in right:
-        if ch == '{':
+        if ch == "{":
             if inside:
-                raise RuntimeError('Cannot parse:', line)
-            token = ''
+                raise RuntimeError("Cannot parse:", line)
+            token = ""
             inside = True
-        elif ch == '}':
+        elif ch == "}":
             if not inside:
-                raise RuntimeError('Cannot parse:', line)
-            ranking.append([int(x.strip()) for x in token.split(',') if x.strip()])
-            token = ''
+                raise RuntimeError("Cannot parse:", line)
+            ranking.append(
+                [int(x.strip()) for x in token.split(",") if x.strip()]
+            )
+            token = ""
             inside = False
-        elif ch == ',' and not inside:
+        elif ch == "," and not inside:
             if token.strip():
                 ranking.append([int(token.strip())])
-                token = ''
+                token = ""
             else:
-                raise RuntimeError('Cannot parse:', line)
+                raise RuntimeError("Cannot parse:", line)
         else:
             token += ch
 
@@ -37,17 +40,18 @@ def parse_line(line: str):
 
     return count, ranking
 
+
 def load_preflib(filename: Path):
     candidate_names = {}
     title = str(filename)
     m = 0
     votes = []
     with open(filename) as f:
-        re_title = re.compile(r'# TITLE: (.*)\n')
-        re_number_alternatives = re.compile(r'# NUMBER ALTERNATIVES: (\d+)\n')
-        re_candidate_name = re.compile(r'# ALTERNATIVE NAME (\d+): (.*)\n')
+        re_title = re.compile(r"# TITLE: (.*)\n")
+        re_number_alternatives = re.compile(r"# NUMBER ALTERNATIVES: (\d+)\n")
+        re_candidate_name = re.compile(r"# ALTERNATIVE NAME (\d+): (.*)\n")
         for line in f:
-            if line.startswith('#'):
+            if line.startswith("#"):
                 res = re_title.fullmatch(line)
                 if res:
                     title = res.group(1)
@@ -60,15 +64,17 @@ def load_preflib(filename: Path):
                 if res:
                     candidate_names[int(res.group(1))] = res.group(2)
                     continue
-                print(line, end='')
+                print(line, end="")
             else:
                 try:
                     votes.append(parse_line(line))
                 except RuntimeError as e:
-                    raise RuntimeError(f'Error parsing file {filename}') from e
+                    raise RuntimeError(f"Error parsing file {filename}") from e
 
     if m == 0:
-        raise RuntimeError(f'Error parsing file {filename}: undefined number of alternatives')
+        raise RuntimeError(
+            f"Error parsing file {filename}: undefined number of alternatives"
+        )
 
     variables = {
         num: LpVariable(name, 0, 1, LpBinary)
@@ -77,20 +83,17 @@ def load_preflib(filename: Path):
 
     objectives = []
     for i, (_, ranking) in enumerate(votes):
-        curr = m-1
+        curr = m - 1
         u = {}
         for group in ranking:
             for c in group:
                 u[c] = curr
             curr -= len(group)
-        objective = lpSum([utility*variables[c] for c, utility in u.items()])
-        objective.name = f'v{i+1}'
+        objective = lpSum([utility * variables[c] for c, utility in u.items()])
+        objective.name = f"v{i + 1}"
         objectives.append(objective)
 
-    weights = {
-        f'v{i+1}': weight
-        for i, (weight, _) in enumerate(votes)
-    }
+    weights = {f"v{i + 1}": weight for i, (weight, _) in enumerate(votes)}
 
     problem = MultiObjectiveLpProblem(title)
     problem.addVariables(variables.values())

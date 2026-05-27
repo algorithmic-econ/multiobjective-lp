@@ -21,10 +21,7 @@ class SingleTransferableVote(LpSolver):
         selected = single_transferable_vote(lp)
         logger.info("SOLVER END", extra={"time": time.time() - start_time})
 
-        vals = {
-            x.name: int(x.name in selected)
-            for x in lp.variables()
-        }
+        vals = {x.name: int(x.name in selected) for x in lp.variables()}
         lp.assignStatus(LpStatusOptimal)
         lp.assignVarsVals(vals)
 
