@@ -53,8 +53,9 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         while iteration < self.solver_options["max_iterations"]:
             # Run MES
             start_time = time.time()
+            # TODO: weight-aware via binding update
             selected = equal_shares_utils(
-                voters,
+                list(voters.keys()),
                 projects,
                 costs,
                 approvals_utilities,

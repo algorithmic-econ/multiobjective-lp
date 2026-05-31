@@ -100,7 +100,7 @@ def test_shares_multi_cat_project_splits():
     profile = make_approval_profile({"v1": ["p1"]}, {"p1": p1})
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 10000, False
+        {"district": instance}, {"district": profile}, "APPROVAL", 1000, False
     )
 
     # single project, single voter, weight=1, voter_budget=1000

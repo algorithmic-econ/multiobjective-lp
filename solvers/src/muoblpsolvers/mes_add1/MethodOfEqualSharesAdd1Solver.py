@@ -30,8 +30,9 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
         start_time = time.time()
         logger.info("SOLVER START")
 
+        # TODO: weight-aware via binding update
         selected = equal_shares_add1(
-            voters,
+            list(voters.keys()),
             projects,
             costs,
             approvals_utilities,

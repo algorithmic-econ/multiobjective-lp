@@ -29,6 +29,7 @@ def load_and_transform_strategy(
     utility_type: Utility | None,
     source_directory_path: str,
     constraints_configs: List[ConstraintConfig],
+    deduplicate_objectives: bool,
 ) -> Tuple[MultiObjectiveLpProblem, List[ConstraintConfig], Utility]:
     if source_type == "PABUTOOLS":
         instances, profiles = load_pabutools_by_district(source_directory_path)
@@ -44,6 +45,7 @@ def load_and_transform_strategy(
                 profiles,
                 constraints_configs,
                 resolved_utility,
+                deduplicate_objectives,
             ),
             constraints_configs,
             resolved_utility,

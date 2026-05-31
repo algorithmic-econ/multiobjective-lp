@@ -27,6 +27,11 @@ def is_metadata_content_matching(
     if existing_result["constraints_configs"] != current_constraints:
         return False
 
+    if existing_result.get(
+        "deduplicate_objectives", False
+    ) != problem_config.get("deduplicate_objectives", False):
+        return False
+
     # Check if the corresponding LP file exists
     lp_filename = (
         os.path.basename(meta_path)

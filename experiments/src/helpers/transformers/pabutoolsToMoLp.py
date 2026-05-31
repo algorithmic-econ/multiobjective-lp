@@ -1,3 +1,4 @@
+import hashlib
 import logging
 from collections import defaultdict
 from functools import reduce
@@ -39,6 +40,7 @@ def pabutools_to_multi_objective_lp(
     profiles: Dict[District, Profile],
     constraints_configs: List[ConstraintConfig],
     utility: Utility,
+    deduplicate_objectives: bool = False,
 ) -> MultiObjectiveLpProblem:
     problem = MultiObjectiveLpProblem(f"election-{'-'.join(instances.keys())}")
 
@@ -46,7 +48,13 @@ def pabutools_to_multi_objective_lp(
     problem.addVariables(project_variables.values())
 
     objectives = create_voter_objectives(utility, profiles, project_variables)
-    problem.setObjectives(list(objectives.values()))
+
+    merged_objectives, weights, voter_groups = resolve_objectives(
+        objectives, deduplicate_objectives
+    )
+    problem.set_objectives(merged_objectives)
+    problem.set_objectives_weights(weights)
+    problem.set_objectives_voter_groups(voter_groups)
 
     district_constraints = create_baseline_constraints(
         instances, project_variables
@@ -152,6 +160,53 @@ def create_voter_objectives(
         )
         for voter, approved_candidates in votes.items()
     }
+
+
+def resolve_objectives(
+    objectives: Dict[str, LpAffineExpression],
+    deduplicate: bool,
+) -> Tuple[List[LpAffineExpression], Dict[str, float], Dict[str, List[str]]]:
+    if deduplicate:
+        return merge_duplicate_objectives(objectives)
+    merged = list(objectives.values())
+    weights = {obj.name: 1.0 for obj in merged}
+    voter_groups = {
+        obj.name: [voter_id] for voter_id, obj in objectives.items()
+    }
+    return merged, weights, voter_groups
+
+
+def merge_duplicate_objectives(
+    objectives: Dict[str, LpAffineExpression],
+) -> Tuple[List[LpAffineExpression], Dict[str, float], Dict[str, List[str]]]:
+    groups: Dict[str, List[str]] = defaultdict(list)
+    canonical_expr: Dict[str, LpAffineExpression] = {}
+    for voter_id, expr in objectives.items():
+        key = str(expr)
+        groups[key].append(voter_id)
+        canonical_expr.setdefault(key, expr)
+
+    merged: List[LpAffineExpression] = []
+    weights: Dict[str, float] = {}
+    voter_groups: Dict[str, List[str]] = {}
+    for key, voter_ids in groups.items():
+        digest = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
+        merged_name = f"{TARGET_PREFIX}_{digest}"
+        expr = canonical_expr[key]
+        expr.name = merged_name
+        merged.append(expr)
+        weights[merged_name] = len(voter_ids)
+        voter_groups[merged_name] = sorted(voter_ids)
+
+    logger.info(
+        "Merged objectives",
+        extra={
+            "voters": sum(weights.values()),
+            "groups": len(merged),
+            "top_weights": sorted(weights.values(), reverse=True)[:5],
+        },
+    )
+    return merged, weights, voter_groups
 
 
 def define_voter_objective(
