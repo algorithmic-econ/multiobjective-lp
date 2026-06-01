@@ -83,7 +83,7 @@ def load_preflib(filename: Path):
 
     objectives = []
     for i, (_, ranking) in enumerate(votes):
-        curr = m - 1
+        curr = m
         u = {}
         for group in ranking:
             for c in group:
