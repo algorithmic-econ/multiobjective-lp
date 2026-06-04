@@ -11,6 +11,8 @@ class SummedObjectivesLpSolver(LpSolver):
         Parameter flag to use gurobi solver instead of default PULP one.
     """
 
+    name = "SummedObjectives"
+
     def __init__(self, use_gurobi: bool = False):
         super().__init__()
         self.use_gurobi = use_gurobi

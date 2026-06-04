@@ -42,10 +42,8 @@ class SolverOptions(TypedDict):
 
 
 class MethodOfEqualSharesConstrainsSolver(LpSolver):
-    """
-    Info:
-        Method Of Equal Shares with Constraints solver
-    """
+
+    name = "MethodOfEqualSharesConstrains"
 
     def __init__(self, solver_options):
         super().__init__()

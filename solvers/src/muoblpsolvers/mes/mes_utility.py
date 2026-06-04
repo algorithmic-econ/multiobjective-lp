@@ -13,10 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 class MethodOfEqualSharesUtilitySolver(LpSolver):
-    """
-    Info:
-        Solver that executes Methods of Equal Shares to find solution
-    """
+
+    name = "MethodOfEqualSharesUtility"
 
     def __init__(self):
         super().__init__()

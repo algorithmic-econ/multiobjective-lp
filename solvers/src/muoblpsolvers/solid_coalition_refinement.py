@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class SolidCoalitionRefinement(LpSolver):
+
+    name = "SolidCoalitionRefinement"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
