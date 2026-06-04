@@ -3,7 +3,7 @@ import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from muoblpsolvers.base_solvers.ElectionSolver import Election, ElectionSolver
+from muoblpsolvers.election_solver import Election, ElectionSolver
 from muoblpsolvers.types import CandidateId
 
 logger = logging.getLogger(__name__)

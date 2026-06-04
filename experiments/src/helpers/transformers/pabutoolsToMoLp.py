@@ -3,7 +3,7 @@ import logging
 from collections import defaultdict
 from functools import reduce
 from operator import ior
-from typing import Dict, List, Tuple, TypeAlias
+from typing import TypeAlias
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import (
@@ -36,9 +36,9 @@ AgentId: TypeAlias = str
 
 
 def pabutools_to_multi_objective_lp(
-    instances: Dict[District, Instance],
-    profiles: Dict[District, Profile],
-    constraints_configs: List[ConstraintConfig],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    constraints_configs: list[ConstraintConfig],
     utility: Utility,
     deduplicate_objectives: bool = False,
 ) -> MultiObjectiveLpProblem:
@@ -79,8 +79,8 @@ def pabutools_to_multi_objective_lp(
 # Variables
 #
 def create_projects_variables(
-    instances: Dict[District, Instance],
-) -> Dict[AgentId, LpVariable]:
+    instances: dict[District, Instance],
+) -> dict[AgentId, LpVariable]:
     projects_ids = [
         project.name for instance in instances.values() for project in instance
     ]
@@ -139,9 +139,9 @@ def validate_profile_type_matches_utility(
 
 def create_voter_objectives(
     utility: Utility,
-    profiles: Dict[District, Profile],
-    projects_variables: Dict[AgentId, LpVariable],
-) -> Dict[str, LpAffineExpression]:
+    profiles: dict[District, Profile],
+    projects_variables: dict[AgentId, LpVariable],
+) -> dict[str, LpAffineExpression]:
     ballot_mapper_by_utility = ballot_to_expression_strategy(utility)
     votes = defaultdict(list)
 
@@ -163,9 +163,9 @@ def create_voter_objectives(
 
 
 def resolve_objectives(
-    objectives: Dict[str, LpAffineExpression],
+    objectives: dict[str, LpAffineExpression],
     deduplicate: bool,
-) -> Tuple[List[LpAffineExpression], Dict[str, float], Dict[str, List[str]]]:
+) -> tuple[list[LpAffineExpression], dict[str, float], dict[str, list[str]]]:
     if deduplicate:
         return merge_duplicate_objectives(objectives)
     merged = list(objectives.values())
@@ -177,18 +177,18 @@ def resolve_objectives(
 
 
 def merge_duplicate_objectives(
-    objectives: Dict[str, LpAffineExpression],
-) -> Tuple[List[LpAffineExpression], Dict[str, float], Dict[str, List[str]]]:
-    groups: Dict[str, List[str]] = defaultdict(list)
-    canonical_expr: Dict[str, LpAffineExpression] = {}
+    objectives: dict[str, LpAffineExpression],
+) -> tuple[list[LpAffineExpression], dict[str, float], dict[str, list[str]]]:
+    groups: dict[str, list[str]] = defaultdict(list)
+    canonical_expr: dict[str, LpAffineExpression] = {}
     for voter_id, expr in objectives.items():
         key = str(expr)
         groups[key].append(voter_id)
         canonical_expr.setdefault(key, expr)
 
-    merged: List[LpAffineExpression] = []
-    weights: Dict[str, float] = {}
-    voter_groups: Dict[str, List[str]] = {}
+    merged: list[LpAffineExpression] = []
+    weights: dict[str, float] = {}
+    voter_groups: dict[str, list[str]] = {}
     for key, voter_ids in groups.items():
         digest = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
         merged_name = f"{TARGET_PREFIX}_{digest}"
@@ -211,8 +211,8 @@ def merge_duplicate_objectives(
 
 def define_voter_objective(
     name: str,
-    approved_projects_utilities: List[Tuple[AgentId, float]],
-    projects_variables: Dict[AgentId, LpVariable],
+    approved_projects_utilities: list[tuple[AgentId, float]],
+    projects_variables: dict[AgentId, LpVariable],
 ) -> LpAffineExpression:
     approved_projects_variables = [
         [projects_variables[candidate_id], utility]
@@ -231,10 +231,10 @@ def define_voter_objective(
 # Base Constraints (total and per UB district)
 #
 def create_baseline_constraints(
-    instances: Dict[District, Instance],
-    projects_variables: Dict[AgentId, LpVariable],
-) -> List[LpConstraint]:
-    budgets: Dict[District, int] = {
+    instances: dict[District, Instance],
+    projects_variables: dict[AgentId, LpVariable],
+) -> list[LpConstraint]:
+    budgets: dict[District, int] = {
         district: (
             int(float(instance.meta["budget"]))
             if "budget" in instance.meta
@@ -242,7 +242,7 @@ def create_baseline_constraints(
         )
         for district, instance in instances.items()
     }
-    projects_costs: Dict[District, Dict[AgentId, int]] = {
+    projects_costs: dict[District, dict[AgentId, int]] = {
         district: {project.name: int(project.cost) for project in instance}
         for district, instance in instances.items()
     }
@@ -286,12 +286,12 @@ def ballot_to_cost_weights(ballot):
 
 
 def compute_voter_category_shares(
-    instances: Dict[District, Instance],
-    profiles: Dict[District, Profile],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
     utility: Utility,
     total_budget: int,
     use_cost: bool,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     all_projects = {
         project.name: project
         for instance in instances.values()
@@ -307,7 +307,7 @@ def compute_voter_category_shares(
         else ballot_to_expression_strategy(utility)
     )
 
-    category_shares: Dict[str, float] = defaultdict(float)
+    category_shares: dict[str, float] = defaultdict(float)
     for profile in profiles.values():
         for ballot in profile:
             entries = weight_fn(ballot)
@@ -337,8 +337,8 @@ def compute_district_lb(district_instance: Instance) -> int:
 
 def compute_category_lb(
     category: str,
-    instances: Dict[District, Instance],
-    profiles: Dict[District, Profile],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
     utility: Utility,
     total_budget: int,
     use_cost: bool,
@@ -355,12 +355,12 @@ def compute_category_lb(
 
 
 def create_constraints_from_config(
-    constraints_configs: List[ConstraintConfig],
-    instances: Dict[District, Instance],
-    profiles: Dict[District, Profile],
-    projects_variables: Dict[AgentId, LpVariable],
+    constraints_configs: list[ConstraintConfig],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    projects_variables: dict[AgentId, LpVariable],
     utility: Utility,
-) -> List[LpConstraint]:
+) -> list[LpConstraint]:
     total_budget: int = sum(
         [
             int(float(instance.meta["budget"]))
@@ -428,11 +428,11 @@ def create_constraints_from_config(
 
 def create_category_constraint(
     constraint_config: ConstraintConfig,
-    projects_variables: Dict[AgentId, LpVariable],
-    projects: List[Project],
+    projects_variables: dict[AgentId, LpVariable],
+    projects: list[Project],
     total_budget: int,
-    instances: Dict[District, Instance],
-    profiles: Dict[District, Profile],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
     utility: Utility,
 ) -> LpConstraint:
     category = constraint_config["value"]
@@ -473,8 +473,8 @@ def create_category_constraint(
 
 def create_district_constraint(
     constraint_config: ConstraintConfig,
-    projects_variables: Dict[AgentId, LpVariable],
-    district_projects: List[Project],
+    projects_variables: dict[AgentId, LpVariable],
+    district_projects: list[Project],
     total_budget: int,
     district_instance: Instance,
 ) -> LpConstraint:
@@ -511,8 +511,8 @@ def create_district_constraint(
 def define_constraint(
     name: str,
     sense: LpConstraintGE | LpConstraintLE,
-    all_projects_variables: Dict[AgentId, LpVariable],
-    participating_projects_costs: Dict[AgentId, int],
+    all_projects_variables: dict[AgentId, LpVariable],
+    participating_projects_costs: dict[AgentId, int],
     maximum_cost: int,
 ) -> LpConstraint:
     return LpConstraint(

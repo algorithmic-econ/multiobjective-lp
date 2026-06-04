@@ -1,5 +1,3 @@
-from typing import Dict, List, Set, Tuple
-
 import pytest
 from pabutools.election import (
     ApprovalBallot,
@@ -15,12 +13,12 @@ from pulp import LpVariable
 
 
 def make_project(
-    name: str, cost: int, categories: Set[str] | None = None
+    name: str, cost: int, categories: set[str] | None = None
 ) -> Project:
     return Project(name=name, cost=cost, categories=categories or set())
 
 
-def make_instance(projects: List[Project], budget: int) -> Instance:
+def make_instance(projects: list[Project], budget: int) -> Instance:
     cats = set()
     for p in projects:
         cats |= p.categories
@@ -33,8 +31,8 @@ def make_instance(projects: List[Project], budget: int) -> Instance:
 
 
 def make_approval_profile(
-    ballots_dict: Dict[str, List[str]],
-    projects_by_name: Dict[str, Project],
+    ballots_dict: dict[str, list[str]],
+    projects_by_name: dict[str, Project],
 ) -> ApprovalProfile:
     profile = ApprovalProfile()
     for voter_id, project_names in ballots_dict.items():
@@ -49,8 +47,8 @@ def make_approval_profile(
 
 
 def make_ordinal_profile(
-    ballots_dict: Dict[str, List[str]],
-    projects_by_name: Dict[str, Project],
+    ballots_dict: dict[str, list[str]],
+    projects_by_name: dict[str, Project],
 ) -> OrdinalProfile:
     profile = OrdinalProfile()
     for voter_id, project_names in ballots_dict.items():
@@ -64,8 +62,8 @@ def make_ordinal_profile(
 
 
 def make_cumulative_profile(
-    ballots_dict: Dict[str, Dict[str, int]],
-    projects_by_name: Dict[str, Project],
+    ballots_dict: dict[str, dict[str, int]],
+    projects_by_name: dict[str, Project],
 ) -> CumulativeProfile:
     profile = CumulativeProfile()
     for voter_id, points_map in ballots_dict.items():
@@ -79,8 +77,8 @@ def make_cumulative_profile(
 
 
 def make_project_variables(
-    projects: List[Project],
-) -> Dict[str, LpVariable]:
+    projects: list[Project],
+) -> dict[str, LpVariable]:
     variables = LpVariable.dicts("V", [p.name for p in projects], cat="Binary")
     for v in variables.values():
         v.setInitialValue(0)
@@ -91,11 +89,11 @@ def make_project_variables(
 
 
 @pytest.fixture
-def single_district_setup() -> Tuple[
-    Dict[str, Instance],
-    Dict[str, ApprovalProfile],
-    Dict[str, Project],
-    Dict[str, LpVariable],
+def single_district_setup() -> tuple[
+    dict[str, Instance],
+    dict[str, ApprovalProfile],
+    dict[str, Project],
+    dict[str, LpVariable],
 ]:
     """1 district, budget=500, cats={edu,env}.
     p1: $100, {edu} | p2: $200, {env} | p3: $300, {edu,env}
@@ -118,11 +116,11 @@ def single_district_setup() -> Tuple[
 
 
 @pytest.fixture
-def multi_district_setup() -> Tuple[
-    Dict[str, Instance],
-    Dict[str, ApprovalProfile],
-    Dict[str, Project],
-    Dict[str, LpVariable],
+def multi_district_setup() -> tuple[
+    dict[str, Instance],
+    dict[str, ApprovalProfile],
+    dict[str, Project],
+    dict[str, LpVariable],
 ]:
     """2 districts, total budget=500, cats={edu,env}.
     d1 (budget=300): p1: $100, {edu} | p2: $200, {env}

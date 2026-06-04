@@ -1,11 +1,9 @@
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from muoblpsolvers.mes_utils.MethodOfEqualSharesUtilitySolver import (
-    MethodOfEqualSharesUtilitySolver,
-)
+from muoblpsolvers import MethodOfEqualSharesUtilitySolver
 from muoblpsolvers.types import Utility
 
 

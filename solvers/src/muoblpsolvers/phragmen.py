@@ -6,8 +6,8 @@ from typing import TypedDict
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpVariable
 
-from muoblpsolvers.base_solvers.ElectionSolver import Election, ElectionSolver
 from muoblpsolvers.common import set_selected_candidates
+from muoblpsolvers.election_solver import Election, ElectionSolver
 from muoblpsolvers.types import CandidateId, Cost, VoterId
 
 logger = logging.getLogger(__name__)

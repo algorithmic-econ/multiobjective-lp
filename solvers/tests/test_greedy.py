@@ -1,11 +1,9 @@
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from muoblpsolvers.greedy.GreedySolver import (
-    GreedySolver,
-)
+from muoblpsolvers import GreedySolver
 from muoblpsolvers.types import Utility
 
 
