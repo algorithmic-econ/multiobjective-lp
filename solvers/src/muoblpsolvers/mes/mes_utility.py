@@ -5,10 +5,9 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpbindings import equal_shares_utils
 from pulp import LpSolver
 
-from muoblpsolvers.common import (
-    prepare_mes_parameters,
-    set_selected_candidates,
-)
+from muoblpsolvers.utils import set_solved
+
+from .common import prepare_mes_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
             total_utilities,
             total_budget,
         )
-
-        set_selected_candidates(lp, selected)
-
         logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+
+        set_solved(lp, selected)
+        return lp.status

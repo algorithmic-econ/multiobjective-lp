@@ -93,10 +93,3 @@ def prepare_mes_parameters(
         total_utilities,
         total_budget,
     )
-
-
-def set_selected_candidates(
-    problem: MultiObjectiveLpProblem, selected: list[str]
-) -> None:
-    for variable in problem.variables():
-        variable.setInitialValue(1 if variable.name in selected else 0)

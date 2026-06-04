@@ -3,7 +3,9 @@ import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpbindings import single_transferable_vote
-from pulp import LpSolver, LpStatusOptimal
+from pulp import LpSolver
+
+from muoblpsolvers.utils import set_solved
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +23,5 @@ class SingleTransferableVote(LpSolver):
         selected = single_transferable_vote(lp)
         logger.info("SOLVER END", extra={"time": time.time() - start_time})
 
-        vals = {x.name: int(x.name in selected) for x in lp.variables()}
-        lp.assignStatus(LpStatusOptimal)
-        lp.assignVarsVals(vals)
-
+        set_solved(lp, selected)
         return lp.status

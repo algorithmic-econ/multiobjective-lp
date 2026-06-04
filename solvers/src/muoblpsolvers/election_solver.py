@@ -34,7 +34,7 @@ class ElectionSolver(LpSolver):
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
         election = molp_to_simple_election(lp)
 
-        self._solve_election(lp, election, kwargs=kwargs)
+        return self._solve_election(lp, election, kwargs=kwargs)
 
     @staticmethod
     def is_feasible(lp: MultiObjectiveLpProblem) -> bool:

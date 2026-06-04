@@ -5,10 +5,9 @@ from typing import TypedDict
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver
 
-from muoblpsolvers.common import (
-    prepare_mes_parameters,
-)
 from muoblpsolvers.types import CandidateId, VoterId
+
+from .common import prepare_mes_parameters
 
 logger = logging.getLogger(__name__)
 
