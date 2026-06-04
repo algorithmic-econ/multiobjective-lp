@@ -10,7 +10,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 
 dynamic = [ "dependencies" ]
 
@@ -25,7 +25,7 @@ packages = [{include = "muoblpsolvers", from = "src"}]
 # muoblp = "1.0.3"
 muoblp = {path = "../core", develop = true}
 pulp = "2.9.0"
-muoblpbindings = "0.0.16"
+muoblpbindings = "0.0.17"
 pytest = "8.4.1"
 
 [build-system]
