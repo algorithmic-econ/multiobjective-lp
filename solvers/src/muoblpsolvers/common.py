@@ -13,22 +13,22 @@ from muoblpsolvers.types import (
 
 
 def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
-    all_candidates: set[CandidateId] = set([
+    all_candidates: set[CandidateId] = {
         variable.name
         for variable in lp.variables()
         if variable.name != "__dummy"
-    ])
+    }
 
     pb_constraints = []
     for constraint in lp.constraints.values():
-        candidates = set([variable.name for variable, _ in constraint.items()])
+        candidates = {variable.name for variable in constraint}
         if candidates == all_candidates and constraint.sense == LpConstraintLE:
             pb_constraints.append(constraint)
 
     if len(pb_constraints) == 0:
-        raise Exception("Problem does not have PB constraint")
+        raise ValueError("Problem does not have PB constraint")
     if len(pb_constraints) > 1:
-        raise Exception("Problem has too many PB constraint")
+        raise ValueError("Problem has too many PB constraint")
     return pb_constraints[0]
 
 
@@ -70,7 +70,7 @@ def prepare_mes_parameters(
             approvals_utilities[candidate.name] += [(voter.name, utility)]
 
     total_utilities: dict[CandidateId, Utility] = {
-        candidate: sum([voters[v] * u for v, u in voters_utilities])
+        candidate: sum(voters[v] * u for v, u in voters_utilities)
         for candidate, voters_utilities in approvals_utilities.items()
     }
 
