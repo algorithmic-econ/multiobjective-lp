@@ -137,7 +137,6 @@ class SolverOptions(TypedDict):
 
 
 class MethodOfEqualSharesExponentialSolver(LpSolver):
-
     name = "MethodOfEqualSharesExponential"
 
     def __init__(self, solver_options):

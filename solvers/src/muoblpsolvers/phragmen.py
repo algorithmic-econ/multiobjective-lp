@@ -21,7 +21,6 @@ class SolverOptions(TypedDict):
 
 
 class PhragmenSolver(ElectionSolver):
-
     name = "Phragmen"
 
     def __init__(self, solver_options):
