@@ -1,7 +1,7 @@
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from muoblpsolvers.common import get_total_budget_constraint
+from muoblpsolvers.mes.common import get_total_budget_constraint
 
 
 def test_get_total_budget_constraint_throws_missing_pb(

@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from collections.abc import Callable
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.common import get_total_budget_constraint
@@ -7,8 +7,8 @@ from helpers.analyzers.model import AnalyzerResult, Metric
 
 
 def get_metrics(
-    metrics: List[Metric], problem: MultiObjectiveLpProblem
-) -> Dict:
+    metrics: list[Metric], problem: MultiObjectiveLpProblem
+) -> dict:
     result: AnalyzerResult = {"metrics": metrics}
     for metric in metrics:
         result |= {metric: get_metric_strategy(metric)(problem)}
@@ -17,7 +17,7 @@ def get_metrics(
 
 def get_metric_strategy(
     metric: Metric,
-) -> Callable[[MultiObjectiveLpProblem], Dict]:
+) -> Callable[[MultiObjectiveLpProblem], dict]:
     if metric == "EXCLUSION_RATION":
         return exclusion_ratio
     if metric == "SUM_OBJECTIVES":
@@ -34,20 +34,20 @@ def get_metric_strategy(
     raise Exception("Metric not implemented")
 
 
-def exclusion_ratio(problem: MultiObjectiveLpProblem) -> Dict:
+def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
     zero_count = len([1 for obj in problem.objectives if obj.value() == 0])
     return {
         "exclusion_ratio": zero_count / len(problem.objectives),
     }
 
 
-def sum_objectives(problem: MultiObjectiveLpProblem) -> Dict:
+def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
     return {
         "sum": sum([obj.value() for obj in problem.objectives]),
     }
 
 
-def total_cost(problem: MultiObjectiveLpProblem) -> Dict:
+def total_cost(problem: MultiObjectiveLpProblem) -> dict:
     pb_constraint = get_total_budget_constraint(problem)
     costs = {candidate.name: cost for candidate, cost in pb_constraint.items()}
     selected = [v for v in problem.variables() if v.value() == 1.0]
@@ -56,7 +56,7 @@ def total_cost(problem: MultiObjectiveLpProblem) -> Dict:
     }
 
 
-def invalid_constraints(problem: MultiObjectiveLpProblem) -> Dict:
+def invalid_constraints(problem: MultiObjectiveLpProblem) -> dict:
     total_budget_constraint = get_total_budget_constraint(problem)
     return {
         "pb_constraint": total_budget_constraint.valid(),
@@ -66,11 +66,11 @@ def invalid_constraints(problem: MultiObjectiveLpProblem) -> Dict:
     }
 
 
-def instance_size(problem: MultiObjectiveLpProblem) -> Dict:
+def instance_size(problem: MultiObjectiveLpProblem) -> dict:
     return {"size": len(problem.variables())}
 
 
-def ejr_plus(problem: MultiObjectiveLpProblem) -> Dict:
+def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
     # TODO: Check if utility was COST based
     # TODO: Introduce metric options, i.e., pass up_to_one as config parameter
     up_to_one = True

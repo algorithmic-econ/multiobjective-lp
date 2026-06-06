@@ -6,9 +6,9 @@ from typing import TypedDict
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpVariable
 
-from muoblpsolvers.base_solvers.ElectionSolver import Election, ElectionSolver
-from muoblpsolvers.common import set_selected_candidates
+from muoblpsolvers.election_solver import Election, ElectionSolver
 from muoblpsolvers.types import CandidateId, Cost, VoterId
+from muoblpsolvers.utils import set_solved
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,8 @@ class SolverOptions(TypedDict):
 
 
 class PhragmenSolver(ElectionSolver):
+    name = "Phragmen"
+
     def __init__(self, solver_options):
         super().__init__()
         self.solver_options: SolverOptions = solver_options
@@ -46,11 +48,13 @@ class PhragmenSolver(ElectionSolver):
             bos_version=self.solver_options.get("bos_version", False),
             eps=self.solver_options.get("eps", 1e-6),
         )
-        set_selected_candidates(lp, selected)
         logger.info(
             "SOLVER END",
             extra={"time": (time.time() - start_time), "instance": lp.name},
         )
+
+        set_solved(lp, selected)
+        return lp.status
 
 
 def update_local_scalings(

@@ -4,18 +4,36 @@ from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpbindings import equal_shares_utils
-from pulp import LpSolver
+from pulp import LpConstraint, LpConstraintGE, LpConstraintLE, LpSolver
 
-from muoblpsolvers.common import (
-    prepare_mes_parameters,
-    set_selected_candidates,
-)
-from muoblpsolvers.mes_constrains.utils import (
-    get_feasibility_ratio,
-    get_infeasible_constraints,
-)
+from .common import prepare_mes_parameters
 
 logger = logging.getLogger(__name__)
+
+
+def get_feasibility_ratio(constraint: LpConstraint) -> float:
+    """
+    :rtype: object
+    """
+    # ratio: [0, inf)
+    value = constraint.value()
+    target = constraint.constant
+    return (value - target) / abs(target)
+
+
+# def get_modification_ratio(feasibility_ratio: float, lower: float, upper: float) -> float:
+#     return lower + (upper - lower) * feasibility_ratio
+
+
+def get_infeasible_constraints(
+    problem: MultiObjectiveLpProblem,
+) -> list[LpConstraint]:
+    return [
+        constraint
+        for constraint in problem.constraints.values()
+        if (constraint.sense == LpConstraintGE and constraint.value() < 0)
+        or (constraint.sense == LpConstraintLE and constraint.value() > 0)
+    ]
 
 
 class SolverOptions(TypedDict):
@@ -24,10 +42,7 @@ class SolverOptions(TypedDict):
 
 
 class MethodOfEqualSharesConstrainsSolver(LpSolver):
-    """
-    Info:
-        Method Of Equal Shares with Constraints solver
-    """
+    name = "MethodOfEqualSharesConstrains"
 
     def __init__(self, solver_options):
         super().__init__()
@@ -63,7 +78,8 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 total_budget,
             )
             logger.debug(f"FINISHED MES {time.time() - start_time:.2f} s\n")
-            set_selected_candidates(lp, selected)
+            for variable in lp.variables():
+                variable.setInitialValue(1 if variable.name in selected else 0)
 
             # Check constraints
             infeasible = get_infeasible_constraints(lp)

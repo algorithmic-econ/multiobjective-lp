@@ -2,27 +2,23 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import equal_shares_utils
+from muoblpbindings import equal_shares_add1
 from pulp import LpSolver
 
-from muoblpsolvers.common import (
-    prepare_mes_parameters,
-    set_selected_candidates,
-)
+from muoblpsolvers.utils import set_solved
+
+from .common import prepare_mes_parameters
 
 logger = logging.getLogger(__name__)
 
 
-class MethodOfEqualSharesUtilitySolver(LpSolver):
-    """
-    Info:
-        Solver that executes Methods of Equal Shares to find solution
-    """
+class MethodOfEqualSharesAdd1Solver(LpSolver):
+    name = "MethodOfEqualSharesAdd1"
 
     def __init__(self):
         super().__init__()
 
-    def actualSolve(self, lp: MultiObjectiveLpProblem):
+    def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
         (
             projects,
             costs,
@@ -36,7 +32,7 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
         logger.info("SOLVER START")
 
         # TODO: weight-aware via binding update
-        selected = equal_shares_utils(
+        selected = equal_shares_add1(
             list(voters.keys()),
             projects,
             costs,
@@ -45,6 +41,7 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
             total_budget,
         )
 
-        set_selected_candidates(lp, selected)
+        logger.info("SOLVER END", extra={"time": time.time() - start_time})
 
-        logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+        set_solved(lp, selected)
+        return lp.status

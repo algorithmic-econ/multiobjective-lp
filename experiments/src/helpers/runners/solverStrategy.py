@@ -1,18 +1,10 @@
-from muoblpsolvers.greedy.GreedySolver import GreedySolver
-from muoblpsolvers.mes_add1.MethodOfEqualSharesAdd1Solver import (
+from muoblpsolvers import (
+    GreedySolver,
     MethodOfEqualSharesAdd1Solver,
-)
-from muoblpsolvers.mes_constrains.MethodOfEqualSharesConstrainsSolver import (
     MethodOfEqualSharesConstrainsSolver,
-)
-from muoblpsolvers.mes_exponential.MethodOfEqualSharesExponentialSolver import (
     MethodOfEqualSharesExponentialSolver,
-)
-from muoblpsolvers.mes_utils.MethodOfEqualSharesUtilitySolver import (
     MethodOfEqualSharesUtilitySolver,
-)
-from muoblpsolvers.phragmen.PhragmenSolver import PhragmenSolver
-from muoblpsolvers.summed.SummedObjectivesLpSolver import (
+    PhragmenSolver,
     SummedObjectivesLpSolver,
 )
 from pulp import LpSolver

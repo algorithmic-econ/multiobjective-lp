@@ -1,5 +1,3 @@
-from typing import Dict, Tuple
-
 from pulp import (
     LpAffineExpression,
     LpBinary,
@@ -114,8 +112,8 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
 
 
 def parse_variable_with_coefficient(
-    variables: Dict[str, LpVariable], var: str
-) -> Tuple[LpVariable, int]:
+    variables: dict[str, LpVariable], var: str
+) -> tuple[LpVariable, int]:
     parts = var.strip().split(" ")
     if len(parts) == 1:
         return (variables[parts[0]], 1)

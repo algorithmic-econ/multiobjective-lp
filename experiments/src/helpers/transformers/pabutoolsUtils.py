@@ -1,4 +1,5 @@
-from typing import Dict, Tuple, TypeAlias, Callable, List
+from typing import TypeAlias
+from collections.abc import Callable
 import os
 from pabutools.election import Instance, Profile, parse_pabulib, Project
 
@@ -7,7 +8,7 @@ from helpers.runners.model import Utility
 District: TypeAlias = str
 AgentId: TypeAlias = str
 
-_VOTE_TYPE_TO_UTILITY: Dict[str, Utility] = {
+_VOTE_TYPE_TO_UTILITY: dict[str, Utility] = {
     "approval": "COST",
     "ordinal": "COST_ORDINAL",
     "cumulative": "COST_CUMULATIVE",
@@ -16,7 +17,7 @@ _VOTE_TYPE_TO_UTILITY: Dict[str, Utility] = {
 
 
 def detect_utility_from_instances(
-    instances: Dict[District, Instance],
+    instances: dict[District, Instance],
 ) -> Utility:
     vote_types = set()
     for instance in instances.values():
@@ -42,11 +43,11 @@ def detect_utility_from_instances(
 
 def load_pabutools_by_district(
     path: str,
-) -> Tuple[Dict[District, Instance], Dict[District, Profile]]:
-    instances: Dict[District, Instance] = {}
-    profiles: Dict[District, Profile] = {}
+) -> tuple[dict[District, Instance], dict[District, Profile]]:
+    instances: dict[District, Instance] = {}
+    profiles: dict[District, Profile] = {}
 
-    relevant_files: List[str] = []
+    relevant_files: list[str] = []
     if os.path.isfile(path) and path.endswith(".pb"):
         relevant_files.append(path)
 
@@ -69,8 +70,8 @@ def load_pabutools_by_district(
 
 
 def filter_projects(
-    condition: Callable[[Project], bool], projects: Dict[AgentId, Project]
-) -> List[AgentId]:
+    condition: Callable[[Project], bool], projects: dict[AgentId, Project]
+) -> list[AgentId]:
     return [p_id for p_id, project in projects.items() if condition(project)]
 
 

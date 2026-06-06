@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List, Tuple
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
@@ -17,7 +16,7 @@ from helpers.utils.utils import read_from_json
 
 def resolve_constraints_configs(
     config: RunnerConfig,
-) -> List[ConstraintConfig]:
+) -> list[ConstraintConfig]:
     if "constraints_configs" in config:
         return config["constraints_configs"]
     path = config.get("constraints_configs_path")
@@ -28,9 +27,9 @@ def load_and_transform_strategy(
     source_type: Source,
     utility_type: Utility | None,
     source_directory_path: str,
-    constraints_configs: List[ConstraintConfig],
+    constraints_configs: list[ConstraintConfig],
     deduplicate_objectives: bool,
-) -> Tuple[MultiObjectiveLpProblem, List[ConstraintConfig], Utility]:
+) -> tuple[MultiObjectiveLpProblem, list[ConstraintConfig], Utility]:
     if source_type == "PABUTOOLS":
         instances, profiles = load_pabutools_by_district(source_directory_path)
         resolved_utility = (
