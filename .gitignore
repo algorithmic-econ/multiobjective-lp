@@ -16,3 +16,4 @@ dist/
 experiments/sample-experiment/results
 experiments/resources/**/*.png
 experiments/resources/experiment-results
+papers/

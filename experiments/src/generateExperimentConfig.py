@@ -59,6 +59,17 @@ SOLVER_OPTION_SPECS: dict[str, list[tuple[str, str, object | None]]] = {
 }
 
 
+def prompt_allowed_solvers() -> List[str]:
+    while True:
+        allowed = questionary.checkbox(
+            "Allowed solvers (you'll add one or more entries below):",
+            choices=SOLVER_CHOICES,
+        ).ask()
+        if allowed:
+            return allowed
+        print("Select at least one solver.")
+
+
 def prompt_solver_options(solver: str) -> dict:
     options: dict = {}
     for name, kind, default in SOLVER_OPTION_SPECS[solver]:
@@ -155,13 +166,13 @@ def generate_experiment_config(
 if __name__ == "__main__":
     # PLACEHOLDER - define long city/year pattern groups here when filtering needed.
     # AND within group, OR across groups. Example:
-    # pattern_groups = [
-    #     ["krakow", "2020"],
-    #     ["krakow", "2021"],
-    #     ["warszawa", "2022"],
-    #     ["amsterdam", "2020"],
-    # ]
-    pattern_groups: List[List[str]] | None = None
+    pattern_groups = [
+        # ["krakow", "2020"],
+        ["krakow", "2021"],
+        ["warszawa", "2022"],
+        # ["amsterdam", "2020"],
+    ]
+    # pattern_groups: List[List[str]] | None = None
 
     source_type = questionary.select(
         "Source type:",
@@ -177,14 +188,10 @@ if __name__ == "__main__":
     output = questionary.text("Experiment config json output path:").ask()
     results_base_path = questionary.text("Results base path:").ask()
 
-    allowed_solvers = questionary.checkbox(
-        "Allowed solvers (you'll add one or more entries below):",
-        choices=SOLVER_CHOICES,
-    ).ask()
-    if not allowed_solvers:
-        raise SystemExit("No solvers selected")
+    allowed_solvers = prompt_allowed_solvers()
 
-    solvers_with_options: List[tuple[Solver, dict]] = []
+    solvers_with_options: list[tuple[Solver, dict]] = []
+    seen: set[tuple[Solver, frozenset]] = set()
     while True:
         if solvers_with_options:
             action = questionary.select(
@@ -197,18 +204,25 @@ if __name__ == "__main__":
             "Solver for this entry:", choices=allowed_solvers
         ).ask()
         options = prompt_solver_options(solver)
+        signature = (solver, frozenset(options.items()))
+        if signature in seen:
+            print(
+                f"Entry {solver} with these options already added, skipping."
+            )
+            continue
+        seen.add(signature)
         solvers_with_options.append((solver, options))
 
     if not solvers_with_options:
         raise SystemExit("No solver entries configured")
 
-    utilities = (
-        questionary.checkbox(
-            "Utilities (optional, leave empty to omit utility_type):",
-            choices=UTILITY_CHOICES,
-        ).ask()
-        or None
-    )
+    # utilities = (
+    #     questionary.checkbox(
+    #         "Utilities (optional, leave empty to omit utility_type):",
+    #         choices=UTILITY_CHOICES,
+    #     ).ask()
+    #     or None
+    # )
 
     concurrency = int(questionary.text("Concurrency:", default="4").ask())
 
@@ -229,7 +243,7 @@ if __name__ == "__main__":
         root_path=root,
         experiment_results_base_path=results_base_path,
         solvers_with_options=solvers_with_options,
-        utilities=utilities,
+        # utilities=utilities,
         pattern_groups=pattern_groups,
         concurrency=concurrency,
         constraints_configs_path=constraints_cfg,

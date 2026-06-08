@@ -44,6 +44,26 @@ class ExperimentConfig(TypedDict):
     runner_configs: list[RunnerConfig]
 
 
+class SolverSpec(TypedDict):
+    type: Solver
+    options: NotRequired[dict]
+
+
+class RunnerConfigsGenerator(TypedDict):
+    solvers: list[SolverSpec]
+    source_type: Source
+    sources: list[str]
+    constraints_configs_path: NotRequired[str]
+    deduplicate_objectives: NotRequired[bool]
+
+
+class CompactExperimentConfig(TypedDict):
+    compact_config: bool
+    concurrency: int
+    experiment_results_base_path: str
+    runner_configs_generator: RunnerConfigsGenerator
+
+
 class ConstraintConfig(TypedDict):
     key: Literal["CATEGORY", "DISTRICT"]
     value: str  # specific value or "*" for all

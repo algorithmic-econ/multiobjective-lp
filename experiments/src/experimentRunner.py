@@ -4,7 +4,13 @@ import sys
 import time
 from pathlib import Path
 
-from helpers.runners.model import ExperimentConfig
+from helpers.runners.model import (
+    CompactExperimentConfig,
+    ExperimentConfig,
+)
+from helpers.transformers.expand_experiment_config import (
+    expand_experiment_config,
+)
 from helpers.utils.logger import setup_logging
 from helpers.utils.utils import read_from_json
 from problemRunner import problem_runner
@@ -12,7 +18,10 @@ from problemRunner import problem_runner
 logger = logging.getLogger(__name__)
 
 
-def main(experiment: ExperimentConfig):
+def main(experiment: ExperimentConfig | CompactExperimentConfig):
+    if experiment.get("compact_config"):
+        experiment = expand_experiment_config(experiment)
+
     Path(experiment["experiment_results_base_path"]).mkdir(
         parents=True, exist_ok=True
     )
@@ -43,5 +52,7 @@ def main(experiment: ExperimentConfig):
 
 if __name__ == "__main__":
     setup_logging()
-    config: ExperimentConfig = read_from_json(Path(sys.argv[1]))
+    config: ExperimentConfig | CompactExperimentConfig = read_from_json(
+        Path(sys.argv[1])
+    )
     main(config)
