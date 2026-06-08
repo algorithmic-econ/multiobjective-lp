@@ -20,7 +20,7 @@ class GreedySolver(ElectionSolver):
             x.varValue = 0
 
         total_utility = lpSum(
-            lp.objectives_weights[y.name] * y for y in lp.objectives
+            lp.objectives_weights.get(y.name, 1) * y for y in lp.objectives
         )
         vars.sort(key=lambda x: total_utility.get(x, 0), reverse=True)
 
