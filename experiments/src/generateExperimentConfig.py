@@ -1,17 +1,82 @@
-import argparse
-import json
 from pathlib import Path
 from typing import List, Literal
+
+import questionary
 
 from helpers.runners.model import (
     ExperimentConfig,
     RunnerConfig,
     Solver,
+    Source,
     Utility,
 )
 from helpers.utils.utils import write_to_json
 
 Mode = Literal["citywide", "independent_districts"]
+
+SOLVER_CHOICES: List[str] = [
+    "SUMMING",
+    "MES_ADD1",
+    "MES_CONSTRAINT",
+    "MES_UTILS",
+    "MES_EXPONENTIAL",
+    "GREEDY",
+    "PHRAGMEN",
+]
+
+UTILITY_CHOICES: List[str] = [
+    "COST",
+    "APPROVAL",
+    "ORDINAL",
+    "CUMULATIVE",
+    "COST_ORDINAL",
+    "COST_CUMULATIVE",
+]
+
+# (option_name, kind, default_or_None) -- kind in {"float","int","bool"}.
+# Numeric blank input -> key omitted (solver falls back to in-code default).
+# Bool keys are always included with the chosen value.
+SOLVER_OPTION_SPECS: dict[str, list[tuple[str, str, object | None]]] = {
+    "GREEDY": [],
+    "MES_ADD1": [],
+    "MES_UTILS": [],
+    "PHRAGMEN": [
+        ("kappa", "float", 1.0),
+        ("increasing_scalings", "bool", False),
+        ("bos_version", "bool", False),
+        ("eps", "float", 1e-6),
+    ],
+    "MES_CONSTRAINT": [
+        ("cost_modification_base", "float", 1.007),
+        ("max_iterations", "int", 200),
+    ],
+    "MES_EXPONENTIAL": [
+        ("budget_init", "int", None),
+    ],
+    "SUMMING": [
+        ("use-gurobi", "bool", False),
+    ],
+}
+
+
+def prompt_solver_options(solver: str) -> dict:
+    options: dict = {}
+    for name, kind, default in SOLVER_OPTION_SPECS[solver]:
+        if kind == "bool":
+            options[name] = questionary.confirm(
+                f"  {solver}.{name}?", default=bool(default)
+            ).ask()
+            continue
+        hint = "none" if default is None else str(default)
+        raw = questionary.text(
+            f"  {solver}.{name} ({kind}, blank = omit/default {hint}):",
+            default="",
+        ).ask()
+        raw = (raw or "").strip()
+        if raw == "":
+            continue
+        options[name] = float(raw) if kind == "float" else int(raw)
+    return options
 
 
 def discover_sources(mode: Mode, root_path: str) -> List[Path]:
@@ -41,6 +106,7 @@ def filter_paths(
 
 def generate_experiment_config(
     mode: Mode,
+    source_type: Source,
     root_path: str,
     experiment_results_base_path: str,
     solvers_with_options: List[tuple[Solver, dict]],
@@ -65,7 +131,7 @@ def generate_experiment_config(
                 config: RunnerConfig = {
                     "solver_type": solver,
                     "solver_options": options,
-                    "source_type": "PABUTOOLS",
+                    "source_type": source_type,
                     "source_directory_path": str(path),
                     "results_base_path": experiment_results_base_path,
                 }
@@ -86,50 +152,7 @@ def generate_experiment_config(
     }
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Generate ExperimentConfig JSON for experimentRunner.py"
-    )
-    parser.add_argument(
-        "--mode",
-        required=True,
-        choices=["citywide", "independent_districts"],
-    )
-    parser.add_argument("--root", required=True, help="source root directory")
-    parser.add_argument(
-        "--output", required=True, help="output JSON/JSONC path"
-    )
-    parser.add_argument(
-        "--results-base-path",
-        required=True,
-        help="experiment_results_base_path written into config",
-    )
-    parser.add_argument(
-        "--solvers",
-        required=True,
-        help='JSON list of [solver, options] pairs, e.g. \'[["PHRAGMEN",{"kappa":0.0}],["GREEDY",{}]]\'',
-    )
-    parser.add_argument(
-        "--utilities",
-        nargs="*",
-        default=[],
-        help="optional utilities to multiply over (COST APPROVAL ...)",
-    )
-    parser.add_argument("--concurrency", type=int, default=4)
-    parser.add_argument(
-        "--constraints-config",
-        default=None,
-        help="optional constraints_configs_path",
-    )
-    parser.add_argument(
-        "--deduplicate-objectives", action="store_true", default=False
-    )
-    return parser.parse_args()
-
-
 if __name__ == "__main__":
-    args = _parse_args()
-
     # PLACEHOLDER - define long city/year pattern groups here when filtering needed.
     # AND within group, OR across groups. Example:
     # pattern_groups = [
@@ -140,23 +163,80 @@ if __name__ == "__main__":
     # ]
     pattern_groups: List[List[str]] | None = None
 
-    solvers_with_options: List[tuple[Solver, dict]] = [
-        (solver, options) for solver, options in json.loads(args.solvers)
-    ]
+    source_type = questionary.select(
+        "Source type:",
+        choices=["PABUTOOLS"],
+    ).ask()
 
-    config = generate_experiment_config(
-        mode=args.mode,
-        root_path=args.root,
-        experiment_results_base_path=args.results_base_path,
-        solvers_with_options=solvers_with_options,
-        utilities=args.utilities or None,
-        pattern_groups=pattern_groups,
-        concurrency=args.concurrency,
-        constraints_configs_path=args.constraints_config,
-        deduplicate_objectives=args.deduplicate_objectives,
+    mode = questionary.select(
+        "Source mode:",
+        choices=["citywide", "independent_districts"],
+    ).ask()
+
+    root = questionary.text("Source data directory:").ask()
+    output = questionary.text("Experiment config json output path:").ask()
+    results_base_path = questionary.text("Results base path:").ask()
+
+    allowed_solvers = questionary.checkbox(
+        "Allowed solvers (you'll add one or more entries below):",
+        choices=SOLVER_CHOICES,
+    ).ask()
+    if not allowed_solvers:
+        raise SystemExit("No solvers selected")
+
+    solvers_with_options: List[tuple[Solver, dict]] = []
+    while True:
+        if solvers_with_options:
+            action = questionary.select(
+                f"Current entries: {len(solvers_with_options)}. Add another?",
+                choices=["Add entry", "Done"],
+            ).ask()
+            if action == "Done":
+                break
+        solver = questionary.select(
+            "Solver for this entry:", choices=allowed_solvers
+        ).ask()
+        options = prompt_solver_options(solver)
+        solvers_with_options.append((solver, options))
+
+    if not solvers_with_options:
+        raise SystemExit("No solver entries configured")
+
+    utilities = (
+        questionary.checkbox(
+            "Utilities (optional, leave empty to omit utility_type):",
+            choices=UTILITY_CHOICES,
+        ).ask()
+        or None
     )
 
-    output_path = Path(args.output)
+    concurrency = int(questionary.text("Concurrency:", default="4").ask())
+
+    constraints_cfg = (
+        questionary.text(
+            "Constraints config path (empty for none):", default=""
+        ).ask()
+        or None
+    )
+
+    deduplicate_objectives = questionary.confirm(
+        "Deduplicate objectives?", default=False
+    ).ask()
+
+    config = generate_experiment_config(
+        mode=mode,
+        source_type=source_type,
+        root_path=root,
+        experiment_results_base_path=results_base_path,
+        solvers_with_options=solvers_with_options,
+        utilities=utilities,
+        pattern_groups=pattern_groups,
+        concurrency=concurrency,
+        constraints_configs_path=constraints_cfg,
+        deduplicate_objectives=deduplicate_objectives,
+    )
+
+    output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     write_to_json(output_path, config)
     print(f"Generated experiment configuration saved to {output_path}")
