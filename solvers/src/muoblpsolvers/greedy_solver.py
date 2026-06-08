@@ -1,10 +1,9 @@
 import logging
-import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pulp import LpStatusOptimal, lpSum
 
-from muoblpsolvers.election_solver import Election, ElectionSolver
-from muoblpsolvers.types import CandidateId
+from muoblpsolvers.election_solver import ElectionSolver
 
 logger = logging.getLogger(__name__)
 
@@ -12,49 +11,25 @@ logger = logging.getLogger(__name__)
 class GreedySolver(ElectionSolver):
     name = "Greedy"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def _solve_election(
-        self,
-        lp: MultiObjectiveLpProblem,
-        election: Election,
-        **kwargs,
-    ):
-        candidates = election["candidates"]
-        voters = election["voters"]
-        profile = election["profile"]
+    def actualSolve(self, lp: MultiObjectiveLpProblem):
+        vars = [x for x in lp.variables() if x.name != "__dummy"]
+        for x in vars:
+            x.varValue = 0
 
-        start_time = time.time()
-
-        logger.info(
-            "SOLVER START",
-            extra={"candidates": len(candidates), "voters": len(voters)},
+        total_utility = lpSum(
+            lp.objectives_weights[y.name] * y for y in lp.objectives
         )
+        vars.sort(key=lambda x: total_utility.get(x, 0), reverse=True)
 
-        total_utility: dict[CandidateId, float] = {}
-        for candidate, votes in profile.items():
-            total_utility[candidate] = sum(
-                voters[v] * u for v, u in votes.items()
-            )
-
-        sorted_candidates = list(candidates.keys())
-        sorted_candidates.sort(
-            key=lambda candidate: (
-                total_utility[candidate] / candidates[candidate]
-            ),
-            reverse=True,
-        )
-        sorted_candidates = [
-            candidate
-            for candidate in sorted_candidates
-            if total_utility[candidate] > 0
-        ]
-
-        for candidate in sorted_candidates:
-            candidate_variable = lp.variablesDict()[candidate]
-            candidate_variable.setInitialValue(1)
+        for x in vars:
+            if total_utility.get(x, 0) <= 0:
+                break
+            x.varValue = 1
             if not self.is_feasible(lp):
-                candidate_variable.setInitialValue(0)
+                x.varValue = 0
 
-        logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+        lp.assignStatus(LpStatusOptimal)
+        return lp.status
