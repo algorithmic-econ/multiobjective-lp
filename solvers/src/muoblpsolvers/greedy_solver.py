@@ -19,13 +19,16 @@ class GreedySolver(ElectionSolver):
         for x in vars:
             x.varValue = 0
 
-        total_utility = lpSum(
+        utility = lpSum(
             lp.objectives_weights.get(y.name, 1) * y for y in lp.objectives
         )
-        vars.sort(key=lambda x: total_utility.get(x, 0), reverse=True)
+        weight = lpSum(y / (-y.constant) for y in lp.constraints.values())
+        vars.sort(
+            key=lambda x: utility.get(x, 0) / weight.get(x), reverse=True
+        )
 
         for x in vars:
-            if total_utility.get(x, 0) <= 0:
+            if utility.get(x, 0) <= 0:
                 break
             x.varValue = 1
             if not self.is_feasible(lp):
