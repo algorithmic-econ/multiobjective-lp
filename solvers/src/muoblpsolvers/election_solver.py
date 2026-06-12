@@ -28,8 +28,8 @@ class Election(TypedDict):
 
 
 class ElectionSolver(LpSolver):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
         election = molp_to_simple_election(lp)
