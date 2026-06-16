@@ -34,6 +34,9 @@ class ElectionSolver(LpSolver):
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
         election = molp_to_simple_election(lp)
 
+        for var in lp.variables():
+            var.varValue = 0
+
         return self._solve_election(lp, election, kwargs=kwargs)
 
     @staticmethod
