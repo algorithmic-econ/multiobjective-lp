@@ -1,5 +1,11 @@
 # Notes
 
+## 28/05
+
+* Run experiment directly from python
+* improve __init__ imports
+* align with PULP conventions, e.g. Set LpStatus = SOLVED
+
 ## LB experiments design
 
 Adapt constraint mechanism, as alternative to hardcoding budget_ratio, allow strategies that set constraint value automatically based on the preprocessed instance of election.

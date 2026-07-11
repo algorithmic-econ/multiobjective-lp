@@ -3,7 +3,7 @@ from typing import List
 import pulp
 from pulp import LpAffineExpression, LpMaximize, LpMinimize, LpProblem
 
-from muoblp.utils.lpWriterUtils import expression_to_lp_format
+from muoblp.utils.lp_writer_utils import expression_to_lp_format
 
 # Override line limit for writeLP to output single line values
 pulp.const.LpCplexLPLineSize = 100000
@@ -49,7 +49,7 @@ class MultiObjectiveLpProblem(LpProblem):
 
     # TODO: Decide how to handle fixObjective and restoreObjective
 
-    def writeLP(self, filename, writeSOS=1, mip=1, max_length=100):
+    def write_lp(self, filename, writeSOS=1, mip=1, max_length=100):
         super().writeLP(filename, writeSOS, mip, max_length)
         with open(filename, "a", encoding="utf-8") as file:
             file.write("OBJECTIVES:\n")
