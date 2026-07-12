@@ -123,3 +123,14 @@ CI (test.yml) notes for T07/future:
 - T22/T23 heads-up: generator/aggregator scripts still default-output into deleted `resources/…` paths (`generatePhargmenGreedyDistrictExperiment.py:95` writes `../resources/input/experiment-config/…` — parent dir gone → runtime error until rewrite; `aggregateResults.py:238` `../resources/*.png`). Dir is gitignored so runtime writes harmless.
 - logger fix done HERE not T20: `helpers/utils/logger.py` default config path now file-relative (`parents[3]/config/logging_config.yaml`) — kills FileNotFoundError noise when run from `sample-experiment/` (T01 leftover). All callers used default.
 - Verify GREEN: experiments 75 pytest (incl e2e golden 1, NO regen), ruff+format clean, pyright 0. AC grep `/Users/jasiek` in *.json* empty. Sample run.sh+analyze.sh pass. core/solvers/bindings untouched (deletion-only ticket) — not re-verified.
+
+### P1 judge verdict (2026-07-12, session post-T09)
+
+- **P1 VERIFIED COMPLETE @047fadb — GO for P2.** Independent green-check: pytest core 1 / solvers 13 / experiments 75 (incl e2e golden), ruff repo-wide clean, pyright 0 ×3, `import muoblpbindings` OK, CI green on base.
+- ROADMAP T05/T08 PR links fixed this session (#41, #44).
+- Outstanding (non-blocking):
+  - **T08/T07 publish paths never exercised end-to-end**: no rc tag pushed (test.pypi via publish.yml) nor `bindings@` tag (wheels.yml upload). Rehearse before first real release; order bindings→core→solvers.
+  - Old `algorithmic-econ/muoblpbindings` repo NOT archived on GH (T06 manual follow-up; `isArchived:false`).
+  - wheels.yml `workflow_dispatch` dry run triggered this session (closes T07 AC letter) — check outcome if not observed.
+  - Cosmetic: solvers `[project.urls]` → `jasieksz/multiobjective-lp`, repo lives at `algorithmic-econ/` → T28.
+- D8 (timeLimit on binding-backed solvers) still undecided — must be resolved before T14; T10–T13 unblocked.

@@ -81,7 +81,7 @@ AC: core locks+installs+tests green on 3.13; experiments bindings 0.0.17 already
 Verify: CI green.
 
 #### [x] T05 Bump pulp → latest 3.x
-Deps: T04 · GH: — (meeting note: bump to newest) · PR: feat/t05-pulp-332
+Deps: T04 · GH: — (meeting note: bump to newest) · PR: [#41](https://github.com/algorithmic-econ/multiobjective-lp/pull/41)
 - Bump pin in core+solvers+experiments; fix `core/src/muoblp/model/multi_objective_lp.py` import-time monkeypatch (`LpCplexLPLineSize`) + model against pulp 3.x internals; fix `LpSolver` base usage in solvers if signature moved.
 - Timeboxed: if 3.x breaks fundamentally, fall back to newest 2.x and file GH issue with findings.
 
@@ -107,7 +107,7 @@ AC: PR CI builds bindings + runs solvers tests; wheels workflow passes via `work
 Verify: Actions runs, artifacts uploaded.
 
 #### [x] T08 Fix publish workflow
-Deps: T04, T06 · GH: #25 · PR: feat/t08-fix-publish
+Deps: T04, T06 · GH: #25 · PR: [#44](https://github.com/algorithmic-econ/multiobjective-lp/pull/44)
 - Diagnose 400 (likely: version-already-exists re-upload, or solvers wheel metadata carrying path dep). Ensure `poetry build` of solvers rewrites `muoblp` path dep → version pin; drop unnecessary `poetry install` before build.
 - Add tag ↔ pyproject-version consistency check; decide `skip-existing` vs hard fail with clear message; route `bindings@x.y.z` tags to wheels workflow.
 
