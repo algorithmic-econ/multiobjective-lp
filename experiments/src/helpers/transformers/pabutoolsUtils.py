@@ -52,7 +52,9 @@ def load_pabutools_by_district(
         relevant_files.append(path)
 
     if os.path.isdir(path):
-        for filename in os.listdir(path):
+        # sorted: os.listdir order is fs-dependent; district order defines LP
+        # var order -> solver tie-breaks -> nondeterministic `selected`
+        for filename in sorted(os.listdir(path)):
             if filename.endswith(".pb"):
                 relevant_files.append(os.path.join(path, filename))
 

@@ -52,8 +52,8 @@ Deps: — · GH: — · PR: [#37](https://github.com/algorithmic-econ/multiobjec
 AC: regression unit test per bug; sample-experiment `run.sh` + `analyze.sh` produce metrics json.
 Verify: `cd experiments && poetry run pytest`; run sample end-to-end.
 
-#### [ ] T02 Tiny fixture + e2e golden test
-Deps: T01 · GH: —
+#### [x] T02 Tiny fixture + e2e golden test
+Deps: T01 · GH: — · PR: [#38](https://github.com/algorithmic-econ/multiobjective-lp/pull/38)
 - Trim `sample-experiment/input/krakow_2024` to ~10 projects/~30 voters/1–2 districts → commit under `experiments/tests/fixtures/`.
 - Tiny experiment + analyzer configs; pytest e2e invoking runner+analyzer programmatically, `concurrency=1`; solvers: GREEDY, MES_UTILS, MES_ADD1.
 - Golden files (selected vars, metrics) committed; normalization layer strips nondeterminism (times, timestamps, abs paths, float precision — propose exact list in PR, see D11); pytest marker `e2e`.

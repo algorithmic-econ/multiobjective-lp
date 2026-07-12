@@ -1,0 +1,107 @@
+[
+  {
+    "CONSTRAINTS": {
+      "invalid_count": 0,
+      "pb_constraint": true
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.0
+    },
+    "INSTANCE_SIZE": {
+      "size": 10
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 48069190
+    },
+    "TOTAL_COST": {
+      "total_cost": 1335005
+    },
+    "city": "krakow_2024_mini",
+    "constraints_configs": [],
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS",
+      "INSTANCE_SIZE",
+      "TOTAL_COST"
+    ],
+    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_GREEDY.json",
+    "solver": "GREEDY",
+    "solver_options": {},
+    "utility": "COST_ORDINAL"
+  },
+  {
+    "CONSTRAINTS": {
+      "invalid_count": 1,
+      "pb_constraint": true
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.0
+    },
+    "INSTANCE_SIZE": {
+      "size": 10
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 51347190
+    },
+    "TOTAL_COST": {
+      "total_cost": 1414005
+    },
+    "city": "krakow_2024_mini",
+    "constraints_configs": [],
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS",
+      "INSTANCE_SIZE",
+      "TOTAL_COST"
+    ],
+    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1.json",
+    "solver": "MES_ADD1",
+    "solver_options": {},
+    "utility": "COST_ORDINAL"
+  },
+  {
+    "CONSTRAINTS": {
+      "invalid_count": 0,
+      "pb_constraint": true
+    },
+    "EJR_PLUS": {
+      "ejr_plus": 0
+    },
+    "EXCLUSION_RATION": {
+      "exclusion_ratio": 0.033333
+    },
+    "INSTANCE_SIZE": {
+      "size": 10
+    },
+    "SUM_OBJECTIVES": {
+      "sum": 47834190
+    },
+    "TOTAL_COST": {
+      "total_cost": 1243005
+    },
+    "city": "krakow_2024_mini",
+    "constraints_configs": [],
+    "metrics": [
+      "EXCLUSION_RATION",
+      "SUM_OBJECTIVES",
+      "EJR_PLUS",
+      "CONSTRAINTS",
+      "INSTANCE_SIZE",
+      "TOTAL_COST"
+    ],
+    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS.json",
+    "solver": "MES_UTILS",
+    "solver_options": {},
+    "utility": "COST_ORDINAL"
+  }
+]
