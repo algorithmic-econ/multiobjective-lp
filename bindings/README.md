@@ -48,7 +48,9 @@ See `src/muoblpbindings/__init__.pyi` for signatures.
 6. Bump project version in `pyproject.toml`
 
 ## Publishing
-Independent semver from the rest of the monorepo. Tag convention:
-`bindings@x.y.z` triggers the wheels workflow (CI wiring in T07;
-`.github/workflows/wheels.yml` here is currently inert — GH only runs root
-`.github`).
+Independent semver from the rest of the monorepo. Tag `bindings@x.y.z`
+(must match `pyproject.toml` version) triggers root
+`.github/workflows/wheels.yml`: sdist + cibuildwheel (ubuntu/macos-15/windows,
+cp313+cp314) → PyPI via OIDC. No rc/test.pypi route. `workflow_dispatch`
+runs a build-only dry run (upload skipped). Every PR additionally builds a
+linux wheel + import smoke test; solvers CI tests run against that artifact.

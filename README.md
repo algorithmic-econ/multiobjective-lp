@@ -47,3 +47,7 @@ Publish workflow is triggered by creating a git tag.
    * Publish to TestPyPI - use tag pattern: `packageName@x.y.z-rc`
    * Publish to PyPI - use tag pattern: `packageName@x.y.z`
    * Where `packageName` is `core` or `solvers`
+3. `bindings` publishes via a separate workflow
+   ([wheels.yml](.github/workflows/wheels.yml)): tag `bindings@x.y.z`
+   (must match `bindings/pyproject.toml` version) builds sdist + multi-OS
+   wheels (cibuildwheel, cp313+cp314) and uploads to PyPI. No `-rc` route.
