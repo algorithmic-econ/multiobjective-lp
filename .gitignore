@@ -10,10 +10,8 @@ __pycache__/
 .zed/
 /documentation/site/
 dist/
-/experiments/resources/results/
+/experiments/resources/
 /solvers/**/binding/build/
 
 experiments/sample-experiment/results
-experiments/resources/**/*.png
-experiments/resources/experiment-results
 papers/
