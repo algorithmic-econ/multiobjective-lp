@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpsolvers.common import get_total_budget_constraint
+from muoblpsolvers.mes.common import get_total_budget_constraint
 
 from helpers.analyzers.model import AnalyzerResult, Metric
 

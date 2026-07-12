@@ -87,7 +87,9 @@ def problem_runner(config: RunnerConfig) -> None:
         problem_id = f"{datetime.now().isoformat(timespec='seconds').replace(':', '-')[5:]}_{str(uuid4())[:4]}"
         problem_file = get_file_name("problem", "lp", problem_id)
         result["problem_path"] = f"{results_base_path}{problem_file}"
-        problem.writeLP(result["problem_path"])
+        # write_lp (not pulp writeLP): appends OBJECTIVES/WEIGHTS sections
+        # required by read_lp_file in analyzer
+        problem.write_lp(result["problem_path"])
         meta_file = get_file_name("meta", "json", problem_id)
         write_to_json(Path(f"{results_base_path}{meta_file}"), result)
 

@@ -56,6 +56,20 @@ def test_additional_constraints_from_config(single_district_setup):
     assert len(constraint_names) == 2
 
 
+def test_objective_weights_are_integers(single_district_setup):
+    # MES bindings require integer utilities (long long); float weights
+    # (e.g. 1.0) propagate into total_utilities and fail pybind casting
+    instances, profiles, _, _ = single_district_setup
+
+    problem = pabutools_to_multi_objective_lp(
+        instances, profiles, [], "APPROVAL"
+    )
+
+    weights = problem.objectives_weights
+    assert len(weights) == 2
+    assert all(isinstance(w, int) for w in weights.values())
+
+
 def test_multi_district_constraints(multi_district_setup):
     instances, profiles, _, _ = multi_district_setup
 

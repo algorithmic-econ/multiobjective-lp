@@ -169,7 +169,9 @@ def resolve_objectives(
     if deduplicate:
         return merge_duplicate_objectives(objectives)
     merged = list(objectives.values())
-    weights = {obj.name: 1.0 for obj in merged}
+    # int, not 1.0: MES bindings require integer utilities (long long);
+    # float weights propagate into total_utilities and fail pybind casting
+    weights = {obj.name: 1 for obj in merged}
     voter_groups = {
         obj.name: [voter_id] for voter_id, obj in objectives.items()
     }
