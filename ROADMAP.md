@@ -114,8 +114,8 @@ Deps: T04, T06 · GH: #25 · PR: feat/t08-fix-publish
 AC: rc tag publish to test.pypi succeeds for core and solvers; `pip download` METADATA has valid version-pinned deps, no path refs.
 Verify: push `solvers@X.Y.Z-rc`, confirm test.pypi upload + METADATA.
 
-#### [ ] T09 Prune legacy artifacts, canonicalize sample-experiment
-Deps: T02 · GH: —
+#### [x] T09 Prune legacy artifacts, canonicalize sample-experiment
+Deps: T02 · GH: — · PR: feat/t09-prune-legacy
 - Fix or delete configs with absolute `/Users/jasiek` paths; fix stale configs (invalid `"MES"` solver_type, `no-constraints.json` vs `.jsonc` ref).
 - `.gitignore` generated results; keep `sample-experiment/` as the one canonical sample (relative paths only).
 

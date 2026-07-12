@@ -1,10 +1,15 @@
 import logging
 import logging.config
+from pathlib import Path
+
 import yaml
 
+DEFAULT_CONFIG_PATH = (
+    Path(__file__).resolve().parents[3] / "config" / "logging_config.yaml"
+)
 
-# Improve config file discoverability, depending on invokation path deafult might not work
-def setup_logging(config_path="config/logging_config.yaml"):
+
+def setup_logging(config_path=DEFAULT_CONFIG_PATH):
     try:
         with open(config_path, "rt") as f:
             config = yaml.safe_load(f.read())
