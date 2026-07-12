@@ -72,8 +72,8 @@ Verify: push branch, observe Actions.
 
 ### Phase 1 — Toolchain & repo unification
 
-#### [ ] T04 Unify Python → 3.13
-Deps: T03 · GH: —
+#### [x] T04 Unify Python → 3.13
+Deps: T03 · GH: — · PR: [#40](https://github.com/algorithmic-econ/multiobjective-lp/pull/40)
 - `core` `>=3.11` → `>=3.13`; (experiments done in T03); regenerate poetry.lock everywhere; fix fallout.
 - CI python → 3.13 everywhere (test.yml done in T03; fix `publish.yml` build step, currently 3.12).
 

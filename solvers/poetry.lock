@@ -30,7 +30,7 @@ name = "muoblp"
 version = "1.0.4"
 description = "Implementation of multi objective linear programming module"
 optional = false
-python-versions = ">=3.11"
+python-versions = ">=3.13"
 groups = ["main"]
 files = []
 develop = true

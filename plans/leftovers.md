@@ -58,3 +58,10 @@ CI (test.yml) notes for T07/future:
 - Rewrote: 3-project matrix (core/solvers/experiments) × {test, pyright} jobs, py3.13, `fail-fast: false`. Cache path per-project `${{ matrix.project }}/.venv`, key hashes all 3 locks (path-dep interdependence). No path filters; push trigger limited to `main` + `feat/roadmap-base-branch`; PRs always run.
 - **UNVERIFIED locally: Linux CI e2e golden** — goldens macOS-generated; MES C++ tie-break divergence risk (leftovers T02). If ubuntu e2e diffs: normalization fix (`experiments/tests/golden_utils.py`) or switch experiments matrix to `macos-15` + GH issue. NO golden regen.
 - `poetry install` runs unconditionally (no cache-hit guard) so editable path-deps (core←solvers←experiments) re-link against checkout.
+
+### From T04 (PR #40, 2026-07-12)
+
+- Trivial ticket — T03 had done most. Only 3 source edits: `core/pyproject.toml` requires-python `>=3.11`→`>=3.13`, `publish.yml:29` setup-python `3.12`→`3.13`, relock ×3.
+- Relock diffs MINIMAL, zero transitive bumps: core lock `[metadata] python-versions`→`>=3.13` + content-hash; solvers/experiments only the `muoblp` path-dep `python-versions`→`>=3.13`. (No `poetry install` changes — all venvs already 3.13 from T03.)
+- All green locally: pytest core 1 / solvers 13 / experiments 75 (incl e2e golden, no regen), ruff clean, pyright 0 errors ×3. pyright suppression inventory (T03 D12 backlog) unchanged.
+- publish.yml change NOT CI-verifiable (tag-triggered) — review-only, rc-tag dry run deferred to T08.

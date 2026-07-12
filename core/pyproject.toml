@@ -10,7 +10,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "pulp == 2.9.0"
 ]
