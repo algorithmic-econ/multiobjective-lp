@@ -25,7 +25,7 @@ packages = [{include = "muoblpsolvers", from = "src"}]
 # muoblp = "1.0.3"
 muoblp = {path = "../core", develop = true}
 pulp = "3.3.2"
-muoblpbindings = "0.0.17"
+muoblpbindings = {path = "../bindings", develop = false}
 pytest = "8.4.1"
 
 [build-system]

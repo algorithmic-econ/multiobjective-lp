@@ -49,21 +49,12 @@ description = ""
 optional = false
 python-versions = ">=3.13"
 groups = ["main"]
-files = [
-    {file = "muoblpbindings-0.0.17-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:438c12371c1edb1a5bf47b1a3878df908210aea455f1e06033150d386825cfe7"},
-    {file = "muoblpbindings-0.0.17-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:9ab31cc0c8fd58009baeae3c1712050f5f23210c2e2cc15ff63ffdd2b7d57b08"},
-    {file = "muoblpbindings-0.0.17-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:9b0f2f72706e75c936c84e6c6ba669969d3e906d8bf92c55d59ecf7d561b1d13"},
-    {file = "muoblpbindings-0.0.17-cp313-cp313-win32.whl", hash = "sha256:754fc9052c1e33951511b5551af03f9ea53068a046f48e3b2ee172b2af27eca0"},
-    {file = "muoblpbindings-0.0.17-cp313-cp313-win_amd64.whl", hash = "sha256:a16bfeea4afb0be63c438e9f278313402f022c3345c93dd9eb84913998b345a6"},
-    {file = "muoblpbindings-0.0.17-cp313-cp313-win_arm64.whl", hash = "sha256:339940b36d118c2619a610a11545710414eab48268febf502db878a4012a7063"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-macosx_14_0_arm64.whl", hash = "sha256:b627c0249d6c5ad153cf12b6611fd9e8492307fc4a98c8bdb8dfe3d15a284cf1"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7694fc7c3f5ef206c359d16072f0733265a67e19276cd326a88e33858af820e7"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:5e98d6c7297af1eba46ed81293a6bdd560792ec458c3b426818551a62e0db01b"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-win32.whl", hash = "sha256:e7319d459b2e1b519b641cfb23c3e78b78883dc9b1ee8c764ed9ca309950dcb2"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-win_amd64.whl", hash = "sha256:d5960ad65a631de40ebea0a69612dec4e75a699d9f683ca298183147594a3dad"},
-    {file = "muoblpbindings-0.0.17-cp314-cp314-win_arm64.whl", hash = "sha256:01a916434f9ed55386c5750c0326f44baefdab0bf37f21a807b42bcdc7ed678f"},
-    {file = "muoblpbindings-0.0.17.tar.gz", hash = "sha256:934993e9009ef1b31e541acc94177a9fbe18968c1540e25cf9d059a1949ecfe3"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../bindings"
 
 [[package]]
 name = "nodeenv"
@@ -230,4 +221,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "4a580c03110db8d55657d3e4bb25f7a1b7ee357c3a73f6f60b67c2b1be5dbdec"
+content-hash = "387c04545cabaaa4b3e7b8deccdc7c816cb36064b4dd386766ea534b31de99b5"

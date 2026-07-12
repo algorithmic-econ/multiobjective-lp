@@ -1,0 +1,20 @@
+[build-system]
+requires = ["scikit-build-core>=0.12", "pybind11>=3"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "muoblpbindings"
+version = "0.0.17"
+readme = "README.md"
+authors = [
+  { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
+  { name = "Jan Sznajd", email = "j.sznajd@uw.edu.pl" },
+]
+requires-python = ">=3.13"
+
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+minimum-version = "build-system.requires"
+
+[tool.cibuildwheel]
+build-frontend = "build[uv]"
