@@ -115,7 +115,7 @@ AC: rc tag publish to test.pypi succeeds for core and solvers; `pip download` ME
 Verify: push `solvers@X.Y.Z-rc`, confirm test.pypi upload + METADATA.
 
 #### [x] T09 Prune legacy artifacts, canonicalize sample-experiment
-Deps: T02 · GH: — · PR: feat/t09-prune-legacy
+Deps: T02 · GH: — · PR: [#45](https://github.com/algorithmic-econ/multiobjective-lp/pull/45)
 - Fix or delete configs with absolute `/Users/jasiek` paths; fix stale configs (invalid `"MES"` solver_type, `no-constraints.json` vs `.jsonc` ref).
 - `.gitignore` generated results; keep `sample-experiment/` as the one canonical sample (relative paths only).
 
