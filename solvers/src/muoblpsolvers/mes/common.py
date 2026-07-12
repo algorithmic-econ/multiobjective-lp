@@ -55,8 +55,8 @@ def prepare_mes_parameters(
         for candidate, cost in constraint.items()
     }
 
-    voters: dict[VoterId, float] = {
-        voter.name: lp.objectives_weights.get(voter.name, 1)
+    voters: dict[VoterId, float] = {  # pyright: ignore[reportAssignmentType]  # pulp 3.3.2 LpElement.name Optional str
+        voter.name: lp.objectives_weights.get(voter.name, 1)  # pyright: ignore[reportCallIssue]
         for voter in lp.objectives
     }
 

@@ -80,8 +80,8 @@ Deps: T03 · GH: — · PR: [#40](https://github.com/algorithmic-econ/multiobjec
 AC: core locks+installs+tests green on 3.13; experiments bindings 0.0.17 already satisfied (T03).
 Verify: CI green.
 
-#### [ ] T05 Bump pulp → latest 3.x
-Deps: T04 · GH: — (meeting note: bump to newest)
+#### [x] T05 Bump pulp → latest 3.x
+Deps: T04 · GH: — (meeting note: bump to newest) · PR: feat/t05-pulp-332
 - Bump pin in core+solvers+experiments; fix `core/src/muoblp/model/multi_objective_lp.py` import-time monkeypatch (`LpCplexLPLineSize`) + model against pulp 3.x internals; fix `LpSolver` base usage in solvers if signature moved.
 - Timeboxed: if 3.x breaks fundamentally, fall back to newest 2.x and file GH issue with findings.
 

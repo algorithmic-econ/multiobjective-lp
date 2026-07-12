@@ -273,8 +273,8 @@ def test_category_constraint_name_prefix(single_district_setup):
         lb_config, variables, projects, 500, instances, profiles, "APPROVAL"
     )
 
-    assert ub.name.startswith(f"{CONSTRAINT_PREFIX}_ub_")
-    assert lb.name.startswith(f"{CONSTRAINT_PREFIX}_lb_")
+    assert ub.name.startswith(f"{CONSTRAINT_PREFIX}_ub_")  # pyright: ignore[reportOptionalMemberAccess]  # pulp 3.3.2 LpElement.name Optional str
+    assert lb.name.startswith(f"{CONSTRAINT_PREFIX}_lb_")  # pyright: ignore[reportOptionalMemberAccess]
 
 
 def test_category_lower_ratio_clamped_when_infeasible(single_district_setup):

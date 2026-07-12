@@ -110,7 +110,7 @@ def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
     for voter in (
         lp.objectives
     ):  # [T_6080: 80550 V_BO.D10.14_24 + 340000 V_BO.D10.1_24, ....]
-        voters[voter.name] = lp.objectives_weights.get(voter.name, 1)
+        voters[voter.name] = lp.objectives_weights.get(voter.name, 1)  # pyright: ignore[reportCallIssue]  # pulp 3.3.2 LpElement.name Optional str
         for candidate, utility in voter.items():
             approvals_utilities[candidate.name][voter.name] = utility
 

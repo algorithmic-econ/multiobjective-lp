@@ -31,8 +31,8 @@ def get_infeasible_constraints(
     return [
         constraint
         for constraint in problem.constraints.values()
-        if (constraint.sense == LpConstraintGE and constraint.value() < 0)
-        or (constraint.sense == LpConstraintLE and constraint.value() > 0)
+        if (constraint.sense == LpConstraintGE and constraint.value() < 0)  # pyright: ignore[reportOptionalOperand]  # pulp 3.3.2 constraint.value() Optional; None-guard T13
+        or (constraint.sense == LpConstraintLE and constraint.value() > 0)  # pyright: ignore[reportOptionalOperand]
     ]
 
 
