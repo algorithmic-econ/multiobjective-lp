@@ -98,16 +98,16 @@ Deps: T04 · GH: #20 · PR: [#42](https://github.com/algorithmic-econ/multiobjec
 AC: `poetry install` in solvers builds bindings locally (CMake + C++20 toolchain documented); solvers tests green; `python -c "import muoblpbindings"` works.
 Verify: fresh-venv install + pytest in solvers.
 
-#### [ ] T07 Bindings CI in monorepo
-Deps: T06 · GH: #20, #25 (partial)
+#### [x] T07 Bindings CI in monorepo
+Deps: T06 · GH: #20, #25 (partial) · PR: [#43](https://github.com/algorithmic-econ/multiobjective-lp/pull/43)
 - Port `wheels.yml` (cibuildwheel 3.4.1, ubuntu/macos-15/windows, cp313+cp314, OIDC PyPI) with `bindings/` paths; trigger: `bindings@x.y.z` tag (independent semver).
 - PR-time job: build bindings wheel on linux + import smoke test; solvers test job runs against built artifact.
 
 AC: PR CI builds bindings + runs solvers tests; wheels workflow passes via `workflow_dispatch` dry run.
 Verify: Actions runs, artifacts uploaded.
 
-#### [ ] T08 Fix publish workflow
-Deps: T04, T06 · GH: #25
+#### [x] T08 Fix publish workflow
+Deps: T04, T06 · GH: #25 · PR: feat/t08-fix-publish
 - Diagnose 400 (likely: version-already-exists re-upload, or solvers wheel metadata carrying path dep). Ensure `poetry build` of solvers rewrites `muoblp` path dep → version pin; drop unnecessary `poetry install` before build.
 - Add tag ↔ pyproject-version consistency check; decide `skip-existing` vs hard fail with clear message; route `bindings@x.y.z` tags to wheels workflow.
 

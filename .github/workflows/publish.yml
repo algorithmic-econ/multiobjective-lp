@@ -1,6 +1,7 @@
 name: publish
 
 on:
+  # core/solvers only; bindings@X.Y.Z tags are handled by wheels.yml.
   push:
     tags: ['core@[0-9].[0-9]+.[0-9]+', 'solvers@[0-9].[0-9]+.[0-9]+', 'core@[0-9].[0-9]+.[0-9]+-rc', 'solvers@[0-9].[0-9]+.[0-9]+-rc']
 
@@ -8,14 +9,25 @@ jobs:
   validate-tag:
     runs-on: ubuntu-latest
     steps:
-      - name: Check tag format
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check tag format and version consistency
         run: |
           TAG_NAME=${{ github.ref_name }}
           if [[ ! "$TAG_NAME" =~ ^(core|solvers)@[0-9]+\.[0-9]+\.[0-9]+(-rc)?$ ]]; then
             echo "Invalid tag format. Tag must follow 'packageName@X.Y.Z' or 'packageName@X.Y.Z-rc' format."
             exit 1  # Fail the workflow if the tag format is invalid
           fi
-          echo "Valid tag format: $TAG_NAME"
+          PACKAGE_NAME=${TAG_NAME%@*}
+          TAG_VERSION=${TAG_NAME#*@}
+          TAG_VERSION=${TAG_VERSION%-rc}
+          PYPROJECT_VERSION=$(grep -E '^version = ' "${PACKAGE_NAME}/pyproject.toml" | sed -E 's/version = "(.*)"/\1/')
+          if [[ "$TAG_VERSION" != "$PYPROJECT_VERSION" ]]; then
+            echo "Tag version ($TAG_VERSION) does not match ${PACKAGE_NAME}/pyproject.toml version ($PYPROJECT_VERSION)."
+            exit 1
+          fi
+          echo "Valid tag: $TAG_NAME (matches ${PACKAGE_NAME}/pyproject.toml $PYPROJECT_VERSION)"
 
   build:
     needs: validate-tag
@@ -31,8 +43,9 @@ jobs:
       - run: |
           pipx install poetry
           cd ${{ env.PACKAGE_NAME }}
-          poetry install
           poetry build
+      - name: Check metadata
+        run: pipx run twine check ${{ env.PACKAGE_NAME }}/dist/*
       - uses: actions/upload-artifact@v4
         with:
           name: 'distribution'
@@ -54,4 +67,5 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: ${{ env.STAGE == 'preview' && 'https://test.pypi.org/legacy/' || 'https://upload.pypi.org/legacy/' }}
+          skip-existing: true
           verbose: true
