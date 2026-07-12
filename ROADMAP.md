@@ -116,7 +116,6 @@ Verify: push `solvers@X.Y.Z-rc`, confirm test.pypi upload + METADATA.
 
 #### [ ] T09 Prune legacy artifacts, canonicalize sample-experiment
 Deps: T02 · GH: —
-- Delete `experiments/mes-standard-experiments/` (~3k files), `experiments/resources/experiment-results/` (~22k), `experiments/src/resources/experiment-results/` empty dirs.
 - Fix or delete configs with absolute `/Users/jasiek` paths; fix stale configs (invalid `"MES"` solver_type, `no-constraints.json` vs `.jsonc` ref).
 - `.gitignore` generated results; keep `sample-experiment/` as the one canonical sample (relative paths only).
 
