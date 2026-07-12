@@ -88,8 +88,8 @@ Deps: T04 · GH: — (meeting note: bump to newest) · PR: feat/t05-pulp-332
 AC: all tests + e2e golden green on new pulp; consistent pin across subprojects.
 Verify: full CI; run sample.
 
-#### [ ] T06 Merge muoblpbindings into monorepo
-Deps: T04 · GH: #20
+#### [x] T06 Merge muoblpbindings into monorepo
+Deps: T04 · GH: #20 · PR: [#42](https://github.com/algorithmic-econ/multiobjective-lp/pull/42)
 - Squash-import muoblpbindings tree as `bindings/` (history stays in archived old repo — archive it on GH manually after merge).
 - Keep scikit-build-core/CMake/pybind11 layout + `.clang-format`; drop stale empty poetry.lock, gitignored wheelhouse artifacts.
 - `solvers/pyproject.toml`: `muoblpbindings==0.0.17` → path dep for dev (publish-time range pin in T18).
