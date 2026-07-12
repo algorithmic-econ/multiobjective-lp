@@ -61,10 +61,11 @@ Deps: T01 · GH: — · PR: [#38](https://github.com/algorithmic-econ/multiobjec
 AC: `pytest -m e2e` deterministic across 3 consecutive runs; mutating a solver constant fails the test; diff readable.
 Verify: run 3×; mutation test; revert.
 
-#### [ ] T03 Baseline CI for all subprojects
-Deps: T02 · GH: —
+#### [x] T03 Baseline CI for all subprojects
+Deps: T02 · GH: — · PR: [#39](https://github.com/algorithmic-econ/multiobjective-lp/pull/39)
 - Extend `.github/workflows/test.yml` from solvers-only to core + solvers + experiments (poetry install + pytest incl. e2e, every PR).
 - Add pyright job per subproject (basic mode; temporary ignores allowed to get green baseline; ratchet later per D12).
+- (Pulled forward from T04) experiments python → `>=3.13` so poetry resolves bindings 0.0.17.
 
 AC: green Actions run on branch; e2e golden runs in CI.
 Verify: push branch, observe Actions.
@@ -73,10 +74,10 @@ Verify: push branch, observe Actions.
 
 #### [ ] T04 Unify Python → 3.13
 Deps: T03 · GH: —
-- `core` `>=3.11` → `>=3.13`; `experiments` `>=3.11,<3.13` → `>=3.13`; regenerate poetry.lock everywhere; fix fallout.
-- CI python → 3.13 everywhere (incl. `publish.yml` build step, currently 3.12).
+- `core` `>=3.11` → `>=3.13`; (experiments done in T03); regenerate poetry.lock everywhere; fix fallout.
+- CI python → 3.13 everywhere (test.yml done in T03; fix `publish.yml` build step, currently 3.12).
 
-AC: all 3 subprojects lock+install+test green on 3.13; experiments no longer resolves stale bindings 0.0.16 (`poetry show muoblpbindings` ≥0.0.17).
+AC: core locks+installs+tests green on 3.13; experiments bindings 0.0.17 already satisfied (T03).
 Verify: CI green.
 
 #### [ ] T05 Bump pulp → latest 3.x

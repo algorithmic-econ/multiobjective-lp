@@ -13,7 +13,7 @@ class MultiObjectiveLpProblem(LpProblem):
     def __init__(
         self,
         name: str,
-        sense: LpMaximize | LpMinimize = LpMaximize,
+        sense: LpMaximize | LpMinimize = LpMaximize,  # pyright: ignore[reportInvalidTypeForm]  # pulp sense consts are ints, not types (fix in T27)
         objectives: list[LpAffineExpression] = [],
         objectives_weights: dict[str, float] = {},
     ) -> None:

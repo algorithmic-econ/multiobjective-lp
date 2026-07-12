@@ -1,0 +1,5 @@
+{
+  "typeCheckingMode": "basic",
+  "exclude": ["archived_code", ".venv"],
+  "reportArgumentType": "none"
+}

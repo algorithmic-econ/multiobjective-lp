@@ -395,4 +395,4 @@ def phragmen_cardinal(
                 if payment > eps:
                     money_spent[voter] += payment
 
-    return rank
+    return rank  # pyright: ignore[reportReturnType]  # returns list, annotated set[str] (fix in T16/T27)

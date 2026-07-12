@@ -10,7 +10,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.13"
 
 dynamic = [ "dependencies" ]
 
@@ -57,5 +57,6 @@ exclude = ["src/explore.ipynb"]
 [dependency-groups]
 dev = [
     "pytest (>=8.4,<9.0)",
-    "pytest-cov (>=7.1.0,<8.0.0)"
+    "pytest-cov (>=7.1.0,<8.0.0)",
+    "pyright (>=1.1,<2.0)"
 ]

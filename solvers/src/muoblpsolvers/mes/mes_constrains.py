@@ -18,7 +18,7 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
     # ratio: [0, inf)
     value = constraint.value()
     target = constraint.constant
-    return (value - target) / abs(target)
+    return (value - target) / abs(target)  # pyright: ignore[reportOptionalOperand]  # constraint.value() Optional; None-guard is T13
 
 
 # def get_modification_ratio(feasibility_ratio: float, lower: float, upper: float) -> float:
