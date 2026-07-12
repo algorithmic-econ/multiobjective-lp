@@ -6,6 +6,7 @@ This project provides tools to work with multi objective linear programs, i.e.,
 * **muoblp** - package defining model and utils to create MOLPs ([core readme](core/README.md)).
 * **muoblpsolvers** - package containing ready to use implementations of MOLP solvers ([solvers readme](solvers/README.md)).
 * **experiments** - set of scripts and utils for showcasing usage of solvers on real data and comparing alternative algorithms ([experiments readme](experiments/README.md)).
+* **muoblpbindings** - performance-critical solver algorithms implemented in C++20 (pybind11/scikit-build-core), consumed by `solvers` as a path dependency ([bindings readme](bindings/README.md)).
 
 ## Documentation
 

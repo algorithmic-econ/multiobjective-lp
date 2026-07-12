@@ -78,3 +78,16 @@ CI (test.yml) notes for T07/future:
 - **pulp-4.0 migration debt** (out of roadmap scope; kill switch masks now): `PULP_CBC_CMD` removal (COIN_CMD switch), direct `LpVariable(...)` ctor + `LpVariable.dicts` + `addVariable(s)`, dict-like `prob.constraints` (→ list API). All heavily used (election_solver, pabutoolsToMoLp, lp_reader_utils, mes/common, phragmen). File GH issue when pulp 4.x targeted.
 - Known non-fatal noise unchanged: `config/logging_config.yaml` FileNotFoundError when run from sample-experiment/ cwd (T20/T09); pulp `UserWarning: Spaces not permitted in name` during sample solve (pre-existing, not a Deprecation).
 - CI: pushed branch → PR to feat/roadmap-base-branch; Actions unverified locally (Linux e2e tie-break risk per T02/T03 leftovers still applies).
+
+### From T06 (PR feat/t06-merge-bindings, 2026-07-12)
+
+- Squash-imported `../muoblpbindings@89f6b23` (chore/publish-release, v0.0.17) → `bindings/` (4th subproject) via `git archive | tar -x`; dropped stale `poetry.lock`. 17 files. History stays in old repo (user archives GH manually post-merge — NOT done).
+- solvers/experiments pin `muoblpbindings="0.0.17"` (PyPI) → path dep `{path="../bindings", develop=false}`; relock ×2 (wheel-files entry → `[package.source] type=directory url=../bindings`, zero transitive change). experiments resolves `../bindings` nested via solvers path dep (like `../core`).
+- Fresh solvers venv (`env remove --all; env use python3.13; install`) builds bindings from source via scikit-build-core pip isolation. **macOS broken-CLT workaround REQUIRED** (broken-clt-cpp-headers memory): `export SDKROOT=$(xcrun --show-sdk-path); export CXXFLAGS="-cxx-isystem $SDKROOT/usr/include/c++/v1"`. No SDKROOT → build fails (missing c++/v1). Applies to any bindings-building install (solvers, experiments) on this machine + T07 local verify.
+- Pre-commit hooks touched imported files (repo-wide, plan-anticipated): eof-fixer trimmed `.clang-format` double-newline; ruff F401 on shim `__init__.py` (re-export names) → added `__all__`; ruff-format reformatted `__init__.pyi` (wrapped multiline sigs). Used solvers-venv ruff 0.15.1 (pins match pre-commit; global ruff is 0.14.0 — mismatch, avoid).
+- All green: pytest solvers 13 / experiments 75 (incl e2e golden + roundtrip, NO regen), ruff check+format repo-wide clean (80 files), pyright solvers 0 / experiments 0 (suppression inventory unchanged). `import muoblpbindings` OK, 5 fns exposed.
+- Deferred (record for later tickets):
+  - bindings `.pyi` imports `pulp` (`from pulp import LpProblem`) but bindings has no declared runtime dep → T18 candidate (add pulp range to bindings metadata, or drop import).
+  - CI cache key hashes 3 locks; bindings C++-only edits don't bust it (no lock in bindings) → T07.
+  - `bindings/.github/workflows/wheels.yml` inert (GH runs only root `.github`) → T07 ports to root w/ bindings paths + `bindings@x.y.z` tag trigger.
+  - root README publish section still lists only core/solvers packageNames; bindings publish deferred to T07 (documented tag convention in bindings/README only).
