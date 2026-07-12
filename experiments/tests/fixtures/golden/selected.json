@@ -1,0 +1,51 @@
+{
+  "GREEDY": {
+    "constraints_configs": [],
+    "deduplicate_objectives": false,
+    "instance_size": 11,
+    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_GREEDY.lp",
+    "selected": [
+      "V_BO.D10.12_24",
+      "V_BO.D10.8_24",
+      "V_BO.D9.28_24",
+      "V_BO.D9.6_24"
+    ],
+    "solver": "GREEDY",
+    "solver_options": {},
+    "source_path": "krakow_2024_mini",
+    "source_type": "PABUTOOLS",
+    "utility_type": "COST_ORDINAL"
+  },
+  "MES_ADD1": {
+    "constraints_configs": [],
+    "deduplicate_objectives": false,
+    "instance_size": 11,
+    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1.lp",
+    "selected": [
+      "V_BO.D10.12_24",
+      "V_BO.D10.8_24",
+      "V_BO.D9.4_24",
+      "V_BO.D9.6_24"
+    ],
+    "solver": "MES_ADD1",
+    "solver_options": {},
+    "source_path": "krakow_2024_mini",
+    "source_type": "PABUTOOLS",
+    "utility_type": "COST_ORDINAL"
+  },
+  "MES_UTILS": {
+    "constraints_configs": [],
+    "deduplicate_objectives": false,
+    "instance_size": 11,
+    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS.lp",
+    "selected": [
+      "V_BO.D10.8_24",
+      "V_BO.D9.6_24"
+    ],
+    "solver": "MES_UTILS",
+    "solver_options": {},
+    "source_path": "krakow_2024_mini",
+    "source_type": "PABUTOOLS",
+    "utility_type": "COST_ORDINAL"
+  }
+}
