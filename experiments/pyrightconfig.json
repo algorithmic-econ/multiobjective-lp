@@ -1,3 +1,15 @@
 {
-  "extraPaths": ["src"]
+  "typeCheckingMode": "basic",
+  "extraPaths": ["src"],
+  "exclude": ["archived_code", ".venv"],
+  "reportArgumentType": "none",
+  "reportCallIssue": "none",
+  "reportAttributeAccessIssue": "none",
+  "reportAssignmentType": "none",
+  "reportOperatorIssue": "none",
+  "reportOptionalSubscript": "none",
+  "reportReturnType": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportTypedDictNotRequiredAccess": "none",
+  "reportInvalidTypeForm": "none"
 }

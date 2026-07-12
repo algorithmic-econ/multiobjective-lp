@@ -41,3 +41,20 @@ Repo conventions observed:
 - MES_ADD1 golden has `invalid_count: 1` — Add1 exceeds district cap by design, not a bug.
 - `pytest.register_assert_rewrite("tests.golden_utils")` needed in conftest for readable golden diffs (+ E402 per-file-ignore); pattern applies to any future assert-helper module.
 - tests/ is a package (relative imports, `tests.golden_utils` module path).
+
+### From T03 (PR TBD, 2026-07-12)
+
+Env / machine state (NOT in repo):
+- experiments now py3.13; venv `muoblpexp-*-py3.13` (poetry cache, not in-project locally). Lock regenerated → `muoblpbindings` 0.0.17 resolved from **PyPI** (macos-arm64 wheel). T01 local-build-of-sibling-repo hack now OBSOLETE for experiments. Transitive bumps accepted silently (notebook 7.6.0, coverage 7.15.0, etc.).
+- core + solvers venvs also recreated on 3.13 (`poetry env use /opt/homebrew/bin/python3.13`). core pyproject still `requires-python >=3.11` (T04 bumps to >=3.13); CI runs 3.13 which satisfies it.
+- core got a **dev group** (pytest, pyright) — previously none; core had no tests dir (pytest exit-5). Added `core/tests/test_import.py` smoke test.
+
+pyright suppression inventory (D12 ratchet backlog — all basic mode):
+- **core**: 1 inline `# pyright: ignore[reportInvalidTypeForm]` in `multi_objective_lp.py:16` (`sense: LpMaximize|LpMinimize` — pulp consts are ints not types; real fix T27).
+- **solvers**: config `reportArgumentType: none` (15 systemic errors — `Utility`/int + float/int + dict-value invariance across mes_add1, mes_constrains, mes_exponential, mes_utility, phragmen). Plus 2 inline: `mes_constrains.py:21` reportOptionalOperand (Optional `constraint.value()`; None-guard T13), `phragmen.py:398` reportReturnType (returns list, annotated set[str]; T16/T27).
+- **experiments**: config disables 10 rules (reportArgumentType 31, reportCallIssue 7, reportAttributeAccessIssue 7, reportAssignmentType 7, reportOperatorIssue 6, reportOptionalSubscript 5, reportReturnType 4, reportGeneralTypeIssues 3, reportTypedDictNotRequiredAccess 3, reportInvalidTypeForm 3 = 76 total). Loose pabutools/pandas interop + tests; most files rewritten in Phase 3 (T19 Pydantic, T21 rename, T22/T23 consolidate, T25 dead-code) which should eliminate most — re-enable rules incrementally as Phase 3 lands.
+
+CI (test.yml) notes for T07/future:
+- Rewrote: 3-project matrix (core/solvers/experiments) × {test, pyright} jobs, py3.13, `fail-fast: false`. Cache path per-project `${{ matrix.project }}/.venv`, key hashes all 3 locks (path-dep interdependence). No path filters; push trigger limited to `main` + `feat/roadmap-base-branch`; PRs always run.
+- **UNVERIFIED locally: Linux CI e2e golden** — goldens macOS-generated; MES C++ tie-break divergence risk (leftovers T02). If ubuntu e2e diffs: normalization fix (`experiments/tests/golden_utils.py`) or switch experiments matrix to `macos-15` + GH issue. NO golden regen.
+- `poetry install` runs unconditionally (no cache-hit guard) so editable path-deps (core←solvers←experiments) re-link against checkout.
