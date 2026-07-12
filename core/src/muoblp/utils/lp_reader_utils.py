@@ -65,14 +65,11 @@ def read_lp_file(filename) -> MultiObjectiveLpProblem:
             else LpConstraintGE
         )
         c_rhs = int(constraint_line[sign_idx + 2 :].strip())
-        constraint = LpConstraint.from_dict(
-            {
-                "coefficients": LpAffineExpression(c_lhs),
-                "constant": -c_rhs,
-                "name": c_name,
-                "sense": c_sense,
-                "pi": -0.0,  # TODO: What should be the value?
-            }
+        constraint = LpConstraint(
+            LpAffineExpression(c_lhs),
+            sense=c_sense,
+            name=c_name,
+            rhs=c_rhs,
         )
         problem_data["constraints"].append(constraint)
 

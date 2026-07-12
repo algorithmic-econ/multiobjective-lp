@@ -8,6 +8,9 @@ from muoblp.utils.lp_writer_utils import expression_to_lp_format
 # Override line limit for writeLP to output single line values
 pulp.const.LpCplexLPLineSize = 100000
 
+# Silence pulp 3.3.x v4-migration DeprecationWarnings (4.0 migration out of roadmap scope)
+pulp.set_v4_migration_warnings(False)
+
 
 class MultiObjectiveLpProblem(LpProblem):
     def __init__(

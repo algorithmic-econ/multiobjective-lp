@@ -65,3 +65,16 @@ CI (test.yml) notes for T07/future:
 - Relock diffs MINIMAL, zero transitive bumps: core lock `[metadata] python-versions`→`>=3.13` + content-hash; solvers/experiments only the `muoblp` path-dep `python-versions`→`>=3.13`. (No `poetry install` changes — all venvs already 3.13 from T03.)
 - All green locally: pytest core 1 / solvers 13 / experiments 75 (incl e2e golden, no regen), ruff clean, pyright 0 errors ×3. pyright suppression inventory (T03 D12 backlog) unchanged.
 - publish.yml change NOT CI-verifiable (tag-triggered) — review-only, rc-tag dry run deferred to T08.
+
+### From T05 (PR feat/t05-pulp-332, 2026-07-12)
+
+- pulp 2.9.0 → 3.3.2 across core+solvers pins; experiments relock-only (transitive). Relock ×3 minimal: only pulp 2.9.0→3.3.2, zero transitive bumps. All green: pytest core 1 / solvers 13 / experiments 75 (incl e2e golden + roundtrip, NO regen), ruff clean, pyright 0×3.
+- 2 source fixes: `lp_reader_utils.py` `LpConstraint.from_dict({...constant:-c_rhs, pi})` → `LpConstraint(LpAffineExpression(c_lhs), sense=, name=, rhs=c_rhs)` (from_dict REMOVED in 3.x); `multi_objective_lp.py` +`pulp.set_v4_migration_warnings(False)` after LpCplexLPLineSize monkeypatch (silences all 3.3.x v4 DeprecationWarnings centrally; -W error::DeprecationWarning clean ×3).
+- Solve results IDENTICAL post-bump: sample metrics match T01 refs exactly (APPROVAL 0.0033/219239/167; COST 0.0035/1.34763e11; COST_ORDINAL 0.0032/2.79444e11; bronowice 0.0666/4.35159e9). e2e golden unchanged.
+- NEW pyright suppression debt (pulp 3.3.2 stubs typed `LpElement.name` + `LpConstraint.value()` as Optional; was green after T04, so all bump-induced) — 6 inline `# pyright: ignore`, all tagged w/ pulp-3.3.2 reason:
+  - solvers `mes_constrains.py:34,35` reportOptionalOperand (value()<0/>0; None-guard T13); `election_solver.py:113` reportCallIssue (.get(name)); `common.py:58,59` reportAssignmentType+reportCallIssue (dict[name] comp).
+  - experiments `tests/test_constraint_creation.py:276,277` reportOptionalMemberAccess (.name.startswith).
+  - Root cause uniform: `name` Optional str → fixable en masse when name-typing addressed (T27-ish). No config-rule changes.
+- **pulp-4.0 migration debt** (out of roadmap scope; kill switch masks now): `PULP_CBC_CMD` removal (COIN_CMD switch), direct `LpVariable(...)` ctor + `LpVariable.dicts` + `addVariable(s)`, dict-like `prob.constraints` (→ list API). All heavily used (election_solver, pabutoolsToMoLp, lp_reader_utils, mes/common, phragmen). File GH issue when pulp 4.x targeted.
+- Known non-fatal noise unchanged: `config/logging_config.yaml` FileNotFoundError when run from sample-experiment/ cwd (T20/T09); pulp `UserWarning: Spaces not permitted in name` during sample solve (pre-existing, not a Deprecation).
+- CI: pushed branch → PR to feat/roadmap-base-branch; Actions unverified locally (Linux e2e tie-break risk per T02/T03 leftovers still applies).
