@@ -12,7 +12,12 @@ readme = "README.md"
 
 requires-python = ">=3.13"
 
-dynamic = [ "dependencies" ]
+dependencies = [
+    "muoblp>=1.0.4,<2.0",
+    "pulp==3.3.2",
+    "muoblpbindings>=0.0.17,<0.1",
+    "pytest==8.4.1",
+]
 
 [project.urls]
 repository = "https://github.com/jasieksz/multiobjective-lp"
@@ -21,12 +26,11 @@ documentation = "https://jasieksz.github.io/multiobjective-lp"
 [tool.poetry]
 packages = [{include = "muoblpsolvers", from = "src"}]
 
+# Enrich published deps (versions in [project.dependencies]) with local
+# path sources for dev; wheel METADATA keeps version pins, not file:// refs.
 [tool.poetry.dependencies]
-# muoblp = "1.0.3"
 muoblp = {path = "../core", develop = true}
-pulp = "3.3.2"
 muoblpbindings = {path = "../bindings", develop = false}
-pytest = "8.4.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -3,8 +3,6 @@ name: Wheels
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'feat/t07-*'  # TEMP: full-matrix dry run for T07; remove before merge
     tags:
       - 'bindings@[0-9].[0-9]+.[0-9]+'
 
