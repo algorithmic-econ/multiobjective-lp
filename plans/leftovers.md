@@ -42,7 +42,7 @@ Repo conventions observed:
 - `pytest.register_assert_rewrite("tests.golden_utils")` needed in conftest for readable golden diffs (+ E402 per-file-ignore); pattern applies to any future assert-helper module.
 - tests/ is a package (relative imports, `tests.golden_utils` module path).
 
-### From T03 (PR TBD, 2026-07-12)
+### From T03 (PR #39, 2026-07-12)
 
 Env / machine state (NOT in repo):
 - experiments now py3.13; venv `muoblpexp-*-py3.13` (poetry cache, not in-project locally). Lock regenerated → `muoblpbindings` 0.0.17 resolved from **PyPI** (macos-arm64 wheel). T01 local-build-of-sibling-repo hack now OBSOLETE for experiments. Transitive bumps accepted silently (notebook 7.6.0, coverage 7.15.0, etc.).

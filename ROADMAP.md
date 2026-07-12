@@ -62,7 +62,7 @@ AC: `pytest -m e2e` deterministic across 3 consecutive runs; mutating a solver c
 Verify: run 3×; mutation test; revert.
 
 #### [x] T03 Baseline CI for all subprojects
-Deps: T02 · GH: — · PR: TBD
+Deps: T02 · GH: — · PR: [#39](https://github.com/algorithmic-econ/multiobjective-lp/pull/39)
 - Extend `.github/workflows/test.yml` from solvers-only to core + solvers + experiments (poetry install + pytest incl. e2e, every PR).
 - Add pyright job per subproject (basic mode; temporary ignores allowed to get green baseline; ratchet later per D12).
 - (Pulled forward from T04) experiments python → `>=3.13` so poetry resolves bindings 0.0.17.
