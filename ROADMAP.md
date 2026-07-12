@@ -42,8 +42,8 @@ P4 core + docs   T27, T28
 
 ### Phase 0 — Safety net
 
-#### [ ] T01 Fix pipeline-blocking bugs
-Deps: — · GH: —
+#### [x] T01 Fix pipeline-blocking bugs
+Deps: — · GH: — · PR: [#37](https://github.com/algorithmic-econ/multiobjective-lp/pull/37)
 - `experiments/src/helpers/analyzers/metrics.py:4` — import `muoblpsolvers.common` doesn't exist (lives in `muoblpsolvers/mes/common.py`); fix import or add re-export.
 - `experiments/src/helpers/utils/utils.py` — `write_to_json` compares `path.suffix == "jsonc"` (missing dot, always False); fix jsonc branch.
 - `experiments/src/helpers/runners/solverStrategy.py:17` — crashes when `solver_options is None`; guard.
