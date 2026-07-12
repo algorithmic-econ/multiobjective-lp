@@ -53,8 +53,9 @@ def transform_metrics_to_markdown_table(
                 "Filename did not match regex",
                 extra={"file": filename, "problem_path": problem_path},
             )
-            raise Exception(
-                f"Filename '{filename}' did not match the regex pattern."
+            raise ValueError(
+                f"Filename '{filename}' did not match the expected pattern "
+                f"'meta_<datetime>_<id>_<city>_<utility>_<solver>.json'."
             )
 
         row_data = {

@@ -5,7 +5,7 @@ import json5
 
 
 def write_to_json(path: Path, data):
-    processor = json5 if path.suffix == "jsonc" else json
+    processor = json5 if path.suffix == ".jsonc" else json
     with open(path, "w", encoding="utf-8") as file:
         processor.dump(data, file, ensure_ascii=False, indent=4)
 

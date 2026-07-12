@@ -13,6 +13,7 @@ from helpers.runners.model import Solver
 
 
 def get_solver(solver_type: Solver, solver_options: dict | None) -> LpSolver:
+    solver_options = solver_options or {}
     if solver_type == "SUMMING":
         return SummedObjectivesLpSolver("use-gurobi" in solver_options)
     if solver_type == "MES_UTILS":
