@@ -31,3 +31,13 @@ Repo conventions observed:
 - pre-commit hooks active (ruff, ruff-format, eof, trailing-ws) — commits auto-checked.
 - `poetry -C <dir> run` changes cwd → breaks relative-path scripts; `cd` first instead.
 - Branch naming used: `feat/t01-fix-pipeline` (existed already; plan's `fix/...` name skipped).
+
+### From T02 (PR #38, 2026-07-12)
+
+- e2e golden: `cd experiments && poetry run pytest -m e2e`; regen `UPDATE_GOLDEN=1 ...` (writes goldens then FAILS by design — inspect + commit separately). Normalization list (D11) in `tests/golden_utils.py`, awaiting confirm in PR #38 review.
+- Goldens macOS-generated; C++ MES tie-breaks may differ on Linux CI → surfaces in T03; `sorted(os.listdir)` fix removed main known cause.
+- DISCOVERED: GreedySolver `total_utility[candidate]` KeyError on zero-vote candidates (`greedy_solver.py:43`; full krakow never hits it). Fixture avoids via coverage-first ballot pick. Fix in T13 (validation) or T17 (tests).
+- DISCOVERED: meta `instance_size`=11 not 10 — pulp `__dummy` passes `problemRunner.py` filter `name != "dummy"` (actual name `__dummy`). Metric INSTANCE_SIZE correct (10). Golden captures 11; fix in T19 (meta remodel) → goldens regen there.
+- MES_ADD1 golden has `invalid_count: 1` — Add1 exceeds district cap by design, not a bug.
+- `pytest.register_assert_rewrite("tests.golden_utils")` needed in conftest for readable golden diffs (+ E402 per-file-ignore); pattern applies to any future assert-helper module.
+- tests/ is a package (relative imports, `tests.golden_utils` module path).
