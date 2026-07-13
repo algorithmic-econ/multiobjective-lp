@@ -141,8 +141,8 @@ Deps: T10 · GH: #22 · PR: [#47](https://github.com/algorithmic-econ/multiobjec
 AC: `import muoblpsolvers` succeeds without bindings installed; `available()` truthful; test simulating missing bindings (sys.modules monkeypatch).
 Verify: scratch venv without bindings → import + available checks; full pytest with bindings.
 
-#### [ ] T12 Status contract
-Deps: T10 · GH: —
+#### [x] T12 Status contract
+Deps: T10 · GH: — · PR: [#48](https://github.com/algorithmic-econ/multiobjective-lp/pull/48)
 - Greedy, MES-Constrains, MES-Exponential currently never set `lp.status` and return `None` from `actualSolve` — fix: assign status via PuLP constants (reuse `utils.set_solved`), return status. Audit remaining 7.
 - Add `lp.status == LpStatusOptimal` assertions to ALL existing solver tests.
 

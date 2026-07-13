@@ -5,6 +5,7 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.election_solver import Election, ElectionSolver
 from muoblpsolvers.types import CandidateId
+from muoblpsolvers.utils import set_solved
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +49,16 @@ class GreedySolver(ElectionSolver):
             if total_utility[candidate] > 0
         ]
 
+        selected: list[str] = []
         for candidate in sorted_candidates:
             candidate_variable = lp.variablesDict()[candidate]
             candidate_variable.setInitialValue(1)
             if not self.is_feasible(lp):
                 candidate_variable.setInitialValue(0)
+            else:
+                selected.append(candidate)
 
         logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+
+        set_solved(lp, selected)
+        return lp.status

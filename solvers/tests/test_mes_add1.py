@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pulp import LpStatusOptimal
 
 from muoblpsolvers import MethodOfEqualSharesAdd1Solver
 from muoblpsolvers.types import Utility
@@ -25,6 +26,7 @@ def test_add1_mes_solver(
     problem.solve(solver)
 
     # then
+    assert problem.status == LpStatusOptimal
     selected = [
         project.name
         for project in [

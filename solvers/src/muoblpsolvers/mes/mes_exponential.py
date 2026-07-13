@@ -5,6 +5,7 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver, PulpSolverError
 
 from muoblpsolvers.types import CandidateId, VoterId
+from muoblpsolvers.utils import set_solved
 
 from .common import prepare_mes_parameters
 
@@ -175,7 +176,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             total_budget,
         ) = prepare_mes_parameters(lp)
 
-        equal_shares_exponential(
+        selected = equal_shares_exponential(
             voters,
             projects,
             costs,
@@ -186,3 +187,6 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         )
 
         logger.info("SOLVER END", extra={"time": time.time() - start_time})
+
+        set_solved(lp, selected)
+        return lp.status
