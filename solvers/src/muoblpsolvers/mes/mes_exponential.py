@@ -155,6 +155,9 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             **kwargs,
         )
 
+    def available(self) -> bool:
+        return True
+
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
         if "budget_init" not in self.optionsDict:
             raise PulpSolverError(

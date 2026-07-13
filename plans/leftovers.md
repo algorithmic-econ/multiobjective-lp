@@ -145,3 +145,11 @@ CI (test.yml) notes for T07/future:
 - pulp `optionsDict` gotcha: None-valued kwargs silently dropped; False kept. Anyone adding Optional options must read via `.get`.
 - Sample smoke needs venv python on PATH: `run.sh`/`analyze.sh` call bare `python` → `PATH="$(poetry -C .. env info --path)/bin:$PATH" ./run.sh`. Also resultCache short-circuits solve — `rm -rf results/*` first for a real smoke (dirs gitignored). Metrics matched T01/T05 refs exactly.
 - Verify GREEN: solvers 30 pytest (13→30, +17 contract tests), experiments 80 (75→80, incl e2e golden 1, NO regen), ruff+format clean ×2, pyright 0 ×2, sample e2e values identical. core/bindings untouched.
+
+### From T11 (PR #47, 2026-07-13)
+
+- `available()` on all 10 solvers now truthful (base `LpSolver.available()` raises NotImplementedError — 7 solvers previously inherited it, would've crashed if called). Binding-backed (STV, ExpandingApprovals, SCR, MES-Add1/Utility/Constrains) → `bindings_available()`; pure-python (Greedy, Phragmen via `ElectionSolver` base, Summed, MES-Exponential) → `True`. Removed 3 hardcoded `return True` stubs (STV/EA/SCR).
+- NEW helper `muoblpsolvers/utils.py::bindings_available()` = `importlib.util.find_spec("muoblpbindings") is not None`. find_spec locates WITHOUT executing → no C++ init, no SDKROOT/CLT needed for the probe. Checks whole package (per ticket), not per-symbol.
+- Lazy imports: 6 top-level `from muoblpbindings import X` moved to first line of each `actualSolve`. `import muoblpsolvers` now succeeds bindings-free (was hard-fail via `__init__` fan-out). Missing bindings now surfaces as ImportError at SOLVE time for binding-backed solvers (not import time) — T13 shared validation may wrap/pre-check via `available()`.
+- Missing-bindings unit sim = `monkeypatch.setitem(sys.modules, "muoblpbindings", None)` (idiomatic): makes both `import muoblpbindings` raise AND `find_spec` return None. New `tests/test_available.py` (3 tests): import-without-bindings, available truthful without, available truthful with (skip-if-absent). solvers 30→33.
+- Verify GREEN: solvers 33 pytest, experiments 80 (incl e2e golden 1, NO regen), ruff+format clean ×2, pyright 0 ×2 (no new suppressions). Bindings-free subprocess: `sys.modules['muoblpbindings']=None; import muoblpsolvers` → GreedySolver.available() True / STV.available() False. core/bindings untouched.

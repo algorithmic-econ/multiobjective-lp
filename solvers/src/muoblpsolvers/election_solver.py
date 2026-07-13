@@ -28,6 +28,9 @@ class Election(TypedDict):
 
 
 class ElectionSolver(LpSolver):
+    def available(self) -> bool:
+        return True
+
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
         election = molp_to_simple_election(lp)
 

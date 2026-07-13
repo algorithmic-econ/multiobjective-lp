@@ -2,10 +2,9 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import solid_coalition_refinement
 from pulp import LpSolver
 
-from muoblpsolvers.utils import set_solved
+from muoblpsolvers.utils import bindings_available, set_solved
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +13,11 @@ class SolidCoalitionRefinement(LpSolver):
     name = "SolidCoalitionRefinement"
 
     def available(self) -> bool:
-        return True
+        return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs) -> int:
+        from muoblpbindings import solid_coalition_refinement
+
         start_time = time.time()
         logger.info("SOLVER START")
         selected = solid_coalition_refinement(lp)
