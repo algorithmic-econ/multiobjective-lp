@@ -1,14 +1,9 @@
 import logging
 import time
+from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import (
-    LpConstraint,
-    LpConstraintGE,
-    LpConstraintLE,
-    LpSolver,
-    PulpSolverError,
-)
+from pulp import LpConstraint, LpConstraintGE, LpConstraintLE, LpSolver
 
 from muoblpsolvers.utils import bindings_available, set_solved
 
@@ -17,22 +12,15 @@ from .common import prepare_mes_parameters
 logger = logging.getLogger(__name__)
 
 
-def _require_value(constraint: LpConstraint) -> float:
-    value = constraint.value()
-    if value is None:
-        raise PulpSolverError(
-            f"Constraint '{constraint.name}' has no value "
-            "(candidate variables must carry an initial value)"
-        )
-    return value
-
-
 def get_feasibility_ratio(constraint: LpConstraint) -> float:
     """
     :rtype: object
     """
     # ratio: [0, inf)
-    value = _require_value(constraint)
+    # constraint.value() is typed Optional by pulp 3.3.2 but every candidate
+    # variable is assigned via setInitialValue before any constraint is read
+    # (actualSolve's per-iteration loop) — never None in practice.
+    value = cast(float, constraint.value())
     target = constraint.constant
     return (value - target) / abs(target)
 
@@ -49,11 +37,11 @@ def get_infeasible_constraints(
         for constraint in problem.constraints.values()
         if (
             constraint.sense == LpConstraintGE
-            and _require_value(constraint) < 0
+            and cast(float, constraint.value()) < 0
         )
         or (
             constraint.sense == LpConstraintLE
-            and _require_value(constraint) > 0
+            and cast(float, constraint.value()) > 0
         )
     ]
 
