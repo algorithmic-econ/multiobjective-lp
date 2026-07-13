@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pulp import LpStatusOptimal
 
 from muoblpsolvers import GreedySolver
 from muoblpsolvers.types import Utility
@@ -25,6 +26,7 @@ def test_greedy_solver(
     problem.solve(solver)
 
     # then
+    assert problem.status == LpStatusOptimal
     selected = [
         project.name
         for project in [
@@ -45,6 +47,7 @@ def test_greedy_solver_lb_forces_low_ratio_candidate(
     problem = pb_with_lb_factory(utility_type)
     problem.solve(solver)
 
+    assert problem.status == LpStatusOptimal
     selected = {var.name for var in problem.variables() if var.value() == 1.0}
     assert "_E" in selected
 
@@ -67,6 +70,7 @@ def test_greedy_solver_lb_respects_upper_bound(
     problem = pb_with_lb_factory(utility_type)
     problem.solve(solver)
 
+    assert problem.status == LpStatusOptimal
     selected = {var.name for var in problem.variables() if var.value() == 1.0}
     total_cost = sum(projects_costs[n] for n in selected)
     assert total_cost <= 1000000

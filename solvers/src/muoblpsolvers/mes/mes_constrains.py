@@ -4,7 +4,7 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpConstraint, LpConstraintGE, LpConstraintLE, LpSolver
 
-from muoblpsolvers.utils import bindings_available
+from muoblpsolvers.utils import bindings_available, set_solved
 
 from .common import prepare_mes_parameters
 
@@ -133,3 +133,6 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
 
             iteration += 1
         logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+
+        set_solved(lp, selected)
+        return lp.status
