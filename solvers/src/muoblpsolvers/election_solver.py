@@ -13,6 +13,7 @@ from pulp import (
     LpSolver,
     LpStatusOptimal,
     LpVariable,
+    PulpSolverError,
     lpSum,
 )
 
@@ -32,6 +33,7 @@ class ElectionSolver(LpSolver):
         return True
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
+        validate_election_program(lp)
         election = molp_to_simple_election(lp)
 
         for var in lp.variables():
@@ -95,10 +97,53 @@ def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
             pb_constraints.append(constraint)
 
     if len(pb_constraints) == 0:
-        raise Exception("Problem does not have PB constraint")
+        raise PulpSolverError("Problem does not have PB constraint")
     if len(pb_constraints) > 1:
-        raise Exception("Problem has too many PB constraint")
+        raise PulpSolverError("Problem has too many PB constraint")
     return pb_constraints[0]
+
+
+def validate_election_program(lp: MultiObjectiveLpProblem) -> None:
+    """Reject programs outside the binary-PB shape every ElectionSolver assumes.
+
+    See GH #36: no capability widening — this only rejects, it never
+    implements the excluded features (continuous vars, arbitrary bounds,
+    negative coefficients).
+    """
+    if not lp.objectives:
+        raise PulpSolverError(f"Problem '{lp.name}' has no objectives")
+
+    for variable in lp.variables():
+        if variable.name == "__dummy":
+            continue
+        # pulp normalizes cat="Binary" -> cat="Integer" + lowBound=0/upBound=1
+        # at LpVariable construction time; that's the only shape accepted here.
+        if (
+            variable.cat != "Integer"
+            or variable.lowBound != 0
+            or variable.upBound != 1
+        ):
+            raise PulpSolverError(
+                f"Variable '{variable.name}' is not a 0/1 binary PB variable "
+                f"(cat={variable.cat}, lowBound={variable.lowBound}, "
+                f"upBound={variable.upBound})"
+            )
+
+    for voter in lp.objectives:
+        for candidate, utility in voter.items():
+            if utility < 0:
+                raise PulpSolverError(
+                    f"Objective '{voter.name}' has negative coefficient "
+                    f"{utility} for variable '{candidate.name}'"
+                )
+
+    pb_constraint = validate_pb_constraint(lp)
+    for candidate, cost in pb_constraint.items():
+        if cost < 0:
+            raise PulpSolverError(
+                f"PB constraint '{pb_constraint.name}' has negative "
+                f"coefficient {cost} for variable '{candidate.name}'"
+            )
 
 
 def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:

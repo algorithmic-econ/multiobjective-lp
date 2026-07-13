@@ -1,9 +1,11 @@
 import logging
 import time
+from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpConstraint, LpConstraintGE, LpConstraintLE, LpSolver
 
+from muoblpsolvers.election_solver import validate_election_program
 from muoblpsolvers.utils import bindings_available, set_solved
 
 from .common import prepare_mes_parameters
@@ -16,9 +18,12 @@ def get_feasibility_ratio(constraint: LpConstraint) -> float:
     :rtype: object
     """
     # ratio: [0, inf)
-    value = constraint.value()
+    # constraint.value() is typed Optional by pulp 3.3.2 but every candidate
+    # variable is assigned via setInitialValue before any constraint is read
+    # (actualSolve's per-iteration loop) — never None in practice.
+    value = cast(float, constraint.value())
     target = constraint.constant
-    return (value - target) / abs(target)  # pyright: ignore[reportOptionalOperand]  # constraint.value() Optional; None-guard is T13
+    return (value - target) / abs(target)
 
 
 # def get_modification_ratio(feasibility_ratio: float, lower: float, upper: float) -> float:
@@ -31,8 +36,14 @@ def get_infeasible_constraints(
     return [
         constraint
         for constraint in problem.constraints.values()
-        if (constraint.sense == LpConstraintGE and constraint.value() < 0)  # pyright: ignore[reportOptionalOperand]  # pulp 3.3.2 constraint.value() Optional; None-guard T13
-        or (constraint.sense == LpConstraintLE and constraint.value() > 0)  # pyright: ignore[reportOptionalOperand]
+        if (
+            constraint.sense == LpConstraintGE
+            and cast(float, constraint.value()) < 0
+        )
+        or (
+            constraint.sense == LpConstraintLE
+            and cast(float, constraint.value()) > 0
+        )
     ]
 
 
@@ -64,6 +75,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
+        validate_election_program(lp)
         from muoblpbindings import equal_shares_utils
 
         start_time = time.time()
