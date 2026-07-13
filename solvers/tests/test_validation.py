@@ -11,8 +11,32 @@ from pulp import (
     lpSum,
 )
 
-from muoblpsolvers import GreedySolver, PhragmenSolver
+from muoblpsolvers import (
+    ExpandingApprovals,
+    GreedySolver,
+    MethodOfEqualSharesAdd1Solver,
+    MethodOfEqualSharesConstrainsSolver,
+    MethodOfEqualSharesExponentialSolver,
+    MethodOfEqualSharesUtilitySolver,
+    PhragmenSolver,
+    SingleTransferableVote,
+    SolidCoalitionRefinement,
+)
 from muoblpsolvers.types import Utility
+
+# All PB-shaped solvers except SummedObjectivesLpSolver, which is a
+# deliberately generic LP/MIP pass-through and stays unvalidated.
+PB_SOLVER_CLASSES = [
+    GreedySolver,
+    PhragmenSolver,
+    MethodOfEqualSharesAdd1Solver,
+    MethodOfEqualSharesUtilitySolver,
+    MethodOfEqualSharesConstrainsSolver,
+    MethodOfEqualSharesExponentialSolver,
+    SingleTransferableVote,
+    ExpandingApprovals,
+    SolidCoalitionRefinement,
+]
 
 
 def test_no_objectives_rejected(basic_pb_approval: MultiObjectiveLpProblem):
@@ -96,3 +120,22 @@ def test_valid_program_not_rejected(
     problem = basic_pb_factory("APPROVAL")
     problem.solve(PhragmenSolver(msg=False))
     assert problem.status is not None
+
+
+@pytest.mark.parametrize("solver_class", PB_SOLVER_CLASSES)
+def test_validation_wired_into_every_pb_solver(
+    solver_class,
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    """Every PB solver but the generic SummedObjectivesLpSolver must
+    validate before doing solver-specific work. Rule logic itself is
+    covered per-rule above via GreedySolver; this only proves the wiring.
+    """
+    solver = solver_class()
+    if not solver.available():
+        pytest.skip(f"{solver_class.__name__} unavailable (needs bindings)")
+
+    basic_pb_approval.set_objectives([])
+
+    with pytest.raises(PulpSolverError, match="no objectives"):
+        solver.actualSolve(basic_pb_approval)

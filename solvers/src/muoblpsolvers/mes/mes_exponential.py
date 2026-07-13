@@ -4,6 +4,7 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver, PulpSolverError
 
+from muoblpsolvers.election_solver import validate_election_program
 from muoblpsolvers.types import CandidateId, VoterId
 from muoblpsolvers.utils import set_solved
 
@@ -160,6 +161,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         return True
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
+        validate_election_program(lp)
         if "budget_init" not in self.optionsDict:
             raise PulpSolverError(
                 "MethodOfEqualSharesExponentialSolver requires budget_init"

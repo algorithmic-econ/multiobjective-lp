@@ -4,6 +4,7 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver
 
+from muoblpsolvers.election_solver import validate_election_program
 from muoblpsolvers.utils import bindings_available, set_solved
 
 from .common import prepare_mes_parameters
@@ -18,6 +19,7 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
         return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
+        validate_election_program(lp)
         from muoblpbindings import equal_shares_utils
 
         (
