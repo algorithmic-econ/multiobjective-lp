@@ -133,8 +133,8 @@ Deps: T05 · GH: #23 · PR: [#46](https://github.com/algorithmic-econ/multiobjec
 AC: no custom positional `solver_options` remains; every solver instantiable with `(msg=False, timeLimit=10)`; e2e golden green (values unchanged).
 Verify: solvers+experiments pytest; e2e; `grep -r solver_options` clean.
 
-#### [ ] T11 available() + lazy bindings imports
-Deps: T10 · GH: #22
+#### [x] T11 available() + lazy bindings imports
+Deps: T10 · GH: #22 · PR: [#47](https://github.com/algorithmic-econ/multiobjective-lp/pull/47)
 - Move 6 top-level `from muoblpbindings import ...` into guarded/function-scope imports; `muoblpsolvers/__init__.py` stops failing eagerly without bindings.
 - `available()` on all 10: binding-backed return importability of muoblpbindings; pure-python (Greedy, Exponential, Phragmen, Summed) return True; remove 3 hardcoded `True` stubs.
 

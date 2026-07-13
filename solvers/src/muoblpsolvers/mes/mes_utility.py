@@ -2,10 +2,9 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import equal_shares_utils
 from pulp import LpSolver
 
-from muoblpsolvers.utils import set_solved
+from muoblpsolvers.utils import bindings_available, set_solved
 
 from .common import prepare_mes_parameters
 
@@ -15,7 +14,12 @@ logger = logging.getLogger(__name__)
 class MethodOfEqualSharesUtilitySolver(LpSolver):
     name = "MethodOfEqualSharesUtility"
 
+    def available(self) -> bool:
+        return bindings_available()
+
     def actualSolve(self, lp: MultiObjectiveLpProblem):
+        from muoblpbindings import equal_shares_utils
+
         (
             projects,
             costs,

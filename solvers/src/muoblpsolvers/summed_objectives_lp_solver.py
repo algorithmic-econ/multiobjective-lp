@@ -32,6 +32,9 @@ class SummedObjectivesLpSolver(LpSolver):
             **kwargs,
         )
 
+    def available(self) -> bool:
+        return True
+
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         """
         Parameters:

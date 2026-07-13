@@ -2,8 +2,9 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import equal_shares_utils
 from pulp import LpConstraint, LpConstraintGE, LpConstraintLE, LpSolver
+
+from muoblpsolvers.utils import bindings_available
 
 from .common import prepare_mes_parameters
 
@@ -59,7 +60,12 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
             **kwargs,
         )
 
+    def available(self) -> bool:
+        return bindings_available()
+
     def actualSolve(self, lp: MultiObjectiveLpProblem):
+        from muoblpbindings import equal_shares_utils
+
         start_time = time.time()
         logger.info("SOLVER START", extra={"options": self.optionsDict})
         """
