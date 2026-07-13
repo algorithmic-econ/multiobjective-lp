@@ -54,7 +54,7 @@ SOLVER_OPTION_SPECS: dict[str, list[tuple[str, str, object | None]]] = {
         ("budget_init", "int", None),
     ],
     "SUMMING": [
-        ("use-gurobi", "bool", False),
+        ("use_gurobi", "bool", False),
     ],
 }
 

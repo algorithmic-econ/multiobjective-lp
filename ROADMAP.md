@@ -124,8 +124,8 @@ Verify: run sample; git file count drops ~25k.
 
 ### Phase 2 — Solver PuLP-contract compliance
 
-#### [ ] T10 Unified constructor + PuLP native options
-Deps: T05 · GH: #23
+#### [x] T10 Unified constructor + PuLP native options
+Deps: T05 · GH: #23 · PR: [#46](https://github.com/algorithmic-econ/multiobjective-lp/pull/46)
 - All 10 solvers + `ElectionSolver`: `__init__(self, msg=True, timeLimit=None, options=None, ...)` calling `super().__init__(...)`.
 - Migrate custom positional `solver_options` (Constrains/Exponential/Phragmen) and `use_gurobi` flag (Summed) into PuLP `options`/kwargs so `toDict()`/`toJson()` serialize them.
 - Update `experiments/src/helpers/runners/solverStrategy.py` + config plumbing in SAME ticket (atomically green).

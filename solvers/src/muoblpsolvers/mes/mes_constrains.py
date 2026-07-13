@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpbindings import equal_shares_utils
@@ -36,21 +35,33 @@ def get_infeasible_constraints(
     ]
 
 
-class SolverOptions(TypedDict):
-    cost_modification_base: float
-    max_iterations: int
-
-
 class MethodOfEqualSharesConstrainsSolver(LpSolver):
     name = "MethodOfEqualSharesConstrains"
 
-    def __init__(self, solver_options):
-        super().__init__()
-        self.solver_options: SolverOptions = solver_options
+    def __init__(
+        self,
+        mip=True,
+        msg=True,
+        options=None,
+        timeLimit=None,
+        *,
+        cost_modification_base: float = 1.007,
+        max_iterations: int = 200,
+        **kwargs,
+    ):
+        super().__init__(
+            mip=mip,
+            msg=msg,
+            options=options,
+            timeLimit=timeLimit,
+            cost_modification_base=cost_modification_base,
+            max_iterations=max_iterations,
+            **kwargs,
+        )
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         start_time = time.time()
-        logger.info("SOLVER START", extra={"options": self.solver_options})
+        logger.info("SOLVER START", extra={"options": self.optionsDict})
         """
         Parameters:
             lp: Instance of MultiObjectiveLpProblem
@@ -65,7 +76,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         ) = prepare_mes_parameters(lp)
 
         iteration = 0
-        while iteration < self.solver_options["max_iterations"]:
+        while iteration < self.optionsDict["max_iterations"]:
             # Run MES
             start_time = time.time()
             # TODO: weight-aware via binding update
@@ -101,7 +112,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                     constraint
                 )  # ratio: [0, inf)
                 cost_modification_ratio = feasibility_ratio * (
-                    self.solver_options["cost_modification_base"] ** iteration
+                    self.optionsDict["cost_modification_base"] ** iteration
                 )  # exponential backoff
                 affected_candidates = [
                     candidate.name for candidate in constraint.keys()

@@ -134,3 +134,14 @@ CI (test.yml) notes for T07/future:
   - wheels.yml `workflow_dispatch` dry run triggered this session (closes T07 AC letter) — check outcome if not observed.
   - Cosmetic: solvers `[project.urls]` → `jasieksz/multiobjective-lp`, repo lives at `algorithmic-econ/` → T28.
 - D8 (timeLimit on binding-backed solvers) still undecided — must be resolved before T14; T10–T13 unblocked.
+
+### From T10 (PR feat/t10-native-options, 2026-07-13)
+
+- Contract now: options = constructor kwargs → pulp `optionsDict` → serialized via `toDict()`. Solvers read `self.optionsDict[...]`, `self.solver_options`/`self.use_gurobi` GONE. No-option solvers (Greedy, Add1, Utility, STV, SCR, ExpandingApprovals) + ElectionSolver have NO `__init__` — inherit pulp base `(mip=True, msg=True, options=None, timeLimit=None, *args, **kwargs)`.
+- Option defaults now in constructors (from generator spec): MES_CONSTRAINT cost_modification_base=1.007/max_iterations=200, PHRAGMEN increasing_scalings=False/kappa=1.0/bos_version=False/eps=1e-6, SUMMING use_gurobi=False. T01 leftover "empty solver_options crash" FIXED for these.
+- MES_EXPONENTIAL `budget_init` REQUIRED at solve: None default dropped from optionsDict (pulp filters None kwargs) → `PulpSolverError` in actualSolve (was raw KeyError). T13 folds into shared validation. No numeric default invented (B_init tuning excluded §5).
+- SolverOptions TypedDicts (mes_constrains, mes_exponential, phragmen) plain-deleted with migration (user-approved; superseded type decls, not archived).
+- `get_solver` = dict dispatch + `**(solver_options or {})` unpack; config `solver_options` dict keys MUST be valid constructor kwargs. Config key `"use-gurobi"` renamed `"use_gurobi"` (generateExperimentConfig.py). T19 Pydantic SolverSpec must keep kwargs-compatible keys; config field name `solver_options` (RunnerConfig/meta/goldens) intentionally UNCHANGED until T19 — AC grep interpreted as solvers/-side clean (verified empty).
+- pulp `optionsDict` gotcha: None-valued kwargs silently dropped; False kept. Anyone adding Optional options must read via `.get`.
+- Sample smoke needs venv python on PATH: `run.sh`/`analyze.sh` call bare `python` → `PATH="$(poetry -C .. env info --path)/bin:$PATH" ./run.sh`. Also resultCache short-circuits solve — `rm -rf results/*` first for a real smoke (dirs gitignored). Metrics matched T01/T05 refs exactly.
+- Verify GREEN: solvers 30 pytest (13→30, +17 contract tests), experiments 80 (75→80, incl e2e golden 1, NO regen), ruff+format clean ×2, pyright 0 ×2, sample e2e values identical. core/bindings untouched.
