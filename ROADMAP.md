@@ -150,7 +150,7 @@ AC: no `actualSolve` returns None; every solver test asserts status.
 Verify: solvers pytest; e2e golden.
 
 #### [x] T13 Raise for incompatible programs
-Deps: T12 · GH: #36 · PR: TBD
+Deps: T12 · GH: #36 · PR: [#49](https://github.com/algorithmic-econ/multiobjective-lp/pull/49)
 - Shared validation in `ElectionSolver`/util: reject continuous vars, non-0/1 bounds, missing objectives etc. (enumerate from #36); raise `PulpSolverError` naming the offending var/feature.
 - No capability widening (#31/#34/#35 stay excluded).
 
