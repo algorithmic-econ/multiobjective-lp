@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraint, LpConstraintLE
+from pulp import LpConstraint, LpConstraintLE, PulpSolverError
 
 from muoblpsolvers.types import (
     CandidateId,
@@ -26,9 +26,9 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
             pb_constraints.append(constraint)
 
     if len(pb_constraints) == 0:
-        raise ValueError("Problem does not have PB constraint")
+        raise PulpSolverError("Problem does not have PB constraint")
     if len(pb_constraints) > 1:
-        raise ValueError("Problem has too many PB constraint")
+        raise PulpSolverError("Problem has too many PB constraint")
     return pb_constraints[0]
 
 
