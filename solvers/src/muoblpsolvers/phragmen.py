@@ -1,7 +1,6 @@
 import copy
 import logging
 import time
-from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpVariable
@@ -13,19 +12,33 @@ from muoblpsolvers.utils import set_solved
 logger = logging.getLogger(__name__)
 
 
-class SolverOptions(TypedDict):
-    increasing_scalings: bool
-    kappa: float
-    bos_version: bool
-    eps: float
-
-
 class PhragmenSolver(ElectionSolver):
     name = "Phragmen"
 
-    def __init__(self, solver_options):
-        super().__init__()
-        self.solver_options: SolverOptions = solver_options
+    def __init__(
+        self,
+        mip=True,
+        msg=True,
+        options=None,
+        timeLimit=None,
+        *,
+        increasing_scalings: bool = False,
+        kappa: float = 1.0,
+        bos_version: bool = False,
+        eps: float = 1e-6,
+        **kwargs,
+    ):
+        super().__init__(
+            mip=mip,
+            msg=msg,
+            options=options,
+            timeLimit=timeLimit,
+            increasing_scalings=increasing_scalings,
+            kappa=kappa,
+            bos_version=bos_version,
+            eps=eps,
+            **kwargs,
+        )
 
     def _solve_election(
         self,
@@ -36,17 +49,15 @@ class PhragmenSolver(ElectionSolver):
         start_time = time.time()
         logger.info(
             "SOLVER START",
-            extra={"options": self.solver_options, "instance": lp.name},
+            extra={"options": self.optionsDict, "instance": lp.name},
         )
         selected = phragmen_cardinal(
             lp,
             election,
-            increasing_scalings=self.solver_options.get(
-                "increasing_scalings", False
-            ),
-            kappa=self.solver_options.get("kappa", 1.0),
-            bos_version=self.solver_options.get("bos_version", False),
-            eps=self.solver_options.get("eps", 1e-6),
+            increasing_scalings=self.optionsDict["increasing_scalings"],
+            kappa=self.optionsDict["kappa"],
+            bos_version=self.optionsDict["bos_version"],
+            eps=self.optionsDict["eps"],
         )
         logger.info(
             "SOLVER END",

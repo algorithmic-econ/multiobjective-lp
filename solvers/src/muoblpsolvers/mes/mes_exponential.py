@@ -1,9 +1,8 @@
 import logging
 import time
-from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpSolver
+from pulp import LpSolver, PulpSolverError
 
 from muoblpsolvers.types import CandidateId, VoterId
 
@@ -132,19 +131,36 @@ def equal_shares_exponential(
     return winners
 
 
-class SolverOptions(TypedDict):
-    budget_init: int
-
-
 class MethodOfEqualSharesExponentialSolver(LpSolver):
     name = "MethodOfEqualSharesExponential"
 
-    def __init__(self, solver_options):
-        super().__init__()
-        self.solver_options: SolverOptions = solver_options
+    def __init__(
+        self,
+        mip=True,
+        msg=True,
+        options=None,
+        timeLimit=None,
+        *,
+        budget_init: int | None = None,
+        **kwargs,
+    ):
+        # budget_init=None is dropped from optionsDict by pulp (None kwargs
+        # filtered); required at solve time, no tuned default exists
+        super().__init__(
+            mip=mip,
+            msg=msg,
+            options=options,
+            timeLimit=timeLimit,
+            budget_init=budget_init,
+            **kwargs,
+        )
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
-        logger.info("SOLVER START", extra={"options": self.solver_options})
+        if "budget_init" not in self.optionsDict:
+            raise PulpSolverError(
+                "MethodOfEqualSharesExponentialSolver requires budget_init"
+            )
+        logger.info("SOLVER START", extra={"options": self.optionsDict})
 
         start_time = time.time()
         (
@@ -163,7 +179,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             approvals_utilities,
             total_utilities,
             lp,
-            self.solver_options["budget_init"],
+            self.optionsDict["budget_init"],
         )
 
         logger.info("SOLVER END", extra={"time": time.time() - start_time})

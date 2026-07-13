@@ -15,9 +15,6 @@ logger = logging.getLogger(__name__)
 class MethodOfEqualSharesUtilitySolver(LpSolver):
     name = "MethodOfEqualSharesUtility"
 
-    def __init__(self):
-        super().__init__()
-
     def actualSolve(self, lp: MultiObjectiveLpProblem):
         (
             projects,
