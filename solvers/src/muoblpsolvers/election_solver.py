@@ -43,27 +43,59 @@ class ElectionSolver(LpSolver):
 
     @staticmethod
     def is_feasible(lp: MultiObjectiveLpProblem) -> bool:
-        has_lowerbound_constraint = any(
+        """Single-shot feasibility check. Loops should reuse a
+        ``FeasibilityChecker`` instead (avoids rebuilding the sub-model)."""
+        return FeasibilityChecker(lp).check()
+
+    def _solve_election(
+        self, lp: MultiObjectiveLpProblem, election: Election, **kwargs
+    ):
+        raise NotImplementedError(
+            "Subclasses must implement the solve_election method."
+        )
+
+
+class FeasibilityChecker:
+    """Single feasibility impl, reused across candidate checks in a loop.
+
+    ``lp.valid()`` alone is insufficient with lower-bound (GE) constraints:
+    a partial assignment can violate a GE bound that later selections would
+    satisfy, so a plain ``valid()`` would wrongly reject candidates. When GE
+    constraints are present we instead LP-solve a completion problem
+    (candidates currently set to 1 are fixed to 1, the rest stay free binary)
+    and accept iff it is feasible.
+
+    The completion sub-model is built ONCE at construction and reused: each
+    ``check()`` only flips the fixed lowBounds and re-solves, instead of
+    rebuilding a fresh CBC problem per candidate.
+    """
+
+    def __init__(self, lp: MultiObjectiveLpProblem) -> None:
+        self.lp = lp
+        self.has_lowerbound_constraint = any(
             c.sense == LpConstraintGE for c in lp.constraints.values()
         )
-        if not has_lowerbound_constraint:
-            return lp.valid()
+        self._candidates: list[str] = []
+        self._new_variables: dict[str, LpVariable] = {}
+        self._prob: LpProblem | None = None
+        self._solver = None
+        if self.has_lowerbound_constraint:
+            self._build_completion_problem()
 
-        candidates = [v.name for v in lp.variables() if v.name != "__dummy"]
-        variables = lp.variablesDict()
-        new_variables = {
-            name: LpVariable(name, cat="Binary") for name in candidates
+    def _build_completion_problem(self) -> None:
+        self._candidates = [
+            v.name for v in self.lp.variables() if v.name != "__dummy"
+        ]
+        self._new_variables = {
+            name: LpVariable(name, cat="Binary") for name in self._candidates
         }
         prob = LpProblem("feasibility", LpMinimize)
         prob += 0
-        for candidate in candidates:
-            if variables[candidate].varValue == 1:
-                new_variables[candidate].lowBound = 1
-        for name, constraint in lp.constraints.items():
+        for name, constraint in self.lp.constraints.items():
             items = [
-                (new_variables[v.name], coef)
+                (self._new_variables[v.name], coef)
                 for v, coef in constraint.items()
-                if v.name in new_variables
+                if v.name in self._new_variables
             ]
             if items:
                 prob += LpConstraint(
@@ -72,15 +104,21 @@ class ElectionSolver(LpSolver):
                     rhs=-constraint.constant,
                     name=name,
                 )
-        status = prob.solve(PULP_CBC_CMD(msg=False))
-        return status == LpStatusOptimal
+        self._prob = prob
+        self._solver = PULP_CBC_CMD(msg=False)
 
-    def _solve_election(
-        self, lp: MultiObjectiveLpProblem, election: Election, **kwargs
-    ):
-        raise NotImplementedError(
-            "Subclasses must implement the solve_election method."
-        )
+    def check(self) -> bool:
+        if not self.has_lowerbound_constraint:
+            return self.lp.valid()
+
+        assert self._prob is not None
+        variables = self.lp.variablesDict()
+        for name in self._candidates:
+            self._new_variables[name].lowBound = (
+                1 if variables[name].varValue == 1 else 0
+            )
+        status = self._prob.solve(self._solver)
+        return status == LpStatusOptimal
 
 
 def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:

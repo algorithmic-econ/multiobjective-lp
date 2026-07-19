@@ -3,7 +3,11 @@ import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from muoblpsolvers.election_solver import Election, ElectionSolver
+from muoblpsolvers.election_solver import (
+    Election,
+    ElectionSolver,
+    FeasibilityChecker,
+)
 from muoblpsolvers.types import CandidateId
 from muoblpsolvers.utils import set_solved
 
@@ -49,11 +53,12 @@ class GreedySolver(ElectionSolver):
             if total_utility[candidate] > 0
         ]
 
+        checker = FeasibilityChecker(lp)
         selected: list[str] = []
         for candidate in sorted_candidates:
             candidate_variable = lp.variablesDict()[candidate]
             candidate_variable.setInitialValue(1)
-            if not self.is_feasible(lp):
+            if not checker.check():
                 candidate_variable.setInitialValue(0)
             else:
                 selected.append(candidate)

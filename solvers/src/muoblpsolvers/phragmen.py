@@ -5,7 +5,11 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpVariable
 
-from muoblpsolvers.election_solver import Election, ElectionSolver
+from muoblpsolvers.election_solver import (
+    Election,
+    ElectionSolver,
+    FeasibilityChecker,
+)
 from muoblpsolvers.types import CandidateId, Cost, VoterId
 from muoblpsolvers.utils import set_solved
 
@@ -108,16 +112,17 @@ def phragmen_cardinal(
     kappa=1.0,
     bos_version=False,
     eps=1e-6,
-) -> set[str]:
+) -> list[str]:
     timestamp_step = 1
     weights = election["voters"]
+    checker = FeasibilityChecker(lp)
 
     profile: dict[CandidateId, dict[VoterId, float]] = {}
     variables: dict[CandidateId, LpVariable] = lp.variablesDict()
     for candidate, approvers_utilities in election["profile"].items():
         candidate_variable = variables[candidate]
         candidate_variable.setInitialValue(1)
-        if not lp.valid():
+        if not checker.check():
             candidate_variable.setInitialValue(0)
             continue
         candidate_variable.setInitialValue(0)
@@ -361,7 +366,7 @@ def phragmen_cardinal(
         for candidate in remaining:
             candidate_variable = variables[candidate]
             candidate_variable.setInitialValue(1)
-            if not lp.valid():
+            if not checker.check():
                 candidates_to_remove.append(candidate)
             candidate_variable.setInitialValue(0)
 
@@ -406,4 +411,4 @@ def phragmen_cardinal(
                 if payment > eps:
                     money_spent[voter] += payment
 
-    return rank  # pyright: ignore[reportReturnType]  # returns list, annotated set[str] (fix in T16/T27)
+    return rank
