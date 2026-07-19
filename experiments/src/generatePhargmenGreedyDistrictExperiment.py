@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from helpers.runners.model import RunnerConfig, Solver
+from helpers.runners.model import ExperimentConfig, RunnerConfig, Solver
 from helpers.utils.utils import write_to_json
 
 
@@ -74,26 +74,28 @@ if __name__ == "__main__":
         ("GREEDY", {}),
     ]
 
-    configs: List[RunnerConfig] = []
-    for path in selected_paths:
-        for solver, options in solvers_options:
-            config: RunnerConfig = {
-                "solver_type": solver,
-                "solver_options": options,
-                "source_type": "PABUTOOLS",
-                "source_directory_path": str(path),
-            }
-            configs.append(config)
+    configs: List[RunnerConfig] = [
+        RunnerConfig(
+            solver_type=solver,
+            solver_options=options,
+            source_type="PABUTOOLS",
+            source_directory_path=str(path),
+        )
+        for path in selected_paths
+        for solver, options in solvers_options
+    ]
 
-    experiment = {
-        "concurrency": 6,
-        "experiment_results_base_path": result_dir,
-        "runner_configs": configs,
-    }
+    experiment = ExperimentConfig(
+        concurrency=6,
+        experiment_results_base_path=result_dir,
+        runner_configs=configs,
+    )
 
     output_path = Path(
         "../resources/input/experiment-config/greedy-phragmen-single-auto.jsonc"
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    write_to_json(output_path, experiment)
+    write_to_json(
+        output_path, experiment.model_dump(mode="json", exclude_none=True)
+    )

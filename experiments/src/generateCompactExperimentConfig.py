@@ -9,7 +9,12 @@ from generateExperimentConfig import (
     prompt_allowed_solvers,
     prompt_solver_options,
 )
-from helpers.runners.model import CompactExperimentConfig, Solver
+from helpers.runners.model import (
+    CompactExperimentConfig,
+    RunnerConfigsGenerator,
+    Solver,
+    SolverSpec,
+)
 from helpers.utils.utils import write_to_json
 
 if __name__ == "__main__":
@@ -81,31 +86,27 @@ if __name__ == "__main__":
     if pattern_groups:
         paths = filter_paths(paths, pattern_groups)
 
-    config: CompactExperimentConfig = {
-        "compact_config": True,
-        "concurrency": concurrency,
-        "experiment_results_base_path": results_base_path,
-        "runner_configs_generator": {
-            "solvers": [
-                {"type": solver, "options": options}
+    config = CompactExperimentConfig(
+        compact_config=True,
+        concurrency=concurrency,
+        experiment_results_base_path=results_base_path,
+        runner_configs_generator=RunnerConfigsGenerator(
+            solvers=[
+                SolverSpec(type=solver, options=options)
                 for solver, options in solvers_with_options
             ],
-            "source_type": source_type,
-            "sources": [str(path) for path in paths],
-        },
-    }
-
-    if constraints_cfg:
-        config["runner_configs_generator"]["constraints_configs_path"] = (
-            constraints_cfg
-        )
-
-    if deduplicate_objectives:
-        config["runner_configs_generator"]["deduplicate_objectives"] = True
+            source_type=source_type,
+            sources=[str(path) for path in paths],
+            constraints_configs_path=constraints_cfg,
+            deduplicate_objectives=deduplicate_objectives,
+        ),
+    )
 
     output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    write_to_json(output_path, config)
+    write_to_json(
+        output_path, config.model_dump(mode="json", exclude_none=True)
+    )
     print(f"Generated compact experiment configuration saved to {output_path}")
 
 

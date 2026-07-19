@@ -1,3 +1,5 @@
+from pathlib import Path as _Path
+
 import pytest
 from pydantic import ValidationError
 
@@ -11,6 +13,7 @@ from helpers.runners.model import (
 from helpers.transformers.expand_experiment_config import (
     parse_experiment_config,
 )
+from helpers.utils.utils import read_from_json
 
 
 def test_malformed_config_validation_error_has_field_path():
@@ -120,3 +123,21 @@ def test_incompatible_meta_is_cache_miss(tmp_path):
         }
     )
     assert is_metadata_content_matching(meta_path, config) is False
+
+
+SAMPLE_DIR = _Path(__file__).parents[1] / "sample-experiment"
+
+
+def test_sample_experiment_config_validates():
+    experiment = parse_experiment_config(
+        read_from_json(SAMPLE_DIR / "experiment-config.jsonc")
+    )
+    assert len(experiment.runner_configs) == 4
+    assert experiment.runner_configs[0].solver_type == Solver.MES_ADD1
+
+
+def test_sample_analyzer_config_validates():
+    config = AnalyzerConfig.model_validate(
+        read_from_json(SAMPLE_DIR / "sample-analysis-config.jsonc")
+    )
+    assert len(config.metrics) == 3

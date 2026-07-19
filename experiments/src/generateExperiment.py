@@ -24,42 +24,40 @@ def generate_experiment_config(
         if re.search(regex_pattern, item_path.name):
             for solver in solvers:
                 for utility in utilities:
-                    config: RunnerConfig = {
-                        "solver_type": solver,
-                        "solver_options": {},
-                        "source_type": "PABUTOOLS",  # Hardcoded
-                        "utility_type": utility,
-                        "source_directory_path": str(item_path),
-                        "constraints_configs_path": constraints_configs_path,
-                        "results_base_path": experiment_results_base_path,
-                    }
-
                     # TODO: MES_CONSTRAINT specific options
-                    if solver == "MES_CONSTRAINT":
-                        config["solver_options"] = {
+                    solver_options = (
+                        {
                             "cost_modification_base": 1.007,
                             "max_iterations": 200,
                         }
-                    if constraints_configs_path:
-                        config["constraints_configs_path"] = (
-                            constraints_configs_path
+                        if solver == Solver.MES_CONSTRAINT
+                        else {}
+                    )
+                    runner_configs.append(
+                        RunnerConfig(
+                            solver_type=solver,
+                            solver_options=solver_options,
+                            source_type="PABUTOOLS",  # Hardcoded
+                            utility_type=utility,
+                            source_directory_path=str(item_path),
+                            constraints_configs_path=constraints_configs_path,
+                            results_base_path=experiment_results_base_path,
                         )
+                    )
 
-                    runner_configs.append(config)
-
-    return {
-        "concurrency": concurrency,
-        "experiment_results_base_path": experiment_results_base_path,
-        "runner_configs": runner_configs,
-    }
+    return ExperimentConfig(
+        concurrency=concurrency,
+        experiment_results_base_path=experiment_results_base_path,
+        runner_configs=runner_configs,
+    )
 
 
 if __name__ == "__main__":
     # Example usage:
     root_dir = "/Users/jasiek/Documents/Projects/pabulib"  # Replace with your actual root directory
     pattern = r"krakow"  # Regex to match 'krakow_2024'
-    solvers_to_use: list[Solver] = ["MES_UTILS"]
-    utilities_to_use: list[Utility] = ["COST"]
+    solvers_to_use: list[Solver] = [Solver.MES_UTILS]
+    utilities_to_use: list[Utility] = [Utility.COST]
 
     # Optional: path to constraints config if MES_CONSTRAINT is used
     # constraints_path = (
@@ -79,6 +77,9 @@ if __name__ == "__main__":
 
     # Output the generated configuration to a JSON file
     output_file_name = "generated_mes_experiment.json"
-    write_to_json(output_file_name, generated_config)
+    write_to_json(
+        Path(output_file_name),
+        generated_config.model_dump(mode="json", exclude_none=True),
+    )
 
     print(f"Generated experiment configuration saved to {output_file_name}")

@@ -3,7 +3,6 @@ import logging
 from collections import defaultdict
 from functools import reduce
 from operator import ior
-from typing import TypeAlias
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import (
@@ -28,11 +27,9 @@ from .pabutoolsConstants import (
     TARGET_PREFIX,
     VARIABLE_PREFIX,
 )
+from .pabutoolsUtils import AgentId, District
 
 logger = logging.getLogger(__name__)
-
-District: TypeAlias = str
-AgentId: TypeAlias = str
 
 
 def pabutools_to_multi_objective_lp(
