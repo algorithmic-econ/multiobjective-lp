@@ -181,8 +181,8 @@ Deps: T10 · GH: #51
 AC: one transform, one feasibility impl; e2e golden identical; measurable is_feasible speedup noted in PR.
 Verify: e2e golden; solvers pytest; grep removed symbols.
 
-#### [ ] T17 Solver test coverage sweep
-Deps: T12, T13 · GH: —
+#### [x] T17 Solver test coverage sweep
+Deps: T12, T13 · GH: — · PR: [#54](https://github.com/algorithmic-econ/multiobjective-lp/pull/54)
 - Unit tests on tiny hand-built instances for Phragmen, MES-Exponential, MES-Constrains, Summed, ExpandingApprovals, STV, SolidCoalitionRefinement (binding-backed skip-if-unavailable); assert status + selected vars. Rename `test_mes_base.py` → matches utility solver.
 
 AC: every solver module ≥1 test with status+selection asserts.
