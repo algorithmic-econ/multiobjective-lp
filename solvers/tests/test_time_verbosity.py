@@ -2,6 +2,7 @@
 # (F401) rejects not-yet-used imports; add them as each task first needs them.
 import logging
 
+import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import (
     LpAffineExpression,
@@ -15,6 +16,7 @@ from pulp import (
 
 from muoblpsolvers import (
     GreedySolver,
+    MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
     PhragmenSolver,
 )
@@ -134,3 +136,14 @@ def test_mes_exponential_msg_false_silent(
     assert [
         r for r in caplog.records if r.name.startswith("muoblpsolvers")
     ] == []
+
+
+def test_mes_constrains_timelimit_aborts_not_solved(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    solver = MethodOfEqualSharesConstrainsSolver(msg=False, timeLimit=1e-9)
+    if not solver.available():
+        pytest.skip("muoblpbindings not installed")
+    basic_pb_approval.solve(solver)
+    assert basic_pb_approval.status == LpStatusNotSolved
+    assert all(v.value() == 0 for v in basic_pb_approval.variables())
