@@ -184,3 +184,33 @@ def test_summed_msg_false_silent(
     basic_pb_approval.solve(SummedObjectivesLpSolver(msg=False, timeLimit=30))
     assert basic_pb_approval.status == LpStatusOptimal
     assert capsys.readouterr().out == ""
+
+
+STANDARD_SOLVERS: list[tuple[type, dict]] = [
+    (GreedySolver, {}),
+    (PhragmenSolver, {}),
+    (MethodOfEqualSharesAdd1Solver, {}),
+    (MethodOfEqualSharesUtilitySolver, {}),
+    (MethodOfEqualSharesConstrainsSolver, {}),
+    (MethodOfEqualSharesExponentialSolver, {"budget_init": 1}),
+    (SummedObjectivesLpSolver, {}),
+]
+
+
+@pytest.mark.parametrize("solver_class, kwargs", STANDARD_SOLVERS)
+def test_msg_false_zero_output(
+    solver_class,
+    kwargs,
+    basic_pb_approval: MultiObjectiveLpProblem,
+    capsys,
+    caplog,
+):
+    solver = solver_class(msg=False, **kwargs)
+    if not solver.available():
+        pytest.skip(f"{solver_class.__name__} unavailable (needs bindings)")
+    with caplog.at_level(logging.DEBUG):
+        basic_pb_approval.solve(solver)
+    assert capsys.readouterr().out == ""
+    assert [
+        r for r in caplog.records if r.name.startswith("muoblpsolvers")
+    ] == []
