@@ -25,6 +25,7 @@ from muoblpsolvers import (
     PhragmenSolver,
     SingleTransferableVote,
     SolidCoalitionRefinement,
+    SummedObjectivesLpSolver,
 )
 from muoblpsolvers.mes.common import prepare_mes_parameters
 from muoblpsolvers.utils import set_solved
@@ -175,3 +176,11 @@ def test_binding_backed_timelimit_warns(
         pytest.raises(PulpSolverError),
     ):
         solver.actualSolve(basic_pb_approval)
+
+
+def test_summed_msg_false_silent(
+    basic_pb_approval: MultiObjectiveLpProblem, capsys
+):
+    basic_pb_approval.solve(SummedObjectivesLpSolver(msg=False, timeLimit=30))
+    assert basic_pb_approval.status == LpStatusOptimal
+    assert capsys.readouterr().out == ""

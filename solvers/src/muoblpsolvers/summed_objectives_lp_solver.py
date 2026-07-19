@@ -42,8 +42,8 @@ class SummedObjectivesLpSolver(LpSolver):
         """
         lp.setObjective(lpSum(lp.objectives))
         solver_cmd = (
-            GUROBI_CMD()
+            GUROBI_CMD(msg=self.msg, timeLimit=self.timeLimit)
             if self.optionsDict["use_gurobi"]
-            else PULP_CBC_CMD(msg=False)
+            else PULP_CBC_CMD(msg=self.msg, timeLimit=self.timeLimit)
         )
         return solver_cmd.actualSolve(lp)
