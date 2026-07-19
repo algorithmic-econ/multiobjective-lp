@@ -43,14 +43,14 @@ class GreedySolver(ElectionSolver):
         sorted_candidates = list(candidates.keys())
         sorted_candidates.sort(
             key=lambda candidate: (
-                total_utility[candidate] / candidates[candidate]
+                total_utility.get(candidate, 0) / candidates[candidate]
             ),
             reverse=True,
         )
         sorted_candidates = [
             candidate
             for candidate in sorted_candidates
-            if total_utility[candidate] > 0
+            if total_utility.get(candidate, 0) > 0
         ]
 
         deadline = (

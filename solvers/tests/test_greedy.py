@@ -2,7 +2,14 @@ from collections.abc import Callable
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpStatusOptimal
+from pulp import (
+    LpAffineExpression,
+    LpConstraint,
+    LpConstraintLE,
+    LpStatusOptimal,
+    LpVariable,
+    lpSum,
+)
 
 from muoblpsolvers import GreedySolver
 from muoblpsolvers.types import Utility
@@ -74,3 +81,31 @@ def test_greedy_solver_lb_respects_upper_bound(
     selected = {var.name for var in problem.variables() if var.value() == 1.0}
     total_cost = sum(projects_costs[n] for n in selected)
     assert total_cost <= 1000000
+
+
+def test_greedy_ignores_zero_vote_candidate():
+    prob = MultiObjectiveLpProblem("pb_zero_vote")
+    variables = LpVariable.dicts("", ["A", "B", "Z"], cat="Binary")
+    for variable in variables.values():
+        variable.setInitialValue(0)
+    costs = {"A": 300, "B": 400, "Z": 100}
+    prob.addVariables(variables.values())
+    prob.set_objectives([
+        LpAffineExpression([(variables["A"], 1)], name="v1"),
+        LpAffineExpression(
+            [(variables["A"], 1), (variables["B"], 1)], name="v2"
+        ),
+    ])
+    prob.addConstraint(
+        LpConstraint(
+            e=lpSum(variables[p] * c for p, c in costs.items()),
+            sense=LpConstraintLE,
+            rhs=1000,
+            name="pb",
+        )
+    )
+    prob.solve(GreedySolver(msg=False))
+
+    assert prob.status == LpStatusOptimal
+    selected = {v.name for v in prob.variables() if v.value() == 1.0}
+    assert selected == {"_A", "_B"}  # _Z has zero votes -> never selected
