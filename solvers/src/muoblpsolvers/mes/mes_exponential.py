@@ -4,7 +4,10 @@ import time
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver, PulpSolverError
 
-from muoblpsolvers.election_solver import validate_election_program
+from muoblpsolvers.election_solver import (
+    FeasibilityChecker,
+    validate_election_program,
+)
 from muoblpsolvers.types import CandidateId, VoterId
 from muoblpsolvers.utils import set_solved
 
@@ -40,6 +43,7 @@ def equal_shares_exponential(
     lp: MultiObjectiveLpProblem,
     budget_init: float,
 ):
+    checker = FeasibilityChecker(lp)
     budget: dict[VoterId, float] = {voter: budget_init for voter in voters}
     remaining = {}  # remaining candidate -> previous effective vote count Dict[CandidateId, int]
     for candidate in projects:
@@ -117,7 +121,7 @@ def equal_shares_exponential(
             candidate_variable.setInitialValue(1)
 
             ### remove if selecting c breaks feasibility
-            if not lp.valid():
+            if not checker.check():
                 candidate_variable.setInitialValue(0)
                 del remaining[selected]
                 continue
