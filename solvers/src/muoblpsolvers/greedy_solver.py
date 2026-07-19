@@ -2,6 +2,7 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pulp import LpStatusNotSolved, LpStatusOptimal
 
 from muoblpsolvers.election_solver import (
     Election,
@@ -27,12 +28,11 @@ class GreedySolver(ElectionSolver):
         voters = election["voters"]
         profile = election["profile"]
 
-        start_time = time.time()
-
-        logger.info(
-            "SOLVER START",
-            extra={"candidates": len(candidates), "voters": len(voters)},
-        )
+        if self.msg:
+            logger.info(
+                "SOLVER START",
+                extra={"candidates": len(candidates), "voters": len(voters)},
+            )
 
         total_utility: dict[CandidateId, float] = {}
         for candidate, votes in profile.items():
@@ -53,17 +53,31 @@ class GreedySolver(ElectionSolver):
             if total_utility[candidate] > 0
         ]
 
+        deadline = (
+            time.monotonic() + self.timeLimit
+            if self.timeLimit is not None
+            else None
+        )
         checker = FeasibilityChecker(lp)
+        status = LpStatusOptimal
         selected: list[str] = []
         for candidate in sorted_candidates:
+            if deadline is not None and time.monotonic() > deadline:
+                status = LpStatusNotSolved
+                break
             candidate_variable = lp.variablesDict()[candidate]
             candidate_variable.setInitialValue(1)
             if not checker.check():
                 candidate_variable.setInitialValue(0)
+                if self.msg:
+                    logger.debug("removed %s: infeasible", candidate)
             else:
                 selected.append(candidate)
+                if self.msg:
+                    logger.debug("elected %s", candidate)
 
-        logger.info("SOLVER END", extra={"time": (time.time() - start_time)})
+        if self.msg:
+            logger.info("SOLVER END", extra={"selected": len(selected)})
 
-        set_solved(lp, selected)
+        set_solved(lp, selected, status)
         return lp.status

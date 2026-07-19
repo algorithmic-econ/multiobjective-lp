@@ -13,6 +13,7 @@ from pulp import (
     lpSum,
 )
 
+from muoblpsolvers import GreedySolver
 from muoblpsolvers.mes.common import prepare_mes_parameters
 from muoblpsolvers.utils import set_solved
 
@@ -59,3 +60,32 @@ def test_prepare_mes_parameters_msg_true_logs_removal(capsys, caplog):
         prepare_mes_parameters(_pb_with_zero_vote_project(), msg=True)
     assert capsys.readouterr().out == ""  # logger, never print
     assert any("_Z" in r.getMessage() for r in caplog.records)
+
+
+def test_greedy_timelimit_aborts_not_solved(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    basic_pb_approval.solve(GreedySolver(msg=False, timeLimit=1e-9))
+    assert basic_pb_approval.status == LpStatusNotSolved
+    assert all(v.value() == 0 for v in basic_pb_approval.variables())
+
+
+def test_greedy_msg_false_silent(
+    basic_pb_approval: MultiObjectiveLpProblem, capsys, caplog
+):
+    with caplog.at_level(logging.DEBUG):
+        basic_pb_approval.solve(GreedySolver(msg=False))
+    assert capsys.readouterr().out == ""
+    assert [
+        r for r in caplog.records if r.name.startswith("muoblpsolvers")
+    ] == []
+
+
+def test_greedy_msg_true_logs(
+    basic_pb_approval: MultiObjectiveLpProblem, caplog
+):
+    with caplog.at_level(logging.INFO):
+        basic_pb_approval.solve(GreedySolver())
+    messages = [r.getMessage() for r in caplog.records]
+    assert "SOLVER START" in messages
+    assert "SOLVER END" in messages
