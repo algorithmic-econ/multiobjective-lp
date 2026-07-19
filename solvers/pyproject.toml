@@ -15,7 +15,7 @@ requires-python = ">=3.13"
 dependencies = [
     "muoblp>=1.0.4,<2.0",
     "pulp==3.3.2",
-    "muoblpbindings>=0.0.17,<0.1",
+    "muoblpbindings>=0.0.18,<0.1",
 ]
 
 [project.urls]

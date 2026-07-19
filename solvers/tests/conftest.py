@@ -3,6 +3,7 @@ from .fixtures.pb_problems import (
     basic_pb_factory,
     basic_pb_approval,
     invalid_pb,
+    ordinal_pb,
     pb_data,
     pb_with_lb_factory,
 )

@@ -8,14 +8,18 @@ Instance Instance::from_MuoblpProblem(py::object prob) {
 
   // Create names->ids mapping
   py::list vars = prob.attr("variables")();
-  const size_t m = vars.size();
-  if (m > std::numeric_limits<CandidateId>::max()) {
+  if (vars.size() > std::numeric_limits<CandidateId>::max()) {
     throw std::invalid_argument(
-        std::format("Too many candidates. Got {} while the maximum is {}", m,
-                    std::numeric_limits<CandidateId>::max()));
+        std::format("Too many candidates. Got {} while the maximum is {}",
+                    vars.size(), std::numeric_limits<CandidateId>::max()));
   }
   for (py::handle var : vars) {
     std::string name = var.attr("name").cast<std::string>();
+    if (name == "__dummy") {
+      // pulp injects __dummy while solving a problem without a scalar
+      // objective; python-side validators skip it the same way
+      continue;
+    }
     instance.candidate_names.emplace_back(name);
     auto cat = var.attr("cat").cast<std::string>();
     if (cat != "Integer") {
@@ -25,6 +29,7 @@ Instance Instance::from_MuoblpProblem(py::object prob) {
                       name, cat));
     }
   }
+  const size_t m = instance.candidate_names.size();
 
   // Construct the reverse ids->names mapping
   for (size_t i = 0; i < m; i++) {
