@@ -9,7 +9,11 @@ def bindings_available() -> bool:
     return find_spec("muoblpbindings") is not None
 
 
-def set_solved(lp: MultiObjectiveLpProblem, selected: list[str]) -> None:
+def set_solved(
+    lp: MultiObjectiveLpProblem,
+    selected: list[str],
+    status: int = LpStatusOptimal,
+) -> None:
     vals = {x.name: int(x.name in selected) for x in lp.variables()}
-    lp.assignStatus(LpStatusOptimal)
+    lp.assignStatus(status)
     lp.assignVarsVals(vals)
