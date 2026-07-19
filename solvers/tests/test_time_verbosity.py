@@ -13,7 +13,11 @@ from pulp import (
     lpSum,
 )
 
-from muoblpsolvers import GreedySolver, PhragmenSolver
+from muoblpsolvers import (
+    GreedySolver,
+    MethodOfEqualSharesExponentialSolver,
+    PhragmenSolver,
+)
 from muoblpsolvers.mes.common import prepare_mes_parameters
 from muoblpsolvers.utils import set_solved
 
@@ -103,6 +107,29 @@ def test_phragmen_msg_false_silent(
 ):
     with caplog.at_level(logging.DEBUG):
         basic_pb_approval.solve(PhragmenSolver(msg=False))
+    assert capsys.readouterr().out == ""
+    assert [
+        r for r in caplog.records if r.name.startswith("muoblpsolvers")
+    ] == []
+
+
+def test_mes_exponential_timelimit_aborts_not_solved(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    solver = MethodOfEqualSharesExponentialSolver(
+        msg=False, timeLimit=1e-9, budget_init=1
+    )
+    basic_pb_approval.solve(solver)
+    assert basic_pb_approval.status == LpStatusNotSolved
+
+
+def test_mes_exponential_msg_false_silent(
+    basic_pb_approval: MultiObjectiveLpProblem, capsys, caplog
+):
+    with caplog.at_level(logging.DEBUG):
+        basic_pb_approval.solve(
+            MethodOfEqualSharesExponentialSolver(msg=False, budget_init=1)
+        )
     assert capsys.readouterr().out == ""
     assert [
         r for r in caplog.records if r.name.startswith("muoblpsolvers")
