@@ -157,7 +157,7 @@ Deps: T12 · GH: #36 · PR: [#49](https://github.com/algorithmic-econ/multiobjec
 AC: solving incompatible program raises with actionable message; negative test per rejection rule.
 Verify: solvers pytest.
 
-#### [ ] T14 Time & verbosity contract
+#### [x] T14 Time & verbosity contract · PR #53
 Deps: T10 · GH: #26, #27, #32
 - Remove manual `time.time()` tracking (PuLP `solutionTime` covers it — adjust experiments meta accordingly).
 - Honor `timeLimit` in pure-python solver loops (abort → defined status). Binding-backed solvers: behavior per **D8** (blocked until decided).
@@ -291,7 +291,7 @@ Verify: follow README in scratch venv.
 
 ## 6. TODO: decide
 
-- **D8** `timeLimit` on C++ binding-backed solvers: warn / raise / documented-ignore (C++ changes out of scope). Blocks part of T14.
+- **D8** DECIDED (T14): binding-backed solvers (STV, ExpandingApprovals, SolidCoalitionRefinement, MES-Add1, MES-Utility) `warnings.warn` + ignore `timeLimit` (C++ changes out of scope). MES-Constrains honors it coarsely per-iteration (no warn).
 - **D11** Golden normalization exact field list — T02 proposes in PR, confirm there.
 - **D12** pyright strictness ramp: basic now; when/whether standard/strict per subproject.
 - **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)?
