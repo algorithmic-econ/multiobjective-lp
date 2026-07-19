@@ -27,6 +27,9 @@ pabutools = {version = "1.2.2"}
 # muoblp = {version = "1.0.3"}
 muoblp = {path = "../core", develop = true}
 muoblpsolvers = {path = "../solvers", develop = true}
+# path wiring for solvers' muoblpbindings range (0.0.18 not on PyPI);
+# transitive [tool.poetry] path enrichment doesn't propagate on relock
+muoblpbindings = {path = "../bindings", develop = false}
 pandas = "2.3.1"
 tabulate = "0.9.0"
 pyyaml = "6.0.2"
@@ -36,6 +39,7 @@ seaborn = "0.13.2"
 matplotlib = "3.10.8"
 notebook = "^7.5.4"
 questionary = "^2.1.1"
+pydantic = "2.13.4"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
