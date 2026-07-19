@@ -2,7 +2,12 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpSolver, PulpSolverError
+from pulp import (
+    LpSolver,
+    LpStatusNotSolved,
+    LpStatusOptimal,
+    PulpSolverError,
+)
 
 from muoblpsolvers.election_solver import (
     FeasibilityChecker,
@@ -20,15 +25,16 @@ def break_ties(
     cost: dict[CandidateId, float],
     total_utility: dict[CandidateId, int],
     choices: list[CandidateId],
+    msg: bool = True,
 ) -> CandidateId:
     remaining = choices.copy()
     best_cost = min(cost[c] for c in remaining)
     remaining = [c for c in remaining if cost[c] == best_cost]
     best_count = max(total_utility[c] for c in remaining)
     remaining = [c for c in remaining if total_utility[c] == best_count]
-    if len(remaining) > 1:
+    if len(remaining) > 1 and msg:
         logger.warning(
-            "Tie-breakign failed: tie between projects. Selecting first one.",
+            "Tie-breaking failed: tie between projects. Selecting first one.",
             extra={"remaining": remaining},
         )
     return remaining[0]
@@ -42,6 +48,8 @@ def equal_shares_exponential(
     total_utility: dict[CandidateId, int],
     lp: MultiObjectiveLpProblem,
     budget_init: float,
+    deadline: float | None = None,
+    msg: bool = True,
 ):
     checker = FeasibilityChecker(lp)
     budget: dict[VoterId, float] = {voter: budget_init for voter in voters}
@@ -52,16 +60,23 @@ def equal_shares_exponential(
     winners = []
     i = 0
     while len(remaining) and max(remaining.values()) > 0:
+        if deadline is not None and time.monotonic() > deadline:
+            break
         i += 1
         budget_init *= 2
         try:
             for voter in voters:
                 budget[voter] += budget_init
         except OverflowError:
-            print(i)
+            if msg:
+                logger.warning(
+                    "budget overflow after %d doublings, stopping", i
+                )
             break
 
         while len(remaining):
+            if deadline is not None and time.monotonic() > deadline:
+                break
             best: list[CandidateId] = []
             best_eff_vote_count = 0
             # go through remaining candidates in order of decreasing previous effective vote count
@@ -111,7 +126,7 @@ def equal_shares_exponential(
             if not best:
                 # no remaining candidates are affordable
                 break
-            selected = break_ties(cost, total_utility, best)
+            selected = break_ties(cost, total_utility, best, msg)
             ### Try selecting best
             candidate_variable = [
                 variable
@@ -170,9 +185,9 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             raise PulpSolverError(
                 "MethodOfEqualSharesExponentialSolver requires budget_init"
             )
-        logger.info("SOLVER START", extra={"options": self.optionsDict})
+        if self.msg:
+            logger.info("SOLVER START", extra={"options": self.optionsDict})
 
-        start_time = time.time()
         (
             projects,
             costs,
@@ -180,8 +195,13 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             approvals_utilities,
             total_utilities,
             total_budget,
-        ) = prepare_mes_parameters(lp)
+        ) = prepare_mes_parameters(lp, msg=self.msg)
 
+        deadline = (
+            time.monotonic() + self.timeLimit
+            if self.timeLimit is not None
+            else None
+        )
         selected = equal_shares_exponential(
             voters,
             projects,
@@ -190,9 +210,15 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             total_utilities,
             lp,
             self.optionsDict["budget_init"],
+            deadline=deadline,
+            msg=self.msg,
         )
+        status = LpStatusOptimal
+        if deadline is not None and time.monotonic() > deadline:
+            status = LpStatusNotSolved
 
-        logger.info("SOLVER END", extra={"time": time.time() - start_time})
+        if self.msg:
+            logger.info("SOLVER END")
 
-        set_solved(lp, selected)
+        set_solved(lp, selected, status)
         return lp.status

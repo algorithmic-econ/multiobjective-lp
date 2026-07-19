@@ -1,5 +1,5 @@
 import logging
-import time
+import warnings
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpSolver
@@ -19,6 +19,11 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
         return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
+        if self.timeLimit is not None:
+            warnings.warn(
+                f"{self.name} does not support timeLimit; "
+                "solving without limit"
+            )
         validate_election_program(lp)
         from muoblpbindings import equal_shares_add1
 
@@ -29,10 +34,10 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
             approvals_utilities,
             total_utilities,
             total_budget,
-        ) = prepare_mes_parameters(lp)
+        ) = prepare_mes_parameters(lp, msg=self.msg)
 
-        start_time = time.time()
-        logger.info("SOLVER START")
+        if self.msg:
+            logger.info("SOLVER START")
 
         # TODO: weight-aware via binding update
         selected = equal_shares_add1(
@@ -44,7 +49,8 @@ class MethodOfEqualSharesAdd1Solver(LpSolver):
             total_budget,
         )
 
-        logger.info("SOLVER END", extra={"time": time.time() - start_time})
+        if self.msg:
+            logger.info("SOLVER END")
 
         set_solved(lp, selected)
         return lp.status

@@ -1,5 +1,4 @@
 import logging
-import time
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
@@ -29,7 +28,6 @@ def problem_runner(config: RunnerConfig) -> None:
 
     logger.debug("Start problem", extra={"config": config})
 
-    start_time = time.time()
     problem, constraints_configs, utility_type = load_and_transform_strategy(
         source_type,
         utility_type,
@@ -45,10 +43,8 @@ def problem_runner(config: RunnerConfig) -> None:
     try:
         problem.solve(solver)
 
-        end_time = time.time()
-
         result: RunnerResult = {
-            "time": end_time - start_time,
+            "time": problem.solutionTime,
             "solver": solver_type,
             "solver_options": solver_options,
             "source_type": source_type,

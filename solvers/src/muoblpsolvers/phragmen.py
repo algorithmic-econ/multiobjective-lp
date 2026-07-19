@@ -3,7 +3,7 @@ import logging
 import time
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpVariable
+from pulp import LpStatusNotSolved, LpStatusOptimal, LpVariable
 
 from muoblpsolvers.election_solver import (
     Election,
@@ -50,10 +50,15 @@ class PhragmenSolver(ElectionSolver):
         election: Election,
         **kwargs,
     ):
-        start_time = time.time()
-        logger.info(
-            "SOLVER START",
-            extra={"options": self.optionsDict, "instance": lp.name},
+        if self.msg:
+            logger.info(
+                "SOLVER START",
+                extra={"options": self.optionsDict, "instance": lp.name},
+            )
+        deadline = (
+            time.monotonic() + self.timeLimit
+            if self.timeLimit is not None
+            else None
         )
         selected = phragmen_cardinal(
             lp,
@@ -62,13 +67,18 @@ class PhragmenSolver(ElectionSolver):
             kappa=self.optionsDict["kappa"],
             bos_version=self.optionsDict["bos_version"],
             eps=self.optionsDict["eps"],
+            deadline=deadline,
         )
-        logger.info(
-            "SOLVER END",
-            extra={"time": (time.time() - start_time), "instance": lp.name},
-        )
+        status = LpStatusOptimal
+        if deadline is not None and time.monotonic() > deadline:
+            status = LpStatusNotSolved
+        if self.msg:
+            logger.info(
+                "SOLVER END",
+                extra={"instance": lp.name, "selected": len(selected)},
+            )
 
-        set_solved(lp, selected)
+        set_solved(lp, selected, status)
         return lp.status
 
 
@@ -112,6 +122,7 @@ def phragmen_cardinal(
     kappa=1.0,
     bos_version=False,
     eps=1e-6,
+    deadline: float | None = None,
 ) -> list[str]:
     timestamp_step = 1
     weights = election["voters"]
@@ -161,6 +172,8 @@ def phragmen_cardinal(
     global_scalings = {voter: 0 for voter in election["voters"]}
 
     while remaining:
+        if deadline is not None and time.monotonic() > deadline:
+            break
         select_candidate = False
         while not select_candidate:
             if increasing_scalings:
