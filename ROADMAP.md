@@ -157,8 +157,8 @@ Deps: T12 · GH: #36 · PR: [#49](https://github.com/algorithmic-econ/multiobjec
 AC: solving incompatible program raises with actionable message; negative test per rejection rule.
 Verify: solvers pytest.
 
-#### [x] T14 Time & verbosity contract · PR #53
-Deps: T10 · GH: #26, #27, #32
+#### [x] T14 Time & verbosity contract
+Deps: T10 · GH: #26, #27, #32 · PR: [#53](https://github.com/algorithmic-econ/multiobjective-lp/pull/53)
 - Remove manual `time.time()` tracking (PuLP `solutionTime` covers it — adjust experiments meta accordingly).
 - Honor `timeLimit` in pure-python solver loops (abort → defined status). Binding-backed solvers: behavior per **D8** (blocked until decided).
 - Gate all solver output behind `self.msg`; logs explain rule decisions (elect/remove candidates etc.).
@@ -166,15 +166,15 @@ Deps: T10 · GH: #26, #27, #32
 AC: `msg=False` → zero stdout during solve (capsys tests); `timeLimit=0.001` terminates pure-py solver early with defined status; no `time.time()` in solver bodies.
 Verify: solvers pytest; e2e golden (timing fields normalized).
 
-#### [x] T15 Register solvers in PuLP · PR #50
-Deps: T10, T11 · GH: #24
+#### [x] T15 Register solvers in PuLP
+Deps: T10, T11 · GH: #24 · PR: [#50](https://github.com/algorithmic-econ/multiobjective-lp/pull/50)
 - Registration via `pulp._all_solvers` monkeypatch on `muoblpsolvers` import (or explicit `register_solvers()`; pick per pulp 3.x mechanics from T05); document in solvers README.
 
 AC: `pulp.getSolver(name)` works for all 10; `pulp.listSolvers()` includes them; registration test.
 Verify: solvers pytest; interactive venv check.
 
 #### [x] T16 Dedupe transform + unify feasibility
-Deps: T10 · GH: #51
+Deps: T10 · GH: — · PR: [#51](https://github.com/algorithmic-econ/multiobjective-lp/pull/51)
 - Single `molp_to_simple_election`: keep `solvers/src/muoblpsolvers/election_solver.py:104`; experiments' dead `transformers/molpToSimpleElection.py` → `archived_code/`.
 - Single feasibility impl: keep LP-solve `is_feasible` (LB constraints make `lp.valid()` insufficient — meeting notes); replace `lp.valid()` call sites (Phragmen, Exponential); optimize (reuse/warm model instead of fresh CBC problem per candidate).
 
