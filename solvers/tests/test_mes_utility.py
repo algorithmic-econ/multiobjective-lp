@@ -16,7 +16,7 @@ from muoblpsolvers.types import Utility
         # TODO: Test other utility types
     ],
 )
-def test_base_mes_solver(
+def test_mes_utility_solver(
     basic_pb_factory: Callable[[Utility], MultiObjectiveLpProblem],
     utility_type: Utility,
     expected: list[str],
