@@ -3,16 +3,13 @@ from collections.abc import Callable
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.mes.common import get_total_budget_constraint
 
-from helpers.analyzers.model import AnalyzerResult, Metric
+from helpers.analyzers.model import Metric
 
 
 def get_metrics(
     metrics: list[Metric], problem: MultiObjectiveLpProblem
-) -> dict:
-    result: AnalyzerResult = {"metrics": metrics}
-    for metric in metrics:
-        result |= {metric: get_metric_strategy(metric)(problem)}
-    return result
+) -> dict[str, dict]:
+    return {metric: get_metric_strategy(metric)(problem) for metric in metrics}
 
 
 def get_metric_strategy(

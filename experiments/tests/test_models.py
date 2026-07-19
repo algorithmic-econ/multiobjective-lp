@@ -1,6 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
+from helpers.analyzers.model import AnalyzerConfig
 from helpers.runners.model import (
     RunnerConfig,
     RunnerResult,
@@ -92,3 +93,30 @@ def test_runner_result_roundtrips_meta_json():
     }
     result = RunnerResult.model_validate(meta)
     assert result.model_dump(mode="json", exclude_none=True) == meta
+
+
+def test_metadata_metric_dropped():
+    with pytest.raises(ValidationError) as exc_info:
+        AnalyzerConfig.model_validate(
+            {
+                "analyzer_result_path": "analysis/",
+                "experiment_results_base_path": "results/",
+                "metrics": ["METADATA"],
+            }
+        )
+    assert exc_info.value.errors()[0]["loc"] == ("metrics", 0)
+
+
+def test_incompatible_meta_is_cache_miss(tmp_path):
+    from helpers.utils.resultCache import is_metadata_content_matching
+
+    meta_path = tmp_path / "meta_bad.json"
+    meta_path.write_text('{"solver": "GREEDY"}')
+    config = RunnerConfig.model_validate(
+        {
+            "solver_type": "GREEDY",
+            "source_type": "PABUTOOLS",
+            "source_directory_path": "input/x",
+        }
+    )
+    assert is_metadata_content_matching(meta_path, config) is False
