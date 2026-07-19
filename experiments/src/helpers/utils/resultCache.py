@@ -3,7 +3,9 @@ import os
 import re
 from pathlib import Path
 
-from helpers.runners.model import RunnerConfig, Utility
+from pydantic import ValidationError
+
+from helpers.runners.model import RunnerConfig, RunnerResult, Utility
 from helpers.runners.sourceStrategy import resolve_constraints_configs
 from helpers.utils.utils import read_from_json
 
@@ -13,23 +15,26 @@ logger = logging.getLogger(__name__)
 def is_metadata_content_matching(
     meta_path: Path, problem_config: RunnerConfig
 ) -> bool:
-    existing_result = read_from_json(meta_path)
+    try:
+        existing_result = RunnerResult.model_validate(
+            read_from_json(meta_path)
+        )
+    except ValidationError:
+        logger.warning(f"Ignoring incompatible meta file {meta_path}")
+        return False
 
-    # Check if solver options match
-    if existing_result["solver_options"] != problem_config.get(
-        "solver_options", {}
+    if existing_result.solver_options != problem_config.solver_options:
+        return False
+
+    if existing_result.constraints_configs != resolve_constraints_configs(
+        problem_config
     ):
         return False
 
-    # Check if constraints match
-    current_constraints = resolve_constraints_configs(problem_config)
-
-    if existing_result["constraints_configs"] != current_constraints:
-        return False
-
-    if existing_result.get(
-        "deduplicate_objectives", False
-    ) != problem_config.get("deduplicate_objectives", False):
+    if (
+        existing_result.deduplicate_objectives
+        != problem_config.deduplicate_objectives
+    ):
         return False
 
     # Check if the corresponding LP file exists
@@ -45,12 +50,10 @@ def is_metadata_content_matching(
 def is_result_present(
     problem_config: RunnerConfig, utility_type: Utility
 ) -> bool:
-    base_path = problem_config["results_base_path"]
-    solver_type = problem_config["solver_type"]
-    data_source = (
-        problem_config["source_directory_path"]
-        .split("/")[-1]
-        .replace(".pb", "")
+    base_path = problem_config.results_base_path
+    solver_type = problem_config.solver_type
+    data_source = problem_config.source_directory_path.split("/")[-1].replace(
+        ".pb", ""
     )
 
     for filename in os.listdir(base_path):

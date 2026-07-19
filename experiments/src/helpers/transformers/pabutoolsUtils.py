@@ -9,10 +9,10 @@ District: TypeAlias = str
 AgentId: TypeAlias = str
 
 _VOTE_TYPE_TO_UTILITY: dict[str, Utility] = {
-    "approval": "COST",
-    "ordinal": "COST_ORDINAL",
-    "cumulative": "COST_CUMULATIVE",
-    "choose-1": "COST",
+    "approval": Utility.COST,
+    "ordinal": Utility.COST_ORDINAL,
+    "cumulative": Utility.COST_CUMULATIVE,
+    "choose-1": Utility.COST,
 }
 
 

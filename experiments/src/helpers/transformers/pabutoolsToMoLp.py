@@ -22,7 +22,7 @@ from pulp import (
     lpSum,
 )
 
-from ..runners.model import ConstraintConfig, Utility
+from ..runners.model import ConstraintConfig, Strategy, Utility
 from .pabutoolsConstants import (
     CONSTRAINT_PREFIX,
     TARGET_PREFIX,
@@ -375,17 +375,19 @@ def create_constraints_from_config(
         ior, [instance.categories for instance in instances.values()], set()
     )
 
-    # expand wildcard configs
-    expanded_configs = []
-    for config in constraints_configs:
-        if config["value"] == "*":
+    # expand wildcard configs (validate: tests pass plain dicts)
+    expanded_configs: list[ConstraintConfig] = []
+    for config in map(ConstraintConfig.model_validate, constraints_configs):
+        if config.value == "*":
             targets = (
                 allowed_categories
-                if config["key"] == "CATEGORY"
+                if config.key == "CATEGORY"
                 else instances.keys()
             )
             for val in targets:
-                expanded_configs.append({**config, "value": val})
+                expanded_configs.append(
+                    config.model_copy(update={"value": val})
+                )
         else:
             expanded_configs.append(config)
 
@@ -395,8 +397,8 @@ def create_constraints_from_config(
     constraints = []
     for constraint_config in expanded_configs:
         if (
-            constraint_config["key"] == "CATEGORY"
-            and constraint_config["value"] in allowed_categories
+            constraint_config.key == "CATEGORY"
+            and constraint_config.value in allowed_categories
         ):
             constraints.append(
                 create_category_constraint(
@@ -410,8 +412,8 @@ def create_constraints_from_config(
                 )
             )
         if (
-            constraint_config["key"] == "DISTRICT"
-            and constraint_config["value"] in instances.keys()
+            constraint_config.key == "DISTRICT"
+            and constraint_config.value in instances.keys()
         ):
             constraints.append(
                 create_district_constraint(
@@ -419,10 +421,10 @@ def create_constraints_from_config(
                     projects_variables,
                     [
                         project
-                        for project in instances[constraint_config["value"]]
+                        for project in instances[constraint_config.value]
                     ],
                     total_budget,
-                    instances[constraint_config["value"]],
+                    instances[constraint_config.value],
                 )
             )
     return constraints
@@ -437,8 +439,9 @@ def create_category_constraint(
     profiles: dict[District, Profile],
     utility: Utility,
 ) -> LpConstraint:
-    category = constraint_config["value"]
-    bound = constraint_config["bound"]
+    constraint_config = ConstraintConfig.model_validate(constraint_config)
+    category = constraint_config.value
+    bound = constraint_config.bound
     projects_costs = reduce(
         ior,
         [
@@ -449,15 +452,13 @@ def create_category_constraint(
         {},
     )
 
-    if "strategy" in constraint_config:
-        use_cost = constraint_config.get("strategy") == "category_cost_share"
+    if constraint_config.strategy is not None:
+        use_cost = constraint_config.strategy == Strategy.CATEGORY_COST_SHARE
         constraint_limit = compute_category_lb(
             category, instances, profiles, utility, total_budget, use_cost
         )
     else:
-        constraint_limit = int(
-            constraint_config["budget_ratio"] * total_budget
-        )
+        constraint_limit = int(constraint_config.budget_ratio * total_budget)
 
     max_possible = sum(projects_costs.values())
     if bound == "LOWER" and constraint_limit > max_possible:
@@ -480,20 +481,19 @@ def create_district_constraint(
     total_budget: int,
     district_instance: Instance,
 ) -> LpConstraint:
-    district = constraint_config["value"]
-    bound = constraint_config["bound"]
+    constraint_config = ConstraintConfig.model_validate(constraint_config)
+    district = constraint_config.value
+    bound = constraint_config.bound
     projects_costs = reduce(
         ior,
         [{project.name: int(project.cost)} for project in district_projects],
         {},
     )
 
-    if "strategy" in constraint_config:
+    if constraint_config.strategy is not None:
         constraint_limit = compute_district_lb(district_instance)
     else:
-        constraint_limit = int(
-            constraint_config["budget_ratio"] * total_budget
-        )
+        constraint_limit = int(constraint_config.budget_ratio * total_budget)
 
     max_possible = sum(projects_costs.values())
     if bound == "LOWER" and constraint_limit > max_possible:

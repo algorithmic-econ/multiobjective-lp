@@ -2,9 +2,13 @@ from pathlib import Path
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from helpers.runners.model import RunnerConfig, Source, Utility
-from helpers.transformers.pabutoolsToMoLp import (
+from helpers.runners.model import (
     ConstraintConfig,
+    RunnerConfig,
+    Source,
+    Utility,
+)
+from helpers.transformers.pabutoolsToMoLp import (
     pabutools_to_multi_objective_lp,
 )
 from helpers.transformers.pabutoolsUtils import (
@@ -17,10 +21,15 @@ from helpers.utils.utils import read_from_json
 def resolve_constraints_configs(
     config: RunnerConfig,
 ) -> list[ConstraintConfig]:
-    if "constraints_configs" in config:
-        return config["constraints_configs"]
-    path = config.get("constraints_configs_path")
-    return read_from_json(Path(path)) if path else []
+    if config.constraints_configs is not None:
+        return config.constraints_configs
+    path = config.constraints_configs_path
+    if not path:
+        return []
+    return [
+        ConstraintConfig.model_validate(entry)
+        for entry in read_from_json(Path(path))
+    ]
 
 
 def load_and_transform_strategy(

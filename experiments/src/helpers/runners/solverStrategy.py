@@ -1,10 +1,13 @@
 from muoblpsolvers import (
+    ExpandingApprovals,
     GreedySolver,
     MethodOfEqualSharesAdd1Solver,
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
     MethodOfEqualSharesUtilitySolver,
     PhragmenSolver,
+    SingleTransferableVote,
+    SolidCoalitionRefinement,
     SummedObjectivesLpSolver,
 )
 from pulp import LpSolver
@@ -12,13 +15,16 @@ from pulp import LpSolver
 from helpers.runners.model import Solver
 
 SOLVERS: dict[Solver, type[LpSolver]] = {
-    "SUMMING": SummedObjectivesLpSolver,
-    "MES_UTILS": MethodOfEqualSharesUtilitySolver,
-    "MES_ADD1": MethodOfEqualSharesAdd1Solver,
-    "MES_CONSTRAINT": MethodOfEqualSharesConstrainsSolver,
-    "MES_EXPONENTIAL": MethodOfEqualSharesExponentialSolver,
-    "PHRAGMEN": PhragmenSolver,
-    "GREEDY": GreedySolver,
+    Solver.SUMMING: SummedObjectivesLpSolver,
+    Solver.MES_UTILS: MethodOfEqualSharesUtilitySolver,
+    Solver.MES_ADD1: MethodOfEqualSharesAdd1Solver,
+    Solver.MES_CONSTRAINT: MethodOfEqualSharesConstrainsSolver,
+    Solver.MES_EXPONENTIAL: MethodOfEqualSharesExponentialSolver,
+    Solver.PHRAGMEN: PhragmenSolver,
+    Solver.GREEDY: GreedySolver,
+    Solver.STV: SingleTransferableVote,
+    Solver.SOLID_COALITION_REFINEMENT: SolidCoalitionRefinement,
+    Solver.EXPANDING_APPROVALS: ExpandingApprovals,
 }
 
 
