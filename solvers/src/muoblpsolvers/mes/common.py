@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -10,6 +11,8 @@ from muoblpsolvers.types import (
     Utility,
     VoterId,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
@@ -34,6 +37,7 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
 
 def prepare_mes_parameters(
     lp: MultiObjectiveLpProblem,
+    msg: bool = True,
 ) -> tuple[
     list[CandidateId],
     dict[CandidateId, Cost],
@@ -80,7 +84,8 @@ def prepare_mes_parameters(
             no_vote_projects.append(project)
 
     for project in no_vote_projects:
-        print(f"Removing project with zero votes {project}")
+        if msg:
+            logger.info("Removing project with zero votes %s", project)
         projects.remove(project)
         del costs[project]
 
