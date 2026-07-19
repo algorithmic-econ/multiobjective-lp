@@ -16,7 +16,6 @@ dependencies = [
     "muoblp>=1.0.4,<2.0",
     "pulp==3.3.2",
     "muoblpbindings>=0.0.17,<0.1",
-    "pytest==8.4.1",
 ]
 
 [project.urls]
@@ -52,6 +51,7 @@ testpaths = [
 
 [dependency-groups]
 dev = [
+    "pytest (>=8.4,<9.0)",
     "ruff (>=0.15.1,<0.16.0)",
     "pyright (>=1.1,<2.0)"
 ]
