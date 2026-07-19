@@ -67,14 +67,11 @@ def problem_runner(config: RunnerConfig) -> None:
             constraints_configs=constraints_configs,
             deduplicate_objectives=deduplicate_objectives,
             problem_path=problem_path,
-            # BUG KEPT on purpose: pulp's var is named "__dummy", filter
-            # misses it -> instance_size over by 1. Fixed in Task 4 with
-            # golden regen; goldens must stay identical in THIS commit.
             instance_size=len(
                 [
                     variable
                     for variable in problem.variables()
-                    if variable.name != "dummy"
+                    if variable.name != "__dummy"
                 ]
             ),
             selected=sorted(
