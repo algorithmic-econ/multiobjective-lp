@@ -174,7 +174,7 @@ AC: `pulp.getSolver(name)` works for all 10; `pulp.listSolvers()` includes them;
 Verify: solvers pytest; interactive venv check.
 
 #### [x] T16 Dedupe transform + unify feasibility
-Deps: T10 · GH: PR feat/t16-dedupe-feasibility
+Deps: T10 · GH: #51
 - Single `molp_to_simple_election`: keep `solvers/src/muoblpsolvers/election_solver.py:104`; experiments' dead `transformers/molpToSimpleElection.py` → `archived_code/`.
 - Single feasibility impl: keep LP-solve `is_feasible` (LB constraints make `lp.valid()` insufficient — meeting notes); replace `lp.valid()` call sites (Phragmen, Exponential); optimize (reuse/warm model instead of fresh CBC problem per candidate).
 
