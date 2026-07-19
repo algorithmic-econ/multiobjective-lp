@@ -16,7 +16,6 @@ dependencies = [
     "muoblp>=1.0.4,<2.0",
     "pulp==3.3.2",
     "muoblpbindings>=0.0.17,<0.1",
-    "pytest==8.4.1",
 ]
 
 [project.urls]
@@ -26,8 +25,11 @@ documentation = "https://jasieksz.github.io/multiobjective-lp"
 [tool.poetry]
 packages = [{include = "muoblpsolvers", from = "src"}]
 
-# Enrich published deps (versions in [project.dependencies]) with local
-# path sources for dev; wheel METADATA keeps version pins, not file:// refs.
+# Single-style policy (T18): static [project.dependencies] holds the
+# published version pins; this table ONLY enriches them with local path
+# sources for dev installs. Poetry 2.x uses [project] for wheel METADATA
+# and this table for install/lock -- do not move deps back here alone or
+# wheels regain broken file:// refs (see T08).
 [tool.poetry.dependencies]
 muoblp = {path = "../core", develop = true}
 muoblpbindings = {path = "../bindings", develop = false}
@@ -52,6 +54,7 @@ testpaths = [
 
 [dependency-groups]
 dev = [
+    "pytest (>=8.4,<9.0)",
     "ruff (>=0.15.1,<0.16.0)",
     "pyright (>=1.1,<2.0)"
 ]

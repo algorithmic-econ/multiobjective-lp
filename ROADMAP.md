@@ -188,8 +188,8 @@ Deps: T12, T13 · GH: —
 AC: every solver module ≥1 test with status+selection asserts.
 Verify: `pytest --collect-only`; CI green incl. bindings job.
 
-#### [ ] T18 Solvers pyproject hygiene
-Deps: T06 · GH: —
+#### [x] T18 Solvers pyproject hygiene
+Deps: T06 · GH: — · PR: [#52](https://github.com/algorithmic-econ/multiobjective-lp/pull/52)
 - pytest → dev group (currently runtime dep); single poetry style (drop mixed PEP-621/poetry); bindings dep = path for dev, `>=0.0.17,<0.1` range in published metadata; pulp constraint matches T05.
 
 AC: `poetry check` clean; `poetry install --only main` has no pytest; built wheel METADATA correct.
