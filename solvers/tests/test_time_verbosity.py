@@ -13,7 +13,7 @@ from pulp import (
     lpSum,
 )
 
-from muoblpsolvers import GreedySolver
+from muoblpsolvers import GreedySolver, PhragmenSolver
 from muoblpsolvers.mes.common import prepare_mes_parameters
 from muoblpsolvers.utils import set_solved
 
@@ -89,3 +89,21 @@ def test_greedy_msg_true_logs(
     messages = [r.getMessage() for r in caplog.records]
     assert "SOLVER START" in messages
     assert "SOLVER END" in messages
+
+
+def test_phragmen_timelimit_aborts_not_solved(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    basic_pb_approval.solve(PhragmenSolver(msg=False, timeLimit=1e-9))
+    assert basic_pb_approval.status == LpStatusNotSolved
+
+
+def test_phragmen_msg_false_silent(
+    basic_pb_approval: MultiObjectiveLpProblem, capsys, caplog
+):
+    with caplog.at_level(logging.DEBUG):
+        basic_pb_approval.solve(PhragmenSolver(msg=False))
+    assert capsys.readouterr().out == ""
+    assert [
+        r for r in caplog.records if r.name.startswith("muoblpsolvers")
+    ] == []
