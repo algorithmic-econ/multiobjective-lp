@@ -166,7 +166,7 @@ Deps: T10 · GH: #26, #27, #32
 AC: `msg=False` → zero stdout during solve (capsys tests); `timeLimit=0.001` terminates pure-py solver early with defined status; no `time.time()` in solver bodies.
 Verify: solvers pytest; e2e golden (timing fields normalized).
 
-#### [ ] T15 Register solvers in PuLP
+#### [x] T15 Register solvers in PuLP · PR #50
 Deps: T10, T11 · GH: #24
 - Registration via `pulp._all_solvers` monkeypatch on `muoblpsolvers` import (or explicit `register_solvers()`; pick per pulp 3.x mechanics from T05); document in solvers README.
 
