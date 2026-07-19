@@ -11,14 +11,20 @@ from pulp import (
     LpStatusNotSolved,
     LpStatusOptimal,
     LpVariable,
+    PulpSolverError,
     lpSum,
 )
 
 from muoblpsolvers import (
+    ExpandingApprovals,
     GreedySolver,
+    MethodOfEqualSharesAdd1Solver,
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
+    MethodOfEqualSharesUtilitySolver,
     PhragmenSolver,
+    SingleTransferableVote,
+    SolidCoalitionRefinement,
 )
 from muoblpsolvers.mes.common import prepare_mes_parameters
 from muoblpsolvers.utils import set_solved
@@ -147,3 +153,25 @@ def test_mes_constrains_timelimit_aborts_not_solved(
     basic_pb_approval.solve(solver)
     assert basic_pb_approval.status == LpStatusNotSolved
     assert all(v.value() == 0 for v in basic_pb_approval.variables())
+
+
+TIMELIMIT_WARN_SOLVERS = [
+    ExpandingApprovals,
+    MethodOfEqualSharesAdd1Solver,
+    MethodOfEqualSharesUtilitySolver,
+    SingleTransferableVote,
+    SolidCoalitionRefinement,
+]
+
+
+@pytest.mark.parametrize("solver_class", TIMELIMIT_WARN_SOLVERS)
+def test_binding_backed_timelimit_warns(
+    solver_class, basic_pb_approval: MultiObjectiveLpProblem
+):
+    basic_pb_approval.set_objectives([])
+    solver = solver_class(msg=False, timeLimit=10)
+    with (
+        pytest.warns(UserWarning, match="timeLimit"),
+        pytest.raises(PulpSolverError),
+    ):
+        solver.actualSolve(basic_pb_approval)
