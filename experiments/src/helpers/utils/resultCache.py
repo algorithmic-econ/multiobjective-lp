@@ -51,6 +51,8 @@ def is_result_present(
     problem_config: RunnerConfig, utility_type: Utility
 ) -> bool:
     base_path = problem_config.results_base_path
+    if base_path is None:
+        raise ValueError("results_base_path not set on RunnerConfig")
     solver_type = problem_config.solver_type
     data_source = problem_config.source_directory_path.split("/")[-1].replace(
         ".pb", ""

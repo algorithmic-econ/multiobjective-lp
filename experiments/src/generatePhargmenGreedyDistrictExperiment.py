@@ -1,7 +1,12 @@
 from pathlib import Path
 from typing import List
 
-from helpers.runners.model import ExperimentConfig, RunnerConfig, Solver
+from helpers.runners.model import (
+    ExperimentConfig,
+    RunnerConfig,
+    Solver,
+    Source,
+)
 from helpers.utils.utils import write_to_json
 
 
@@ -67,18 +72,18 @@ if __name__ == "__main__":
     # )
 
     solvers_options: List[tuple[Solver, dict]] = [
-        ("PHRAGMEN", {"kappa": 0.0, "increasing_scalings": True}),
-        ("PHRAGMEN", {"kappa": 0.0, "increasing_scalings": False}),
-        ("PHRAGMEN", {"kappa": 1.0, "increasing_scalings": True}),
-        ("PHRAGMEN", {"kappa": 1.0, "increasing_scalings": False}),
-        ("GREEDY", {}),
+        (Solver.PHRAGMEN, {"kappa": 0.0, "increasing_scalings": True}),
+        (Solver.PHRAGMEN, {"kappa": 0.0, "increasing_scalings": False}),
+        (Solver.PHRAGMEN, {"kappa": 1.0, "increasing_scalings": True}),
+        (Solver.PHRAGMEN, {"kappa": 1.0, "increasing_scalings": False}),
+        (Solver.GREEDY, {}),
     ]
 
     configs: List[RunnerConfig] = [
         RunnerConfig(
             solver_type=solver,
             solver_options=options,
-            source_type="PABUTOOLS",
+            source_type=Source.PABUTOOLS,
             source_directory_path=str(path),
         )
         for path in selected_paths

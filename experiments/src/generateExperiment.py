@@ -2,8 +2,13 @@ import re
 from pathlib import Path
 
 from helpers.utils.utils import write_to_json
-from helpers.runners.model import Solver, Utility, RunnerConfig
-from helpers.runners.model import ExperimentConfig
+from helpers.runners.model import (
+    ExperimentConfig,
+    RunnerConfig,
+    Solver,
+    Source,
+    Utility,
+)
 
 
 def generate_experiment_config(
@@ -37,7 +42,7 @@ def generate_experiment_config(
                         RunnerConfig(
                             solver_type=solver,
                             solver_options=solver_options,
-                            source_type="PABUTOOLS",  # Hardcoded
+                            source_type=Source.PABUTOOLS,  # Hardcoded
                             utility_type=utility,
                             source_directory_path=str(item_path),
                             constraints_configs_path=constraints_configs_path,

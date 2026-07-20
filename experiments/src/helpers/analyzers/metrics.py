@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.mes.common import get_total_budget_constraint
@@ -39,8 +40,10 @@ def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
+    # objective values are set before analysis (enhance_problem_from_
+    # solver_result) — value() is never None here
     return {
-        "sum": sum([obj.value() for obj in problem.objectives]),
+        "sum": sum([cast(float, obj.value()) for obj in problem.objectives]),
     }
 
 
@@ -81,7 +84,7 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
     total_budget = abs(get_total_budget_constraint(problem).constant)
 
     voter_satisfaction = sorted(
-        [(voter, voter.value()) for voter in problem.objectives],
+        [(voter, cast(float, voter.value())) for voter in problem.objectives],
         key=lambda v_sat: v_sat[1],
     )
     voter_count = len(problem.objectives)

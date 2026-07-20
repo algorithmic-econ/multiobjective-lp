@@ -1,8 +1,10 @@
 import hashlib
 import logging
 from collections import defaultdict
+from collections.abc import Callable
 from functools import reduce
 from operator import ior
+from typing import Any, cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pabutools.election import (
@@ -92,7 +94,7 @@ def create_projects_variables(
 #
 def ballot_to_expression_strategy(
     utility: Utility,
-) -> [str, int]:
+) -> Callable[[Any], list[list[Any]]]:
     match utility:
         case "APPROVAL":
             return lambda ballot: [[str(c), 1] for c in ballot]
@@ -167,10 +169,11 @@ def resolve_objectives(
         return merge_duplicate_objectives(objectives)
     merged = list(objectives.values())
     # int, not 1.0: MES bindings require integer utilities (long long);
-    # float weights propagate into total_utilities and fail pybind casting
-    weights = {obj.name: 1 for obj in merged}
+    # float weights propagate into total_utilities and fail pybind casting.
+    # objectives are always named (define_voter_objective) -> name not None
+    weights: dict[str, float] = {cast(str, obj.name): 1 for obj in merged}
     voter_groups = {
-        obj.name: [voter_id] for voter_id, obj in objectives.items()
+        cast(str, obj.name): [voter_id] for voter_id, obj in objectives.items()
     }
     return merged, weights, voter_groups
 
@@ -234,12 +237,9 @@ def create_baseline_constraints(
     projects_variables: dict[AgentId, LpVariable],
 ) -> list[LpConstraint]:
     budgets: dict[District, int] = {
-        district: (
-            int(float(instance.meta["budget"]))
-            if "budget" in instance.meta
-            else 0
-        )
+        district: (int(float(meta["budget"])) if "budget" in meta else 0)
         for district, instance in instances.items()
+        for meta in [instance.meta or {}]
     }
     projects_costs: dict[District, dict[AgentId, int]] = {
         district: {project.name: int(project.cost) for project in instance}
@@ -325,11 +325,8 @@ def compute_voter_category_shares(
 
 
 def compute_district_lb(district_instance: Instance) -> int:
-    budget = (
-        int(float(district_instance.meta["budget"]))
-        if "budget" in district_instance.meta
-        else 0
-    )
+    meta = district_instance.meta or {}
+    budget = int(float(meta["budget"])) if "budget" in meta else 0
     max_cost = max((int(p.cost) for p in district_instance), default=0)
     return budget - max_cost
 
@@ -362,10 +359,9 @@ def create_constraints_from_config(
 ) -> list[LpConstraint]:
     total_budget: int = sum(
         [
-            int(float(instance.meta["budget"]))
-            if "budget" in instance.meta
-            else 0
+            int(float(meta["budget"])) if "budget" in meta else 0
             for _, instance in instances.items()
+            for meta in [instance.meta or {}]
         ]
     )
     allowed_categories = reduce(
@@ -454,6 +450,11 @@ def create_category_constraint(
         constraint_limit = compute_category_lb(
             category, instances, profiles, utility, total_budget, use_cost
         )
+    elif constraint_config.budget_ratio is None:
+        raise ValueError(
+            f"constraint '{category}': budget_ratio required "
+            "when no strategy is set"
+        )
     else:
         constraint_limit = int(constraint_config.budget_ratio * total_budget)
 
@@ -489,6 +490,11 @@ def create_district_constraint(
 
     if constraint_config.strategy is not None:
         constraint_limit = compute_district_lb(district_instance)
+    elif constraint_config.budget_ratio is None:
+        raise ValueError(
+            f"constraint '{district}': budget_ratio required "
+            "when no strategy is set"
+        )
     else:
         constraint_limit = int(constraint_config.budget_ratio * total_budget)
 
@@ -509,7 +515,7 @@ def create_district_constraint(
 
 def define_constraint(
     name: str,
-    sense: LpConstraintGE | LpConstraintLE,
+    sense: int,  # LpConstraintLE | LpConstraintGE (pulp int consts)
     all_projects_variables: dict[AgentId, LpVariable],
     participating_projects_costs: dict[AgentId, int],
     maximum_cost: int,

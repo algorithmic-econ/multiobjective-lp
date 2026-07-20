@@ -61,7 +61,9 @@ def test_baseline_multi_district_total_budget(multi_district_setup):
 
     result = create_baseline_constraints(instances, variables)
 
-    total_constraint = [c for c in result if "total_budget" in c.name][0]
+    total_constraint = [c for c in result if "total_budget" in (c.name or "")][
+        0
+    ]
     assert -total_constraint.constant == 500  # 300 + 200
 
 

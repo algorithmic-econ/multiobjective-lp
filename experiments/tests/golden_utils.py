@@ -15,13 +15,14 @@ import json
 import os
 import re
 from pathlib import Path
+from typing import Any
 
 ID_PATTERN = re.compile(
     r"(problem|meta)_\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_[a-zA-Z0-9]{4}_"
 )
 
 
-def _round_floats(value, ndigits: int = 6):
+def _round_floats(value: Any, ndigits: int = 6) -> Any:
     if isinstance(value, float):
         return round(value, ndigits)
     if isinstance(value, dict):

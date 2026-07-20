@@ -99,9 +99,10 @@ def transform_metrics_to_markdown_table(
         cols = df.columns.tolist()
         if "Location-Year" in cols:
             cols.insert(0, cols.pop(cols.index("Location-Year")))
-            df = df[cols]
+            df = pd.DataFrame(df[cols])
 
     df = df.sort_values(by=["Location-Year", "Type", "Method"], ascending=True)
 
     df_limited = df.head(limit) if limit is not None else df
-    return df_limited.to_markdown(index=False)
+    # buf=None -> to_markdown returns str; stubs say str | None
+    return df_limited.to_markdown(index=False) or ""

@@ -19,9 +19,9 @@ def make_project(
 
 
 def make_instance(projects: list[Project], budget: int) -> Instance:
-    cats = set()
+    cats: set[str] = set()
     for p in projects:
-        cats |= p.categories
+        cats |= set(p.categories)
     return Instance(
         init=projects,
         budget_limit=budget,
