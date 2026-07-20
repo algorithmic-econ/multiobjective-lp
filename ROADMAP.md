@@ -197,8 +197,8 @@ Verify: `poetry build` + inspect; CI green.
 
 ### Phase 3 — Experiments refactor
 
-#### [ ] T19 Pydantic v2 models at IO boundaries
-Deps: T10 · GH: —
+#### [x] T19 Pydantic v2 models at IO boundaries
+Deps: T10 · GH: — · PR: [#55](https://github.com/algorithmic-econ/multiobjective-lp/pull/55)
 - Replace TypedDicts in `helpers/runners/model.py` + `helpers/analyzers/model.py` (RunnerConfig, ExperimentConfig, CompactExperimentConfig, RunnerConfigsGenerator, SolverSpec, ConstraintConfig, RunnerResult, AnalyzerConfig, AnalyzerResult) with Pydantic v2 models; validate on config load, meta read/write, metrics write.
 - Wire ALL 10 solvers into Solver enum + `solverStrategy` dispatch (add STV, SolidCoalitionRefinement, ExpandingApprovals).
 - Drop unimplemented `"METADATA"` metric literal; dedupe `District`/`AgentId` aliases (defined twice); update sample-experiment + test configs to new schema.
