@@ -65,13 +65,17 @@ def main(
 
     Path(config.analyzer_result_path).mkdir(parents=True, exist_ok=True)
 
-    with multiprocessing.Pool(processes=3, initializer=setup_logging) as pool:
+    with multiprocessing.Pool(
+        processes=config.concurrency, initializer=setup_logging
+    ) as pool:
         analysis = pool.starmap(
             analyze_runner_result,
             zip(runner_results, repeat(config.metrics)),
         )
-        result_path = Path(
-            f"{config.analyzer_result_path}metrics-{config.experiment_results_base_path.split('/')[-2]}.json"
+        results_dir_name = Path(config.experiment_results_base_path).name
+        result_path = (
+            Path(config.analyzer_result_path)
+            / f"metrics-{results_dir_name}.json"
         )
         write_to_json(
             result_path,

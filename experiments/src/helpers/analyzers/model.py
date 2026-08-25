@@ -23,6 +23,7 @@ class AnalyzerConfig(StrictModel):
     analyzer_result_path: str
     experiment_results_base_path: str
     metrics: list[Metric]
+    concurrency: int = 3
 
 
 class AnalyzerResult(StrictModel):
