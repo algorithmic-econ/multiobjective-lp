@@ -1,12 +1,14 @@
 import logging
-import os
-import re
 from pathlib import Path
 
 from pydantic import ValidationError
 
 from helpers.runners.model import RunnerConfig, RunnerResult, Utility
 from helpers.runners.sourceStrategy import resolve_constraints_configs
+from helpers.utils.result_naming import (
+    data_source_name,
+    result_filename_pattern,
+)
 from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
@@ -38,13 +40,11 @@ def is_metadata_content_matching(
         return False
 
     # Check if the corresponding LP file exists
-    lp_filename = (
-        os.path.basename(meta_path)
-        .replace("meta_", "problem_")
-        .replace(".json", ".lp")
+    lp_filename = meta_path.name.replace("meta_", "problem_").replace(
+        ".json", ".lp"
     )
-    lp_path = os.path.join(os.path.dirname(meta_path), lp_filename)
-    return os.path.exists(lp_path)
+    lp_path = meta_path.parent / lp_filename
+    return lp_path.exists()
 
 
 def is_result_present(
@@ -54,18 +54,15 @@ def is_result_present(
     if base_path is None:
         raise ValueError("results_base_path not set on RunnerConfig")
     solver_type = problem_config.solver_type
-    data_source = problem_config.source_directory_path.split("/")[-1].replace(
-        ".pb", ""
-    )
+    data_source = data_source_name(problem_config.source_directory_path)
 
-    for filename in os.listdir(base_path):
-        pattern = f"meta_[0-9]{{2}}-[0-9]{{2}}T[0-9]{{2}}-[0-9]{{2}}-[0-9]{{2}}_[a-z0-9]{{4}}_{data_source}_{utility_type}_{solver_type}.json"
-        if re.match(pattern, filename):
-            metadata_file_path = Path(os.path.join(base_path, filename))
-            if is_metadata_content_matching(
-                metadata_file_path, problem_config
-            ):
-                logger.info(f"Found result {filename}")
+    pattern = result_filename_pattern(
+        "meta", "json", data_source, str(utility_type), str(solver_type)
+    )
+    for meta_path in Path(base_path).iterdir():
+        if pattern.match(meta_path.name):
+            if is_metadata_content_matching(meta_path, problem_config):
+                logger.info(f"Found result {meta_path.name}")
                 return True
 
     return False

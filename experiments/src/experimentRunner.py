@@ -10,6 +10,7 @@ from helpers.runners.model import (
 )
 from helpers.transformers.expand_experiment_config import (
     parse_experiment_config,
+    resolve_runner_configs,
 )
 from helpers.utils.logger import setup_logging
 from helpers.utils.utils import read_from_json
@@ -26,11 +27,7 @@ def main(
     Path(experiment.experiment_results_base_path).mkdir(
         parents=True, exist_ok=True
     )
-    for runner_config in experiment.runner_configs:
-        if runner_config.results_base_path is None:
-            runner_config.results_base_path = (
-                experiment.experiment_results_base_path
-            )
+    runner_configs = resolve_runner_configs(experiment)
 
     start_time = time.time()
     logger.info(
@@ -45,7 +42,7 @@ def main(
     with multiprocessing.Pool(
         processes=experiment.concurrency, initializer=setup_logging
     ) as pool:
-        pool.map(problem_runner, experiment.runner_configs)
+        pool.map(problem_runner, runner_configs)
 
     logger.info("Finish experiment", extra={"time": time.time() - start_time})
 
