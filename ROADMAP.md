@@ -19,6 +19,7 @@ Backward compat: none required — configs, result formats, and APIs are free to
 - No new features. If ticket outgrows a session: split, update this file, finish the split part.
 - Dead code moves to `archived_code/` (ruff CI already excludes it), never plain-deleted.
 - Follow root `CLAUDE.md` (concision, poetry venv per project).
+- Plan docs under `plans/` written BEFORE their dependency ticket merged are NOT trustworthy: re-derive every path/module name from the merged tree. Known-stale: `T21-plan` (fixed in-session), `T24-plan`, `T25-plan`, `T26-plan`, `P3-verify-plan` — all assume an `experiments/src/pipeline/` package that never shipped (T20 kept `helpers/`, added `helpers/utils/result_naming.py`).
 
 ## 3. Phases
 
@@ -28,6 +29,7 @@ P1 toolchain     T04 → {T05, T06}; T06 → T07 → T08; T09 (after T02)
 P2 solver contract T10 → {T11..T16, T18}; T17 (after T12,T13)
 P3 experiments   T19 → T20 → T21 → {T22..T25}; T26 (after T20,T24)
 P4 core + docs   T27, T28
+P5 release+harden T29; T31 (D15); T32; T30 (after T23, T26, T27)
 ```
 
 | Phase | Goal | Tickets |
@@ -37,6 +39,7 @@ P4 core + docs   T27, T28
 | P2 | Solvers implement PuLP contract | T10–T18 |
 | P3 | Experiments cleanup: Pydantic, lib extraction, dedup, tests | T19–T26 |
 | P4 | Core micro-fixes + docs | T27–T28 |
+| P5 | Release chain + hardening leftovers (added 2026-08-25) | T29–T32 |
 
 ## 4. Tickets
 
@@ -228,12 +231,16 @@ Deps: T19, T21 · GH: —
 - Keep interactive generator (owns `discover_sources`/`filter_paths`/`prompt_*` helpers) as base; fold compact-config flow (delete ~50-line dup prompt loop); superseded `generateExperiment.py` → archived_code; rewrite hardcoded sweep generator atop shared helpers with sweep params from config.
 - Output via `model_dump` of T19 models.
 
+> **Stale-check 2026-08-25** — post-T21 names: `generate_experiment_config.py` (interactive base; owns `prompt_allowed_solvers:51`, `prompt_solver_options:62`, `discover_sources:82`, `filter_paths:94`), `generate_compact_experiment_config.py` (dup prompt loop `:44-67` ≈ `:175-198`, ~24 lines verbatim + ~14 preceding), `generate_experiment.py` (superseded, 90L), sweep = `generate_phragmen_greedy_district_experiment.py` (own dup `filter_paths:25-35`, params hardcoded `:74-80`). **`model_dump` bullet ALREADY SATISFIED by T19 in all 4 — no work there.** Add to scope: hardcoded `/Users/jasiek` example paths (`generate_experiment.py:62`, `generate_phragmen_greedy_district_experiment.py:39`, `generate_compact_experiment_config.py:113`) and `resources/…` default outputs (`generate_phragmen_…:40,:100`, `generate_experiment.py:79`) pointing at the dir T09 emptied. `plans/T22-plan.md` paths verified current.
+
 AC: one interactive + one sweep entrypoint; zero dup helpers; generated config validates + runs.
 Verify: generate → run; pytest on non-interactive helpers.
 
 #### [ ] T23 Consolidate aggregators
 Deps: T21 · GH: —
 - Merge `aggregateResults.py` + `aggregateGroupedResults.py` → one parameterized plotting script (filters, grouping, output paths via Pydantic model); ~290 commented lines + hardcoded city filters → archived_code; fix broken `from src.helpers` imports.
+
+> **Stale-check 2026-08-25** — post-T21 names `aggregate_results.py` (539L; commented blocks `247-428` + `431-539` ≈ 291L, matches "~290") / `aggregate_grouped_results.py` (170L). Broken imports live at `aggregate_results.py:11` + `aggregate_grouped_results.py:11`. **"Hardcoded city filters" is not literal** — no city-name lists in either file today, only generic `{city}_{year}` parsing (`aggregate_grouped_results.py:37-46`); `plans/T23-plan.md:5` cites Zabrze/Amsterdam filters — re-derive before trusting. `aggregate_results.py:16` already carries a `# … (T23 rewrites aggregators on models)` marker.
 
 AC: one aggregator; no commented-out blocks; produces plots from sample analysis output.
 Verify: run on sample metrics; ruff/pyright green.
@@ -244,6 +251,8 @@ Deps: T20 · GH: —
 - `analysis_table` stops regex-parsing meta FILENAMES for semantics — read fields from meta json content (T19 model).
 - print → logging (table output stays print); remove remaining bare excepts.
 
+> **Stale-check 2026-08-25** — target live: `analyzer_runner.py:47-52`, TODO cites T24 by name. Regex still at `analysis_table.py:19-57`; rows already carry `city`/`solver`/`utility` from T19 `AnalyzerResult` (`helpers/analyzers/model.py:29-46`) — swap is a read-fields change, table content identical on happy path. **No bare `except:` exists anywhere in `experiments/src`** — read the bullet as broad `except Exception`: 3 sites, `analyzer_runner.py:47` (the target), `problem_runner.py:89` (re-raises, OK), `logger.py:17` (narrow to `OSError`/`yaml.YAMLError`). print-sweep is ~6 lines, all inside T22's generator scripts — coordinate or defer; `analyzer_runner.py:93` table print stays. Also drop `os.path.basename` (`analysis_table.py:42`). **Removing the regex invalidates `tests/test_analysis_table.py:9` (`test_filename_regex_miss_raises_with_filename`)** — rewrite or delete it in this ticket. **`plans/T24-plan.md` STALE** (assumes `src/pipeline/analyzer_steps.py`).
+
 AC: corrupt meta file → named structured error, not silent None; no filename-as-schema parsing.
 Verify: corrupt a meta, run analyzer; e2e golden.
 
@@ -251,12 +260,16 @@ Verify: corrupt a meta, run analyzer; e2e golden.
 Deps: T21 · GH: —
 - To `archived_code/`: `preflibToMuoblp.py`, `explore.ipynb`, dead `pabutoolsUtils.filter_projects`/`by_district`, anything else unreferenced (grep imports).
 
+> **Stale-check 2026-08-25** — post-T21 name `preflib_to_muoblp.py` (0 refs, confirmed). `explore.ipynb` at `experiments/src/explore.ipynb` (only ref = ruff-format exclude `experiments/pyproject.toml:57`). `pabutools_utils.py:70,76` `filter_projects`/`by_district` = definitions only, 0 call sites (`load_pabutools_by_district:43` IS used — don't touch). Add: commented dead block `helpers/analyzers/metrics.py:111-175`. Do NOT classify `generate_*`/`aggregate_*` as dead here — they're live unconsolidated entrypoints owned by T22/T23. **`plans/T25-plan.md` assumes T22/T23 already landed — they have not.**
+
 AC: no unreferenced module in experiments/src; ruff F401 clean.
 Verify: pytest + e2e; grep archived symbols.
 
 #### [ ] T26 Experiments coverage sweep
 Deps: T20, T24 · GH: —
 - Unit tests: metrics computation (tiny fixtures), result cache hit/miss/invalidation, utils jsonc read/write roundtrip, generator pure helpers. Keep existing 54 transform tests.
+
+> **Stale-check 2026-08-25** — **already satisfied, drop from scope**: jsonc read/write roundtrip (`tests/test_utils.py:9,15`, added T01) and cache hit/miss (`tests/test_models.py:116,131,166`, added T20). Remaining real gaps: metrics 2/6 covered (`test_metrics.py` has TOTAL_COST + SUM_OBJECTIVES; missing EXCLUSION_RATION, EJR_PLUS, CONSTRAINTS, INSTANCE_SIZE); cache *content-based* invalidation (`result_cache.py:28-40`, `constraints_configs`/`deduplicate_objectives` mismatch) untested; no-test modules = `source_strategy.py`, `enhance_from_solver_result.py`, `logger.py`, `pabutools_utils.py`, generator helpers. "54 transform tests" → 55 by `def test_` count (suite total 87 defs / 104 collected). **`plans/T26-plan.md` STALE** (`pipeline/`, `tests/test_pipeline_*.py`).
 
 AC: every lib module imported by ≥1 test; cache-hit-skips-solve asserted.
 Verify: `pytest --cov` informal; CI green.
@@ -271,6 +284,8 @@ Deps: T02, T05 · GH: —
 - Fix empty `core/example/` referenced by README (populate minimal example or fix README).
 - `read_lp_file` fragility (int-coerced coefs, "+"-only LHS split): document as known limitation, do NOT rewrite.
 
+> **Stale-check 2026-08-25** — line refs: mutable defaults at `multi_objective_lp.py:20-21` (not `:18`); `__iadd__` TODO at `:68` (not `:65`); `lp_writer_utils.py:51` correct. `core/example/` **does not exist** (not "empty"); dead link at `core/README.md:15`. `read_lp_file` int-coercion at `lp_reader_utils.py:57,118,127`, `"+"`-split at `:58,84`. Core has only `tests/test_import.py` (1 smoke test) — "unit test per fix" starts from zero scaffolding. Scope note: the pyright-ignore at `multi_objective_lp.py:19` says "fix in T27" but that fix is **not** in T27's bullets → owned by T30.
+
 AC: unit test per fix; core pytest + e2e golden identical.
 Verify: core pytest; write/read roundtrip test.
 
@@ -279,8 +294,50 @@ Deps: phases substantially done · GH: closes folded issues
 - Per-subproject READMEs (incl. bindings build instructions); root README dev workflow (poetry per project, sample-experiment entry point, tag/publish conventions); CLAUDE.md 4-subproject structure.
 - Close folded GH issues with commit refs; triage `documentation/docs/meeting-notes.md` — convert remaining unimplemented ideas (LB strategies, exp-MES B_init, PropRank removal logic, MES generic utilities) into GH issues, trim notes file.
 
+> **Stale-check 2026-08-25** — root `CLAUDE.md:8-13` **already documents the 4 subprojects** → drop that bullet. `mes-standard-experiments`: 0 hits repo-wide → that AC example is moot. Real dead refs: `solvers/README.md:19` (links standalone `jasieksz/muoblpbindings`), `core/README.md:15` (missing `./example/define_pb.py` — T27 may fix first). `bindings/README.md` already covers build + publish adequately. `documentation/docs/meeting-notes.md` = 208L; the 4 named ideas at `:12-30` (LB strategies), `:112-125` (exp-MES B_init), `:101-103` (PropRank removal), `:127-133` (MES generic utilities); `:185-208` is MkDocs admonition boilerplate, also trim-able. 13 GH issues open — #20/#22/#23/#24/#25/#26/#27/#32/#36 all functionally done, close with commit refs. Cosmetic carry-over: solvers `[project.urls]` → `algorithmic-econ/`.
+
 AC: fresh-clone instructions reproduce sample experiment; no doc refs to dead paths (mes-standard-experiments, old bindings repo).
 Verify: follow README in scratch venv.
+
+### Phase 5 — Release & hardening
+
+Added 2026-08-25: gaps carried through P1/P2 judge verdicts + T13/T16/T17 deferrals that had no owning ticket.
+
+#### [ ] T29 Release chain: publish bindings 0.0.18 + rc rehearsal
+Deps: T18 · GH: #25
+- **Active defect**: `solvers/pyproject.toml:18` pins `muoblpbindings>=0.0.18,<0.1`; PyPI has only 0.0.17 (`bindings/pyproject.toml:7` = 0.0.18, never tagged) → any published solvers wheel is uninstallable.
+- Push `bindings@0.0.18` → wheels.yml tag path (validate_tag + 6-wheel matrix + OIDC upload; never exercised end-to-end, T07 leftover).
+- rc rehearsal (T08 leftover): `core@X.Y.Z-rc`, `solvers@X.Y.Z-rc` → test.pypi; `pip download` METADATA check. Publish order bindings → core → solvers.
+- Archive old `algorithmic-econ/muoblpbindings` GH repo (T06 follow-up; still `isArchived:false`).
+
+AC: clean-venv `pip install muoblpsolvers` resolves bindings from the index; wheels.yml tag run green; old repo archived.
+Verify: clean venv install from (test.)pypi; `gh repo view … --json isArchived`.
+
+#### [ ] T30 Finish pyright ratchet (D12)
+Deps: T23, T26, T27 · GH: —
+- solvers: drop config `reportArgumentType: "none"` (15 systemic `Utility`/int + float/int + dict-invariance errors across mes_*, phragmen) — fix or narrow per-file.
+- experiments: drop remaining 3 of the original 10 rules (`reportArgumentType`, `reportAttributeAccessIssue`, `reportCallIssue`); T19 already re-enabled 7.
+- 6 inline ignores, all pulp-3.3.2 Optional-`name`: `core/…/multi_objective_lp.py:19` (the one labelled "fix in T27"), `solvers/…/mes/common.py:62,63`, `solvers/…/election_solver.py:196`, `experiments/tests/test_constraint_creation.py:278,279`.
+
+AC: no rule suppressions in the 3 pyrightconfigs, 0 errors each; every surviving inline ignore carries an upstream-unfixable justification.
+Verify: pyright ×3; full pytest ×3 + e2e golden.
+
+#### [ ] T31 GE/lower-bound constraints in MES-family
+Deps: T16 · GH: #36 · **blocked on D15**
+- MES-Add1/Utility/Constrains/Exponential, STV, ExpandingApprovals, SCR silently IGNORE GE constraints → wrong answers, not crashes (T13 dropped rule; P2 judge: open, no owner).
+- Per **D15**: either reject in `validate_election_program` with `PulpSolverError`, or document as a limitation + open a GH issue. Greedy keeps GE support (`FeasibilityChecker` LP path).
+- Also collapse (P2 judge misfiled these under core-only T27): `validate_pb_constraint` double-walk (`validate_election_program` + `molp_to_simple_election` each call it), and the redundant dup-PB check in `mes/common.py::get_total_budget_constraint`.
+
+AC: GE program + MES-family solver either raises an actionable error or is documented and tested as ignored; constraint list walked once per solve; negative test either way.
+Verify: solvers pytest; e2e golden (no GE in fixtures → must stay identical).
+
+#### [ ] T32 py3.14 in test matrix (resolves D14)
+Deps: — · GH: —
+- `.github/workflows/test.yml:22,55,104` are 3.13-only; wheels.yml already builds cp314.
+- Add 3.14 to test + pyright matrix, or resolve D14 as "no" and record the rationale.
+
+AC: CI green on 3.13 (+3.14 if adopted), or D14 closed in §6 with rationale.
+Verify: Actions run on branch.
 
 ## 5. Future / explicitly excluded (no tickets)
 
@@ -292,9 +349,10 @@ Verify: follow README in scratch venv.
 ## 6. TODO: decide
 
 - **D8** DECIDED (T14): binding-backed solvers (STV, ExpandingApprovals, SolidCoalitionRefinement, MES-Add1, MES-Utility) `warnings.warn` + ignore `timeLimit` (C++ changes out of scope). MES-Constrains honors it coarsely per-iteration (no warn).
-- **D11** Golden normalization exact field list — T02 proposes in PR, confirm there.
-- **D12** pyright strictness ramp: basic now; when/whether standard/strict per subproject.
-- **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)?
+- **D11** RESOLVED (T02): normalization field list lives in `experiments/tests/golden_utils.py`, confirmed in PR #38.
+- **D12** pyright strictness ramp — scoped as **T30**: finish the basic-mode ratchet (remove remaining rule suppressions + inline ignores) first; standard/strict per subproject stays a later question.
+- **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)? — owned by **T32**.
+- **D15** MES-family (MES-*, STV, ExpandingApprovals, SCR) + GE/lower-bound constraints: reject with `PulpSolverError`, or document as known limitation + GH issue? Blocks **T31**.
 - Default kept: `papers/`, `documentation/` MkDocs untouched by this roadmap.
 
 ## 7. GH issue map
@@ -309,5 +367,7 @@ Verify: follow README in scratch venv.
 | #26 no manual timing | T14 |
 | #27 respect timeLimit | T14 |
 | #32 respect msg | T14 |
-| #36 raise incompatible | T13 |
+| #36 raise incompatible | T13, T31 |
 | #30 #31 #34 #35 | excluded → §5 |
+
+All folded issues (#20, #22, #23, #24, #25, #26, #27, #32, #36) are still OPEN as of 2026-08-25 — closed with commit refs in T28; #25 also exercised by T29.
