@@ -215,8 +215,8 @@ Deps: T19 · GH: — · PR: [#56](https://github.com/algorithmic-econ/multiobjec
 AC: thin entrypoints; lib unit-tested; e2e golden identical.
 Verify: pytest (units + e2e); run sample.
 
-#### [ ] T21 snake_case renames + entrypoint/doc sync
-Deps: T20 · GH: —
+#### [x] T21 snake_case renames + entrypoint/doc sync
+Deps: T20 · GH: — · PR: [#57](https://github.com/algorithmic-econ/multiobjective-lp/pull/57)
 - `git mv` all camelCase modules (experimentRunner→experiment_runner, problemRunner, analyzerRunner, solverStrategy, sourceStrategy, resultCache, enhanceFromSolverResult, pabutools*, generate*, aggregate*; fix "Phargmen" misspelling); consistent absolute imports.
 - Update run.sh/analyze.sh, experiments README, pyrightconfig, test imports, CI paths in SAME ticket.
 
