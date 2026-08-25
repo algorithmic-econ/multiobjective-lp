@@ -4,7 +4,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from helpers.runners.model import RunnerConfig, RunnerResult, Utility
-from helpers.runners.sourceStrategy import resolve_constraints_configs
+from helpers.runners.source_strategy import resolve_constraints_configs
 from helpers.utils.result_naming import (
     data_source_name,
     result_filename_pattern,

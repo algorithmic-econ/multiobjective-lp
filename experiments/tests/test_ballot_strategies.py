@@ -5,7 +5,7 @@ from pabutools.election import (
     OrdinalBallot,
 )
 
-from helpers.transformers.pabutoolsToMoLp import (
+from helpers.transformers.pabutools_to_molp import (
     ballot_to_cost_weights,
     ballot_to_expression_strategy,
 )

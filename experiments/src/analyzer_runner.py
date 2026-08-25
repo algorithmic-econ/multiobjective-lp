@@ -13,7 +13,7 @@ from helpers.analyzers.analysis_table import (
 from helpers.analyzers.metrics import get_metrics
 from helpers.analyzers.model import AnalyzerConfig, AnalyzerResult, Metric
 from helpers.runners.model import RunnerResult
-from helpers.utils.enhanceFromSolverResult import (
+from helpers.utils.enhance_from_solver_result import (
     enhance_problem_from_solver_result,
 )
 from helpers.utils.logger import setup_logging
@@ -94,6 +94,6 @@ def main(
 
 
 if __name__ == "__main__":
-    # Example: python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
+    # Example: python analyzer_runner.py resources/input/analyzer-config/sample-analysis.json
     setup_logging()
     main(read_from_json(Path(sys.argv[1])), 25)

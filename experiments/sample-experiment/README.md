@@ -35,8 +35,8 @@ Experiment consists of set of runner configs, where, one runner config describes
 
 #### 1.2 Single runner config defines the following problem and data:
 
-* `solver_type: "MES_ADD1"` - which solver to use, see [solverStrategy.py](../src/helpers/runners/solverStrategy.py) for all values,
-* `source_type: "PABUTOOLS"` - format and type of input data, see [sourceStrategy.py](../src/helpers/runners/sourceStrategy.py) for other values,
+* `solver_type: "MES_ADD1"` - which solver to use, see [solver_strategy.py](../src/helpers/runners/solver_strategy.py) for all values,
+* `source_type: "PABUTOOLS"` - format and type of input data, see [source_strategy.py](../src/helpers/runners/source_strategy.py) for other values,
 * `utility_type: "COST"` - optional utility function type (`COST`, `APPROVAL`, `ORDINAL`, `CUMULATIVE`, `COST_ORDINAL`, `COST_CUMULATIVE`), auto-detected from input if omitted,
 * `source_directory_path: "input/krakow_2024"` - path to directory with input data, or path to single `.pb` file,
 * `constraints_configs_path: "empty-constraints-config.jsonc"` - optional path to constraints config file (see 1.3),

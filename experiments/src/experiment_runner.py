@@ -14,7 +14,7 @@ from helpers.transformers.expand_experiment_config import (
 )
 from helpers.utils.logger import setup_logging
 from helpers.utils.utils import read_from_json
-from problemRunner import problem_runner
+from problem_runner import problem_runner
 
 logger = logging.getLogger(__name__)
 

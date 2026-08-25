@@ -1,4 +1,4 @@
-from helpers.transformers.pabutoolsToMoLp import (
+from helpers.transformers.pabutools_to_molp import (
     pabutools_to_multi_objective_lp,
 )
 

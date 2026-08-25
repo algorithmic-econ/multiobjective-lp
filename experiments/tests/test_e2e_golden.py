@@ -32,10 +32,9 @@ METRICS = [
 
 
 def test_e2e_golden(tmp_path):
-    import analyzerRunner
-    import experimentRunner
+    import analyzer_runner
+    import experiment_runner
 
-    # trailing slashes required: runner/analyzer concat paths as f-strings
     results_path = f"{tmp_path}/results/"
     analysis_path = f"{tmp_path}/analysis/"
 
@@ -54,7 +53,7 @@ def test_e2e_golden(tmp_path):
             for solver in SOLVERS
         ],
     }
-    experimentRunner.main(experiment)
+    experiment_runner.main(experiment)
 
     meta_paths = sorted(Path(results_path).glob("meta_*.json"))
     assert len(meta_paths) == len(SOLVERS)
@@ -70,7 +69,7 @@ def test_e2e_golden(tmp_path):
         "experiment_results_base_path": results_path,
         "metrics": METRICS,
     }
-    analyzerRunner.main(analyzer)
+    analyzer_runner.main(analyzer)
 
     # metrics-results.json: analyzer names file after results dir basename
     rows = json.loads(
