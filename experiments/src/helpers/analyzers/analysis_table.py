@@ -17,12 +17,10 @@ def transform_metrics_to_markdown_table(
     data = read_from_json(json_file_path)
 
     solver_pattern = "|".join(
-        re.escape(s)
-        for s in sorted(list(Solver.__args__), key=len, reverse=True)
+        re.escape(s) for s in sorted(list(Solver), key=len, reverse=True)
     )
     utility_pattern = "|".join(
-        re.escape(u)
-        for u in sorted(list(Utility.__args__), key=len, reverse=True)
+        re.escape(u) for u in sorted(list(Utility), key=len, reverse=True)
     )
     datetime_pattern = r"(\d{2}-\d{2}T\d{2}-\d{2}-\d{2})"
     id_pattern = r"([a-zA-Z0-9]{4})"
@@ -101,9 +99,10 @@ def transform_metrics_to_markdown_table(
         cols = df.columns.tolist()
         if "Location-Year" in cols:
             cols.insert(0, cols.pop(cols.index("Location-Year")))
-            df = df[cols]
+            df = pd.DataFrame(df[cols])
 
     df = df.sort_values(by=["Location-Year", "Type", "Method"], ascending=True)
 
     df_limited = df.head(limit) if limit is not None else df
-    return df_limited.to_markdown(index=False)
+    # buf=None -> to_markdown returns str; stubs say str | None
+    return df_limited.to_markdown(index=False) or ""

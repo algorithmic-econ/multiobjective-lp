@@ -8,6 +8,6 @@ def enhance_problem_from_solver_result(
 ) -> MultiObjectiveLpProblem:
     for variable in problem.variables():
         variable.setInitialValue(
-            1 if variable.name in solver_result["selected"] else 0
+            1 if variable.name in solver_result.selected else 0
         )
     return problem

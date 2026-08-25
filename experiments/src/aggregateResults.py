@@ -8,13 +8,13 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from src.helpers.analyzers.model import AnalyzerResult
 from src.helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
 
 
-def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
+# rows are raw metrics-json dicts (T23 rewrites aggregators on models)
+def main(result: Union[dict, List[dict]]) -> None:
     # --- 1. Data Processing ---
 
     data_source = result if isinstance(result, list) else [result]

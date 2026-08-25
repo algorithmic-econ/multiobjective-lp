@@ -1,81 +1,96 @@
-from typing import Literal, NotRequired, TypedDict
+from enum import StrEnum
+from typing import Any, Literal
 
-Strategy = Literal[
-    "district_budget_minus_max",
-    "category_vote_share",
-    "category_cost_share",
-]
-
-Solver = Literal[
-    "SUMMING",
-    "MES_ADD1",
-    "MES_CONSTRAINT",
-    "MES_UTILS",
-    "MES_EXPONENTIAL",
-    "GREEDY",
-    "PHRAGMEN",
-]
-Source = Literal["PABUTOOLS"]
-Utility = Literal[
-    "COST",
-    "APPROVAL",
-    "ORDINAL",
-    "CUMULATIVE",
-    "COST_ORDINAL",
-    "COST_CUMULATIVE",
-]
+from pydantic import BaseModel, ConfigDict
 
 
-class RunnerConfig(TypedDict):
+class Strategy(StrEnum):
+    DISTRICT_BUDGET_MINUS_MAX = "district_budget_minus_max"
+    CATEGORY_VOTE_SHARE = "category_vote_share"
+    CATEGORY_COST_SHARE = "category_cost_share"
+
+
+class Solver(StrEnum):
+    SUMMING = "SUMMING"
+    MES_ADD1 = "MES_ADD1"
+    MES_CONSTRAINT = "MES_CONSTRAINT"
+    MES_UTILS = "MES_UTILS"
+    MES_EXPONENTIAL = "MES_EXPONENTIAL"
+    GREEDY = "GREEDY"
+    PHRAGMEN = "PHRAGMEN"
+    STV = "STV"
+    SOLID_COALITION_REFINEMENT = "SOLID_COALITION_REFINEMENT"
+    EXPANDING_APPROVALS = "EXPANDING_APPROVALS"
+
+
+class Source(StrEnum):
+    PABUTOOLS = "PABUTOOLS"
+
+
+class Utility(StrEnum):
+    COST = "COST"
+    APPROVAL = "APPROVAL"
+    ORDINAL = "ORDINAL"
+    CUMULATIVE = "CUMULATIVE"
+    COST_ORDINAL = "COST_ORDINAL"
+    COST_CUMULATIVE = "COST_CUMULATIVE"
+
+
+class StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class ConstraintConfig(StrictModel):
+    key: Literal["CATEGORY", "DISTRICT"]
+    value: str  # specific value or "*" for all
+    bound: Literal["UPPER", "LOWER"]
+    budget_ratio: float | None = None
+    strategy: Strategy | None = None
+
+
+class RunnerConfig(StrictModel):
     solver_type: Solver
-    solver_options: dict | None
+    # keys MUST be valid solver-constructor kwargs (T10 contract)
+    solver_options: dict[str, Any] = {}
     source_type: Source
-    utility_type: NotRequired[Utility]
+    utility_type: Utility | None = None
     source_directory_path: str
-    constraints_configs_path: NotRequired[str]
-    constraints_configs: NotRequired[list["ConstraintConfig"]]
-    deduplicate_objectives: NotRequired[bool]
-    results_base_path: str
+    constraints_configs_path: str | None = None
+    constraints_configs: list[ConstraintConfig] | None = None
+    deduplicate_objectives: bool = False
+    results_base_path: str | None = None  # None -> experiment default
 
 
-class ExperimentConfig(TypedDict):
+class ExperimentConfig(StrictModel):
     concurrency: int
     experiment_results_base_path: str
     runner_configs: list[RunnerConfig]
 
 
-class SolverSpec(TypedDict):
+class SolverSpec(StrictModel):
     type: Solver
-    options: NotRequired[dict]
+    options: dict[str, Any] = {}  # constructor kwargs (T10)
 
 
-class RunnerConfigsGenerator(TypedDict):
+class RunnerConfigsGenerator(StrictModel):
     solvers: list[SolverSpec]
     source_type: Source
     sources: list[str]
-    constraints_configs_path: NotRequired[str]
-    deduplicate_objectives: NotRequired[bool]
+    constraints_configs_path: str | None = None
+    deduplicate_objectives: bool = False
 
 
-class CompactExperimentConfig(TypedDict):
-    compact_config: bool
+class CompactExperimentConfig(StrictModel):
+    compact_config: Literal[True]
     concurrency: int
     experiment_results_base_path: str
     runner_configs_generator: RunnerConfigsGenerator
 
 
-class ConstraintConfig(TypedDict):
-    key: Literal["CATEGORY", "DISTRICT"]
-    value: str  # specific value or "*" for all
-    bound: Literal["UPPER", "LOWER"]
-    budget_ratio: NotRequired[float]
-    strategy: NotRequired[Strategy]
-
-
-class RunnerResult(TypedDict):
+class RunnerResult(StrictModel):
     time: float
     solver: Solver
-    solver_options: dict | None
+    solver_options: dict[str, Any]
     source_type: Source
     utility_type: Utility
     source_path: str

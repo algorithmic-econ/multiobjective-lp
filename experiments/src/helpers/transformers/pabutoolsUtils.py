@@ -9,10 +9,10 @@ District: TypeAlias = str
 AgentId: TypeAlias = str
 
 _VOTE_TYPE_TO_UTILITY: dict[str, Utility] = {
-    "approval": "COST",
-    "ordinal": "COST_ORDINAL",
-    "cumulative": "COST_CUMULATIVE",
-    "choose-1": "COST",
+    "approval": Utility.COST,
+    "ordinal": Utility.COST_ORDINAL,
+    "cumulative": Utility.COST_CUMULATIVE,
+    "choose-1": Utility.COST,
 }
 
 
@@ -21,11 +21,10 @@ def detect_utility_from_instances(
 ) -> Utility:
     vote_types = set()
     for instance in instances.values():
-        if "vote_type" not in instance.meta:
-            raise ValueError(
-                f"Instance missing vote_type in meta: {instance.meta}"
-            )
-        vote_types.add(instance.meta["vote_type"])
+        meta = instance.meta or {}
+        if "vote_type" not in meta:
+            raise ValueError(f"Instance missing vote_type in meta: {meta}")
+        vote_types.add(meta["vote_type"])
 
     if len(vote_types) > 1:
         raise ValueError(
@@ -61,11 +60,8 @@ def load_pabutools_by_district(
     for filename in relevant_files:
         if filename.endswith(".pb"):
             instance, profile = parse_pabulib(filename)
-            district = (
-                instance.meta["subunit"]
-                if "subunit" in instance.meta
-                else "citywide"
-            )
+            meta = instance.meta or {}
+            district = meta["subunit"] if "subunit" in meta else "citywide"
             instances[district] = instance
             profiles[district] = profile
     return instances, profiles

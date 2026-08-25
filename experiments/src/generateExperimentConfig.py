@@ -14,24 +14,9 @@ from helpers.utils.utils import write_to_json
 
 Mode = Literal["citywide", "independent_districts"]
 
-SOLVER_CHOICES: List[str] = [
-    "SUMMING",
-    "MES_ADD1",
-    "MES_CONSTRAINT",
-    "MES_UTILS",
-    "MES_EXPONENTIAL",
-    "GREEDY",
-    "PHRAGMEN",
-]
+SOLVER_CHOICES: List[str] = [solver.value for solver in Solver]
 
-UTILITY_CHOICES: List[str] = [
-    "COST",
-    "APPROVAL",
-    "ORDINAL",
-    "CUMULATIVE",
-    "COST_ORDINAL",
-    "COST_CUMULATIVE",
-]
+UTILITY_CHOICES: List[str] = [utility.value for utility in Utility]
 
 # (option_name, kind, default_or_None) -- kind in {"float","int","bool"}.
 # Numeric blank input -> key omitted (solver falls back to in-code default).
@@ -56,6 +41,10 @@ SOLVER_OPTION_SPECS: dict[str, list[tuple[str, str, object | None]]] = {
     "SUMMING": [
         ("use_gurobi", "bool", False),
     ],
+    # binding-backed, no options (T10)
+    "STV": [],
+    "SOLID_COALITION_REFINEMENT": [],
+    "EXPANDING_APPROVALS": [],
 }
 
 
@@ -135,32 +124,27 @@ def generate_experiment_config(
         list(utilities) if utilities else [None]
     )
 
-    runner_configs: List[RunnerConfig] = []
-    for path in paths:
-        for solver, options in solvers_with_options:
-            for utility in utility_iter:
-                config: RunnerConfig = {
-                    "solver_type": solver,
-                    "solver_options": options,
-                    "source_type": source_type,
-                    "source_directory_path": str(path),
-                    "results_base_path": experiment_results_base_path,
-                }
-                if utility is not None:
-                    config["utility_type"] = utility
-                if constraints_configs_path:
-                    config["constraints_configs_path"] = (
-                        constraints_configs_path
-                    )
-                if deduplicate_objectives:
-                    config["deduplicate_objectives"] = True
-                runner_configs.append(config)
+    runner_configs: List[RunnerConfig] = [
+        RunnerConfig(
+            solver_type=solver,
+            solver_options=options,
+            source_type=source_type,
+            source_directory_path=str(path),
+            results_base_path=experiment_results_base_path,
+            utility_type=utility,
+            constraints_configs_path=constraints_configs_path,
+            deduplicate_objectives=deduplicate_objectives,
+        )
+        for path in paths
+        for solver, options in solvers_with_options
+        for utility in utility_iter
+    ]
 
-    return {
-        "concurrency": concurrency,
-        "experiment_results_base_path": experiment_results_base_path,
-        "runner_configs": runner_configs,
-    }
+    return ExperimentConfig(
+        concurrency=concurrency,
+        experiment_results_base_path=experiment_results_base_path,
+        runner_configs=runner_configs,
+    )
 
 
 if __name__ == "__main__":
@@ -252,5 +236,7 @@ if __name__ == "__main__":
 
     output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    write_to_json(output_path, config)
+    write_to_json(
+        output_path, config.model_dump(mode="json", exclude_none=True)
+    )
     print(f"Generated experiment configuration saved to {output_path}")

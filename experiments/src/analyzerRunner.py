@@ -27,50 +27,61 @@ def analyze_runner_result(
 ) -> AnalyzerResult | None:
     logger.info("Analyse result", extra={"path": runner_result_path})
     try:
-        solver_result: RunnerResult = read_from_json(runner_result_path)
-        problem = read_lp_file(solver_result["problem_path"])
+        solver_result = RunnerResult.model_validate(
+            read_from_json(runner_result_path)
+        )
+        problem = read_lp_file(solver_result.problem_path)
         problem = enhance_problem_from_solver_result(solver_result, problem)
-        analyzer_result = get_metrics(metrics, problem)
-        return {
-            "problem_path": runner_result_path.as_posix(),
-            "time": solver_result["time"],
-            "city": solver_result["source_path"]
-            .split("/")[-1]
-            .replace(".pb", ""),
-            "solver": solver_result["solver"],
-            "solver_options": solver_result["solver_options"],
-            "constraints_configs": solver_result["constraints_configs"],
-            "utility": solver_result["utility_type"],
-        } | analyzer_result
+        metric_values = get_metrics(metrics, problem)
+        return AnalyzerResult(
+            problem_path=runner_result_path.as_posix(),
+            metrics=metrics,
+            time=solver_result.time,
+            city=Path(solver_result.source_path).name.replace(".pb", ""),
+            solver=solver_result.solver,
+            solver_options=solver_result.solver_options,
+            constraints_configs=solver_result.constraints_configs,
+            utility=solver_result.utility_type,
+            **metric_values,
+        )
     except Exception as err:
-        # TODO: return empty result with metadata isntead of None
+        # TODO: return empty result with metadata instead of None (T24)
         logger.error(
             "Failed to analyze results",
             extra={"problem": runner_result_path, "error": err},
         )
 
 
-def main(config: AnalyzerConfig, console_output_limit: int | None = None):
+def main(
+    config: AnalyzerConfig | dict, console_output_limit: int | None = None
+):
+    config = AnalyzerConfig.model_validate(config)
     logger.info("Start analysis", extra={"config": config})
     runner_results = [
         result_path
-        for result_path in Path(
-            config["experiment_results_base_path"]
-        ).iterdir()
+        for result_path in Path(config.experiment_results_base_path).iterdir()
         if result_path.is_file() and result_path.suffix == ".json"
     ]
 
-    Path(config["analyzer_result_path"]).mkdir(parents=True, exist_ok=True)
+    Path(config.analyzer_result_path).mkdir(parents=True, exist_ok=True)
 
     with multiprocessing.Pool(processes=3, initializer=setup_logging) as pool:
         analysis = pool.starmap(
             analyze_runner_result,
-            zip(runner_results, repeat(config["metrics"])),
+            zip(runner_results, repeat(config.metrics)),
         )
         result_path = Path(
-            f"{config['analyzer_result_path']}metrics-{config['experiment_results_base_path'].split('/')[-2]}.json"
+            f"{config.analyzer_result_path}metrics-{config.experiment_results_base_path.split('/')[-2]}.json"
         )
-        write_to_json(result_path, analysis)
+        write_to_json(
+            result_path,
+            [
+                row.model_dump(mode="json", exclude_none=True)
+                if row is not None
+                else None
+                for row in analysis
+            ],
+        )
 
     markdown_output = transform_metrics_to_markdown_table(
         result_path, console_output_limit
@@ -81,5 +92,4 @@ def main(config: AnalyzerConfig, console_output_limit: int | None = None):
 if __name__ == "__main__":
     # Example: python analyzerRunner.py resources/input/analyzer-config/sample-analysis.json
     setup_logging()
-    analyzer_config: AnalyzerConfig = read_from_json(Path(sys.argv[1]))
-    main(analyzer_config, 25)
+    main(read_from_json(Path(sys.argv[1])), 25)

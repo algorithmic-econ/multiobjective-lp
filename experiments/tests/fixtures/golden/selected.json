@@ -2,7 +2,7 @@
   "GREEDY": {
     "constraints_configs": [],
     "deduplicate_objectives": false,
-    "instance_size": 11,
+    "instance_size": 10,
     "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_GREEDY.lp",
     "selected": [
       "V_BO.D10.12_24",
@@ -19,7 +19,7 @@
   "MES_ADD1": {
     "constraints_configs": [],
     "deduplicate_objectives": false,
-    "instance_size": 11,
+    "instance_size": 10,
     "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1.lp",
     "selected": [
       "V_BO.D10.12_24",
@@ -36,7 +36,7 @@
   "MES_UTILS": {
     "constraints_configs": [],
     "deduplicate_objectives": false,
-    "instance_size": 11,
+    "instance_size": 10,
     "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS.lp",
     "selected": [
       "V_BO.D10.8_24",

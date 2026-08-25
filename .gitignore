@@ -15,3 +15,6 @@ dist/
 
 experiments/sample-experiment/results
 papers/
+
+# local agent worktrees
+.claude/worktrees/
