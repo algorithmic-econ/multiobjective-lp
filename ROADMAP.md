@@ -206,8 +206,8 @@ Deps: T10 · GH: — · PR: [#55](https://github.com/algorithmic-econ/multiobjec
 AC: malformed config → ValidationError with field path (test); all tests + e2e green; pyright green on models; add `pydantic` dep.
 Verify: pytest; run sample; feed broken config.
 
-#### [ ] T20 Extract shared pipeline lib
-Deps: T19 · GH: —
+#### [x] T20 Extract shared pipeline lib
+Deps: T19 · GH: — · PR: [#56](https://github.com/algorithmic-econ/multiobjective-lp/pull/56)
 - Pure-function lib under `experiments/src/` package: config expansion (kill in-place mutation in experimentRunner), problem pipeline steps (load pabulib → district split → transform → cache → solve → persist), analyzer steps, result cache.
 - pathlib everywhere; dedupe filename logic (`problemRunner.py:85` ↔ `resultCache.py:52`); kill trailing-slash f-string concat; un-hardcode analyzer `Pool(processes=3)` → config field.
 - Runner scripts become thin orchestration (~50 lines); unit tests for extracted fns (expansion, cache key, path resolution).
