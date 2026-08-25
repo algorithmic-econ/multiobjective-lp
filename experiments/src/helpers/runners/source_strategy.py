@@ -8,10 +8,10 @@ from helpers.runners.model import (
     Source,
     Utility,
 )
-from helpers.transformers.pabutoolsToMoLp import (
+from helpers.transformers.pabutools_to_molp import (
     pabutools_to_multi_objective_lp,
 )
-from helpers.transformers.pabutoolsUtils import (
+from helpers.transformers.pabutools_utils import (
     detect_utility_from_instances,
     load_pabutools_by_district,
 )

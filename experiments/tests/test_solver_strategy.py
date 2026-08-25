@@ -4,7 +4,7 @@ import pytest
 from pulp import LpSolver
 
 from helpers.runners.model import Solver
-from helpers.runners.solverStrategy import get_solver
+from helpers.runners.solver_strategy import get_solver
 
 
 @pytest.mark.parametrize("solver_type", list(Solver))

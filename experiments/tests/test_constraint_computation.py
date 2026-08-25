@@ -1,6 +1,6 @@
 import pytest
 
-from helpers.transformers.pabutoolsToMoLp import (
+from helpers.transformers.pabutools_to_molp import (
     compute_category_lb,
     compute_district_lb,
     compute_voter_category_shares,

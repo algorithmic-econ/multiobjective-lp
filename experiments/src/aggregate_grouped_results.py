@@ -162,7 +162,7 @@ def main(result: Union[dict, List[dict]]) -> None:
 
 
 if __name__ == "__main__":
-    # Example usage: python aggregateResults.py path/to/results.json
+    # Example usage: python aggregate_results.py path/to/results.json
     if len(sys.argv) > 1:
         analyzer_result = read_from_json(Path(sys.argv[1]))
         main(analyzer_result)

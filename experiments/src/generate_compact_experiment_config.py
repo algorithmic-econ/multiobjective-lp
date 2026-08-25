@@ -3,7 +3,7 @@ from typing import List
 
 import questionary
 
-from generateExperimentConfig import (
+from generate_experiment_config import (
     discover_sources,
     filter_paths,
     prompt_allowed_solvers,

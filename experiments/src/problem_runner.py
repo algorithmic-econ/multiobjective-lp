@@ -2,8 +2,8 @@ import logging
 from pathlib import Path
 
 from helpers.runners.model import RunnerConfig, RunnerResult
-from helpers.runners.solverStrategy import get_solver
-from helpers.runners.sourceStrategy import (
+from helpers.runners.solver_strategy import get_solver
+from helpers.runners.source_strategy import (
     load_and_transform_strategy,
     resolve_constraints_configs,
 )
@@ -12,7 +12,7 @@ from helpers.utils.result_naming import (
     new_problem_id,
     result_filename,
 )
-from helpers.utils.resultCache import is_result_present
+from helpers.utils.result_cache import is_result_present
 from helpers.utils.utils import write_to_json
 
 logger = logging.getLogger(__name__)

@@ -77,7 +77,7 @@ def test_solver_enum_has_all_ten():
 
 
 def test_strenum_formats_to_value_in_filenames():
-    # problemRunner/resultCache build filenames via f-strings — contract
+    # problem_runner/result_cache build filenames via f-strings — contract
     assert f"x_{Utility.COST_ORDINAL}_{Solver.GREEDY}.lp" == (
         "x_COST_ORDINAL_GREEDY.lp"
     )
@@ -114,7 +114,7 @@ def test_metadata_metric_dropped():
 
 
 def test_incompatible_meta_is_cache_miss(tmp_path):
-    from helpers.utils.resultCache import is_metadata_content_matching
+    from helpers.utils.result_cache import is_metadata_content_matching
 
     meta_path = tmp_path / "meta_bad.json"
     meta_path.write_text('{"solver": "GREEDY"}')
@@ -129,7 +129,7 @@ def test_incompatible_meta_is_cache_miss(tmp_path):
 
 
 def test_is_result_present_matches_existing_cache_entry(tmp_path):
-    from helpers.utils.resultCache import is_result_present
+    from helpers.utils.result_cache import is_result_present
 
     config = RunnerConfig.model_validate(
         {
@@ -164,7 +164,7 @@ def test_is_result_present_matches_existing_cache_entry(tmp_path):
 
 
 def test_is_result_present_misses_on_different_solver(tmp_path):
-    from helpers.utils.resultCache import is_result_present
+    from helpers.utils.result_cache import is_result_present
 
     config = RunnerConfig.model_validate(
         {

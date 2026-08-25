@@ -1,1 +1,1 @@
-python ../src/experimentRunner.py experiment-config.jsonc
+python ../src/experiment_runner.py experiment-config.jsonc
