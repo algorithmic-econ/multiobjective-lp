@@ -104,6 +104,38 @@ def test_build_dataframe_normalization_and_clip(tmp_path):
     assert (sum_rows["Value"] <= 1.05).all()
 
 
+def test_build_dataframe_normalization_with_duplicate_city_baseline(tmp_path):
+    """Regression (T23): the baseline solver having >1 row for the same city
+    - the real shape, one row per utility - used to raise
+    `ValueError: truth value of a Series is ambiguous`. The 1-row-per-city
+    golden fixture never hit it."""
+    from aggregate_results import build_dataframe
+
+    template = json.loads(_rows_with_time(tmp_path).read_text())[0]
+
+    def _row(solver: str, utility: str, total: float) -> AnalyzerResult:
+        entry = dict(template)
+        entry["solver"] = solver
+        entry["utility"] = utility
+        entry["SUM_OBJECTIVES"] = {"sum": total}
+        return AnalyzerResult.model_validate(entry)
+
+    rows = [
+        # two GREEDY rows, same city, different utilities -> baseline mean 200
+        _row("GREEDY", "COST", 100.0),
+        _row("GREEDY", "COST_ORDINAL", 300.0),
+        _row("MES_ADD1", "COST", 400.0),
+    ]
+
+    df = build_dataframe(rows, _base_config(normalize_baseline="GREEDY"))
+
+    sum_rows = df[df["Metric"] == "Sum Objectives (rel. to Greedy)"]
+    values = dict(zip(sum_rows["Solver"], sum_rows["Value"]))
+    # GREEDY: mean(100/200, 300/200) == 1.0; MES_ADD1: 400/200 == 2.0
+    assert values["GREEDY"] == pytest.approx(1.0)
+    assert values["MES_ADD1"] == pytest.approx(2.0)
+
+
 def test_build_dataframe_filters(tmp_path):
     from aggregate_results import build_dataframe, load_rows
 
