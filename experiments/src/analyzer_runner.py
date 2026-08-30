@@ -110,7 +110,8 @@ def main(
 
 
 if __name__ == "__main__":
-    # Example: python analyzer_runner.py resources/input/analyzer-config/sample-analysis.json
+    # Example (from sample-experiment/):
+    #   python ../src/analyzer_runner.py sample-analysis-config.jsonc
     setup_logging()
     _, failed = main(read_from_json(Path(sys.argv[1])), 25)
     if failed:

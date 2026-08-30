@@ -256,11 +256,15 @@ Deps: T20 · GH: — · PR: [#60](https://github.com/algorithmic-econ/multiobjec
 AC: corrupt meta file → named structured error, not silent None; no filename-as-schema parsing.
 Verify: corrupt a meta, run analyzer; e2e golden.
 
-#### [ ] T25 Dead code sweep
-Deps: T21 · GH: —
-- To `archived_code/`: `preflibToMuoblp.py`, `explore.ipynb`, dead `pabutoolsUtils.filter_projects`/`by_district`, anything else unreferenced (grep imports).
+#### [x] T25 Dead code sweep
+Deps: T21 · GH: — · PR: [#61](https://github.com/algorithmic-econ/multiobjective-lp/pull/61)
+- To `archived_code/`: ~~`preflibToMuoblp.py`~~ (see below), `explore.ipynb`, dead `pabutoolsUtils.filter_projects`/`by_district`, anything else unreferenced (grep imports).
 
 > **Stale-check 2026-08-25** — post-T21 name `preflib_to_muoblp.py` (0 refs, confirmed). `explore.ipynb` at `experiments/src/explore.ipynb` (only ref = ruff-format exclude `experiments/pyproject.toml:57`). `pabutools_utils.py:70,76` `filter_projects`/`by_district` = definitions only, 0 call sites (`load_pabutools_by_district:43` IS used — don't touch). Add: commented dead block `helpers/analyzers/metrics.py:111-175`. Do NOT classify `generate_*`/`aggregate_*` as dead here — they're live unconsolidated entrypoints owned by T22/T23. **`plans/T25-plan.md` assumes T22/T23 already landed — they have not.**
+>
+> **Corrections from the T25 session (2026-08-30)** — the stale-check above was itself stale on two points: (a) `metrics.py` block is `111-174`, not `111-175` (file is 174 lines); (b) T22/T23 HAD landed by execution time (#58/#59, plus T24 #60), so `aggregate_grouped_results.py` was already archived and is not a T25 root. Also: `plans/T25-plan.md` targets `archived_code/experiments/` — no such dir; convention is flat `experiments/archived_code/` (3rd ticket in a row to hit this). Its AC grep `by_district\b` self-matches `load_pabutools_by_district` — use `grep -rnw`.
+>
+> **`preflib_to_muoblp.py` is NOT dead — DO NOT archive it** (user directive, T25 session). It is *new, not-yet-wired* code staged for a future PREFLIB branch in `helpers/runners/source_strategy.py::load_and_transform_strategy` (today `PABUTOOLS`-only, `:42-62`). Unreferenced ≠ dead here. This overrides the ticket bullet above and narrows the AC: "no unreferenced module in `experiments/src`" holds **except** this one intentional forward-looking module.
 
 AC: no unreferenced module in experiments/src; ruff F401 clean.
 Verify: pytest + e2e; grep archived symbols.

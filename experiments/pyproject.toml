@@ -53,9 +53,6 @@ markers = ["e2e: end-to-end golden pipeline test"]
 line-length = 79
 extend-exclude = ["archived_code"]
 
-[tool.ruff.format]
-exclude = ["src/explore.ipynb"]
-
 [tool.ruff.lint.per-file-ignores]
 "tests/conftest.py" = ["F401", "E402"]  # register_assert_rewrite before imports
 
