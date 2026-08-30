@@ -237,7 +237,7 @@ AC: one interactive + one sweep entrypoint; zero dup helpers; generated config v
 Verify: generate → run; pytest on non-interactive helpers.
 
 #### [x] T23 Consolidate aggregators
-Deps: T21 · GH: — · PR: TBD
+Deps: T21 · GH: — · PR: [#59](https://github.com/algorithmic-econ/multiobjective-lp/pull/59)
 - Merge `aggregateResults.py` + `aggregateGroupedResults.py` → one parameterized plotting script (filters, grouping, output paths via Pydantic model); ~290 commented lines + hardcoded city filters → archived_code; fix broken `from src.helpers` imports.
 
 > **Stale-check 2026-08-25** — post-T21 names `aggregate_results.py` (539L; commented blocks `247-428` + `431-539` ≈ 291L, matches "~290") / `aggregate_grouped_results.py` (170L). Broken imports live at `aggregate_results.py:11` + `aggregate_grouped_results.py:11`. **"Hardcoded city filters" is not literal** — no city-name lists in either file today, only generic `{city}_{year}` parsing (`aggregate_grouped_results.py:37-46`); `plans/T23-plan.md:5` cites Zabrze/Amsterdam filters — re-derive before trusting. `aggregate_results.py:16` already carries a `# … (T23 rewrites aggregators on models)` marker.
