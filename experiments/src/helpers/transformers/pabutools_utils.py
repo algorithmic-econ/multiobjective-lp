@@ -1,7 +1,6 @@
 from typing import TypeAlias
-from collections.abc import Callable
 import os
-from pabutools.election import Instance, Profile, parse_pabulib, Project
+from pabutools.election import Instance, Profile, parse_pabulib
 
 from helpers.runners.model import Utility
 
@@ -65,13 +64,3 @@ def load_pabutools_by_district(
             instances[district] = instance
             profiles[district] = profile
     return instances, profiles
-
-
-def filter_projects(
-    condition: Callable[[Project], bool], projects: dict[AgentId, Project]
-) -> list[AgentId]:
-    return [p_id for p_id, project in projects.items() if condition(project)]
-
-
-def by_district(district: str) -> Callable[[Project], bool]:
-    return lambda project: project.district == district
