@@ -87,6 +87,19 @@ class CompactExperimentConfig(StrictModel):
     runner_configs_generator: RunnerConfigsGenerator
 
 
+class SweepSpec(StrictModel):
+    mode: Literal["citywide", "independent_districts"]
+    root_path: str
+    pattern_groups: list[list[str]] = []
+    solvers: list[SolverSpec]
+    utilities: list[Utility] | None = None
+    concurrency: int = 4
+    experiment_results_base_path: str
+    constraints_configs_path: str | None = None
+    deduplicate_objectives: bool = False
+    output_path: str
+
+
 class RunnerResult(StrictModel):
     time: float
     solver: Solver

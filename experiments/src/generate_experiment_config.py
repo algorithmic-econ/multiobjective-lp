@@ -104,6 +104,36 @@ def filter_paths(
     ]
 
 
+def build_runner_configs(
+    paths: List[Path],
+    solvers_with_options: List[tuple[Solver, dict]],
+    utilities: List[Utility] | None,
+    source_type: Source,
+    experiment_results_base_path: str,
+    constraints_configs_path: str | None,
+    deduplicate_objectives: bool,
+) -> List[RunnerConfig]:
+    utility_iter: List[Utility | None] = (
+        list(utilities) if utilities else [None]
+    )
+
+    return [
+        RunnerConfig(
+            solver_type=solver,
+            solver_options=options,
+            source_type=source_type,
+            source_directory_path=str(path),
+            results_base_path=experiment_results_base_path,
+            utility_type=utility,
+            constraints_configs_path=constraints_configs_path,
+            deduplicate_objectives=deduplicate_objectives,
+        )
+        for path in paths
+        for solver, options in solvers_with_options
+        for utility in utility_iter
+    ]
+
+
 def generate_experiment_config(
     mode: Mode,
     source_type: Source,
@@ -120,25 +150,15 @@ def generate_experiment_config(
     if pattern_groups:
         paths = filter_paths(paths, pattern_groups)
 
-    utility_iter: List[Utility | None] = (
-        list(utilities) if utilities else [None]
+    runner_configs = build_runner_configs(
+        paths,
+        solvers_with_options,
+        utilities,
+        source_type,
+        experiment_results_base_path,
+        constraints_configs_path,
+        deduplicate_objectives,
     )
-
-    runner_configs: List[RunnerConfig] = [
-        RunnerConfig(
-            solver_type=solver,
-            solver_options=options,
-            source_type=source_type,
-            source_directory_path=str(path),
-            results_base_path=experiment_results_base_path,
-            utility_type=utility,
-            constraints_configs_path=constraints_configs_path,
-            deduplicate_objectives=deduplicate_objectives,
-        )
-        for path in paths
-        for solver, options in solvers_with_options
-        for utility in utility_iter
-    ]
 
     return ExperimentConfig(
         concurrency=concurrency,
