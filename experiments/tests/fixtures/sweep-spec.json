@@ -1,0 +1,11 @@
+{
+    "mode": "citywide",
+    "root_path": "tests/fixtures/input",
+    "solvers": [
+        {"type": "GREEDY"},
+        {"type": "PHRAGMEN", "options": {"kappa": 0.0, "increasing_scalings": true}},
+        {"type": "PHRAGMEN", "options": {"kappa": 1.0, "increasing_scalings": false}}
+    ],
+    "experiment_results_base_path": "tests/fixtures/tmp-results/",
+    "output_path": "tests/fixtures/tmp-output/sweep-config.json"
+}
