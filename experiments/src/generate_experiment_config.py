@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List, Literal
 
@@ -14,6 +15,8 @@ from helpers.runners.model import (
     Utility,
 )
 from helpers.utils.utils import write_to_json
+
+logger = logging.getLogger(__name__)
 
 Mode = Literal["citywide", "independent_districts"]
 
@@ -295,4 +298,7 @@ if __name__ == "__main__":
     write_to_json(
         output_path, config.model_dump(mode="json", exclude_none=True)
     )
-    print(f"Generated experiment configuration saved to {output_path}")
+    logger.info(
+        "Generated experiment configuration saved",
+        extra={"output_path": str(output_path)},
+    )
