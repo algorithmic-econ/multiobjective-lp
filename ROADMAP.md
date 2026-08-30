@@ -269,11 +269,13 @@ Deps: T21 · GH: — · PR: [#61](https://github.com/algorithmic-econ/multiobjec
 AC: no unreferenced module in experiments/src; ruff F401 clean.
 Verify: pytest + e2e; grep archived symbols.
 
-#### [ ] T26 Experiments coverage sweep
-Deps: T20, T24 · GH: —
+#### [x] T26 Experiments coverage sweep
+Deps: T20, T24 · GH: — · PR: [#62](https://github.com/algorithmic-econ/multiobjective-lp/pull/62)
 - Unit tests: metrics computation (tiny fixtures), result cache hit/miss/invalidation, utils jsonc read/write roundtrip, generator pure helpers. Keep existing 54 transform tests.
 
 > **Stale-check 2026-08-25** — **already satisfied, drop from scope**: jsonc read/write roundtrip (`tests/test_utils.py:9,15`, added T01) and cache hit/miss (`tests/test_models.py:116,131,166`, added T20). Remaining real gaps: metrics 2/6 covered (`test_metrics.py` has TOTAL_COST + SUM_OBJECTIVES; missing EXCLUSION_RATION, EJR_PLUS, CONSTRAINTS, INSTANCE_SIZE); cache *content-based* invalidation (`result_cache.py:28-40`, `constraints_configs`/`deduplicate_objectives` mismatch) untested; no-test modules = `source_strategy.py`, `enhance_from_solver_result.py`, `logger.py`, `pabutools_utils.py`, generator helpers. "54 transform tests" → 55 by `def test_` count (suite total 87 defs / 104 collected). **`plans/T26-plan.md` STALE** (`pipeline/`, `tests/test_pipeline_*.py`).
+>
+> **Corrections from the T26 session (2026-08-30)** — the stale-check above was accurate on the metrics + cache gaps; the *plan doc* was worse than flagged. Beyond the `pipeline/` paths: its `exclusion_ratio` expectation of `0.5` on `make_tiny_problem` is arithmetically wrong (both objectives evaluate to 100 → `0.0`), and 2 of its 4 proposed cache tests already existed. Also: cache tests live in `tests/test_models.py`, not a `test_pipeline_cache.py`; the `Metric` enum member is spelled `EXCLUSION_RATION` (typo, live, load-bearing — it is the on-disk key in every metrics json + golden); pytest-cov/coverage were already installed. Suite was 139 (not 104) at execution time.
 
 AC: every lib module imported by ≥1 test; cache-hit-skips-solve asserted.
 Verify: `pytest --cov` informal; CI green.

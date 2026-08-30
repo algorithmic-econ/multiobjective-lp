@@ -6,6 +6,7 @@ from pydantic import ValidationError
 
 from helpers.analyzers.model import AnalyzerConfig
 from helpers.runners.model import (
+    ConstraintConfig,
     ExperimentConfig,
     RunnerConfig,
     RunnerResult,
@@ -128,39 +129,98 @@ def test_incompatible_meta_is_cache_miss(tmp_path):
     assert is_metadata_content_matching(meta_path, config) is False
 
 
+# Filename stem the cache regex must match for a GREEDY/COST run on
+# krakow_2024_mini (see helpers/utils/result_naming.py).
+_CACHE_ENTRY_STEM = "07-20T10-00-00_ab12_krakow_2024_mini_COST_GREEDY"
+
+
+def _write_cache_entry(tmp_path, *, write_lp: bool = True, **meta_overrides):
+    """Write a matching meta json (+ sibling problem lp) into tmp_path."""
+    fields = {
+        "time": 0.1,
+        "solver": "GREEDY",
+        "solver_options": {},
+        "source_type": "PABUTOOLS",
+        "utility_type": "COST",
+        "source_path": "input/krakow_2024_mini",
+        "constraints_configs": [],
+        "deduplicate_objectives": False,
+        "problem_path": "ignored",
+        "instance_size": 1,
+        "selected": [],
+    }
+    fields.update(meta_overrides)
+    meta = RunnerResult.model_validate(fields)
+    (tmp_path / f"meta_{_CACHE_ENTRY_STEM}.json").write_text(
+        json.dumps(meta.model_dump(mode="json", exclude_none=True))
+    )
+    if write_lp:
+        (tmp_path / f"problem_{_CACHE_ENTRY_STEM}.lp").write_text("")
+
+
+def _cache_config(tmp_path, **overrides) -> RunnerConfig:
+    fields = {
+        "solver_type": "GREEDY",
+        "source_type": "PABUTOOLS",
+        "source_directory_path": "input/krakow_2024_mini",
+        "results_base_path": str(tmp_path) + "/",
+    }
+    fields.update(overrides)
+    return RunnerConfig.model_validate(fields)
+
+
 def test_is_result_present_matches_existing_cache_entry(tmp_path):
     from helpers.utils.result_cache import is_result_present
 
-    config = RunnerConfig.model_validate(
-        {
-            "solver_type": "GREEDY",
-            "source_type": "PABUTOOLS",
-            "source_directory_path": "input/krakow_2024_mini",
-            "results_base_path": str(tmp_path) + "/",
-        }
-    )
-    (
-        tmp_path
-        / "problem_07-20T10-00-00_ab12_krakow_2024_mini_COST_GREEDY.lp"
-    ).write_text("")
-    meta = RunnerResult(
-        time=0.1,
-        solver="GREEDY",
-        solver_options={},
-        source_type="PABUTOOLS",
-        utility_type="COST",
-        source_path="input/krakow_2024_mini",
-        constraints_configs=[],
-        deduplicate_objectives=False,
-        problem_path="ignored",
-        instance_size=1,
-        selected=[],
-    )
-    (
-        tmp_path / "meta_07-20T10-00-00_ab12_krakow_2024_mini_COST_GREEDY.json"
-    ).write_text(json.dumps(meta.model_dump(mode="json", exclude_none=True)))
+    _write_cache_entry(tmp_path)
 
-    assert is_result_present(config, Utility.COST) is True
+    assert is_result_present(_cache_config(tmp_path), Utility.COST) is True
+
+
+def test_is_result_present_misses_on_different_solver_options(tmp_path):
+    # Filename still matches the regex; solver_options content does not.
+    from helpers.utils.result_cache import is_result_present
+
+    _write_cache_entry(tmp_path)
+    config = _cache_config(tmp_path, solver_options={"timeLimit": 10})
+
+    assert is_result_present(config, Utility.COST) is False
+
+
+def test_is_result_present_misses_on_different_constraints_configs(tmp_path):
+    from helpers.utils.result_cache import is_result_present
+
+    _write_cache_entry(tmp_path)
+    config = _cache_config(
+        tmp_path,
+        constraints_configs=[
+            ConstraintConfig(
+                key="DISTRICT", value="*", bound="UPPER", budget_ratio=0.5
+            )
+        ],
+    )
+
+    assert is_result_present(config, Utility.COST) is False
+
+
+def test_is_result_present_misses_on_different_deduplicate_objectives(
+    tmp_path,
+):
+    from helpers.utils.result_cache import is_result_present
+
+    _write_cache_entry(tmp_path)
+    config = _cache_config(tmp_path, deduplicate_objectives=True)
+
+    assert is_result_present(config, Utility.COST) is False
+
+
+def test_is_result_present_misses_when_lp_file_absent(tmp_path):
+    # Meta matches on every field, but the run's .lp was never written.
+    from helpers.utils.result_cache import is_result_present
+
+    _write_cache_entry(tmp_path, write_lp=False)
+
+    assert is_result_present(_cache_config(tmp_path), Utility.COST) is False
 
 
 def test_is_result_present_misses_on_different_solver(tmp_path):
