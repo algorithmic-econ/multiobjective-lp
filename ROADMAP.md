@@ -282,8 +282,8 @@ Verify: `pytest --cov` informal; CI green.
 
 ### Phase 4 — Core micro-fixes + docs
 
-#### [ ] T27 Core micro-fixes (approved subset only)
-Deps: T02, T05 · GH: —
+#### [x] T27 Core micro-fixes (approved subset only)
+Deps: T02, T05 · GH: — · PR: [#63](https://github.com/algorithmic-econ/multiobjective-lp/pull/63)
 - Mutable default args `objectives=[]`/`objectives_weights={}` → None-pattern (`multi_objective_lp.py:18`).
 - Writer `int(val)` silently truncates non-integer coefficients (`lp_writer_utils.py:51`) → raise/warn.
 - `__iadd__` appends to objectives list (in-code TODO, `multi_objective_lp.py:65`).
@@ -291,6 +291,8 @@ Deps: T02, T05 · GH: —
 - `read_lp_file` fragility (int-coerced coefs, "+"-only LHS split): document as known limitation, do NOT rewrite.
 
 > **Stale-check 2026-08-25** — line refs: mutable defaults at `multi_objective_lp.py:20-21` (not `:18`); `__iadd__` TODO at `:68` (not `:65`); `lp_writer_utils.py:51` correct. `core/example/` **does not exist** (not "empty"); dead link at `core/README.md:15`. `read_lp_file` int-coercion at `lp_reader_utils.py:57,118,127`, `"+"`-split at `:58,84`. Core has only `tests/test_import.py` (1 smoke test) — "unit test per fix" starts from zero scaffolding. Scope note: the pyright-ignore at `multi_objective_lp.py:19` says "fix in T27" but that fix is **not** in T27's bullets → owned by T30.
+>
+> **From the T27 session (2026-08-30)** — the stale-check above was accurate on every point (first one in P3/P4 that needed no correction); `core/example/` never existed in git history at all. Decisions taken: writer **raises** `ValueError` (not warn); example **written** (not link dropped); `__iadd__` appends expressions/variables to `objectives` and leaves pulp's scalar `objective` untouched. `:19` ignore comment retagged "fix in T30".
 
 AC: unit test per fix; core pytest + e2e golden identical.
 Verify: core pytest; write/read roundtrip test.
