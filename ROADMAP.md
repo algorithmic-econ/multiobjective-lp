@@ -245,8 +245,8 @@ Deps: T21 · GH: — · PR: [#59](https://github.com/algorithmic-econ/multiobjec
 AC: one aggregator; no commented-out blocks; produces plots from sample analysis output.
 Verify: run on sample metrics; ruff/pyright green.
 
-#### [ ] T24 Logging + error propagation
-Deps: T20 · GH: —
+#### [x] T24 Logging + error propagation
+Deps: T20 · GH: — · PR: [#60](https://github.com/algorithmic-econ/multiobjective-lp/pull/60)
 - analyzer broad `except → None` (loses metadata, in-code TODO) → structured error entry in results + nonzero failure summary.
 - `analysis_table` stops regex-parsing meta FILENAMES for semantics — read fields from meta json content (T19 model).
 - print → logging (table output stays print); remove remaining bare excepts.

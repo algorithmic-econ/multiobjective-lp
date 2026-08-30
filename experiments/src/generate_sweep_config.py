@@ -1,3 +1,4 @@
+import logging
 import sys
 from pathlib import Path
 
@@ -8,6 +9,8 @@ from generate_experiment_config import (
 )
 from helpers.runners.model import ExperimentConfig, Source, SweepSpec
 from helpers.utils.utils import read_from_json, write_to_json
+
+logger = logging.getLogger(__name__)
 
 
 def generate_from_spec(spec: SweepSpec) -> ExperimentConfig:
@@ -44,4 +47,7 @@ def main(spec_path: Path) -> Path:
 
 if __name__ == "__main__":
     generated = main(Path(sys.argv[1]))
-    print(f"Generated sweep experiment configuration saved to {generated}")
+    logger.info(
+        "Generated sweep experiment configuration saved",
+        extra={"output_path": str(generated)},
+    )

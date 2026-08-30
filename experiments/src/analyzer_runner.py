@@ -11,7 +11,12 @@ from helpers.analyzers.analysis_table import (
     transform_metrics_to_markdown_table,
 )
 from helpers.analyzers.metrics import get_metrics
-from helpers.analyzers.model import AnalyzerConfig, AnalyzerResult, Metric
+from helpers.analyzers.model import (
+    AnalyzerConfig,
+    AnalyzerFailure,
+    AnalyzerResult,
+    Metric,
+)
 from helpers.runners.model import RunnerResult
 from helpers.utils.enhance_from_solver_result import (
     enhance_problem_from_solver_result,
@@ -24,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 def analyze_runner_result(
     runner_result_path: Path, metrics: List[Metric]
-) -> AnalyzerResult | None:
+) -> AnalyzerResult | AnalyzerFailure:
     logger.info("Analyse result", extra={"path": runner_result_path})
     try:
         solver_result = RunnerResult.model_validate(
@@ -45,16 +50,19 @@ def analyze_runner_result(
             **metric_values,
         )
     except Exception as err:
-        # TODO: return empty result with metadata instead of None (T24)
-        logger.error(
-            "Failed to analyze results",
-            extra={"problem": runner_result_path, "error": err},
+        logger.exception(
+            "Failed to analyze result", extra={"problem": runner_result_path}
+        )
+        return AnalyzerFailure(
+            meta_path=runner_result_path.as_posix(),
+            error_type=type(err).__name__,
+            error_message=str(err),
         )
 
 
 def main(
     config: AnalyzerConfig | dict, console_output_limit: int | None = None
-):
+) -> tuple[int, int]:
     config = AnalyzerConfig.model_validate(config)
     logger.info("Start analysis", extra={"config": config})
     runner_results = [
@@ -81,19 +89,29 @@ def main(
             result_path,
             [
                 row.model_dump(mode="json", exclude_none=True)
-                if row is not None
-                else None
                 for row in analysis
             ],
         )
+
+    failed = sum(1 for row in analysis if isinstance(row, AnalyzerFailure))
+    ok = len(analysis) - failed
+    if failed:
+        logger.error(
+            "analysis failed for %d of %d results", failed, len(analysis)
+        )
+    else:
+        logger.info("analysis succeeded for all %d results", ok)
 
     markdown_output = transform_metrics_to_markdown_table(
         result_path, console_output_limit
     )
     print(markdown_output)
+    return ok, failed
 
 
 if __name__ == "__main__":
     # Example: python analyzer_runner.py resources/input/analyzer-config/sample-analysis.json
     setup_logging()
-    main(read_from_json(Path(sys.argv[1])), 25)
+    _, failed = main(read_from_json(Path(sys.argv[1])), 25)
+    if failed:
+        sys.exit(1)

@@ -46,6 +46,12 @@ class AnalyzerResult(StrictModel):
     TOTAL_COST: dict[str, Any] | None = None
 
 
+class AnalyzerFailure(StrictModel):
+    meta_path: str
+    error_type: str
+    error_message: str
+
+
 class AggregatorConfig(StrictModel):
     metrics_json_path: str
     output_path: str

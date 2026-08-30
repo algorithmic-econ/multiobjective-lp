@@ -363,4 +363,4 @@ def main(config_path: Path) -> Path:
 
 if __name__ == "__main__":
     result_path = main(Path(sys.argv[1]))
-    print(f"Chart saved to {result_path}")
+    logger.info("Chart saved", extra={"result_path": str(result_path)})
