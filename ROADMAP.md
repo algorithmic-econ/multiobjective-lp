@@ -227,7 +227,7 @@ AC: no camelCase filenames in experiments/src; sample scripts work; CI green.
 Verify: e2e golden; run sample; grep `src/[a-z]+[A-Z]`.
 
 #### [x] T22 Consolidate config generators
-Deps: T19, T21 · GH: — · PR: [feat/t22-config-generators](https://github.com/algorithmic-econ/multiobjective-lp/pull/PENDING)
+Deps: T19, T21 · GH: — · PR: [#58](https://github.com/algorithmic-econ/multiobjective-lp/pull/58)
 - Keep interactive generator (owns `discover_sources`/`filter_paths`/`prompt_*` helpers) as base; fold compact-config flow (delete ~50-line dup prompt loop); superseded `generateExperiment.py` → archived_code; rewrite hardcoded sweep generator atop shared helpers with sweep params from config.
 - Output via `model_dump` of T19 models.
 
