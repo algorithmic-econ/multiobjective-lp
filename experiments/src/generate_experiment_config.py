@@ -4,9 +4,12 @@ from typing import List, Literal
 import questionary
 
 from helpers.runners.model import (
+    CompactExperimentConfig,
     ExperimentConfig,
     RunnerConfig,
+    RunnerConfigsGenerator,
     Solver,
+    SolverSpec,
     Source,
     Utility,
 )
@@ -77,6 +80,18 @@ def prompt_solver_options(solver: str) -> dict:
             continue
         options[name] = float(raw) if kind == "float" else int(raw)
     return options
+
+
+def parse_pattern_groups(raw: str) -> List[List[str]] | None:
+    raw = raw.strip()
+    if not raw:
+        return None
+    groups = []
+    for group_str in raw.split(";"):
+        patterns = [p.strip() for p in group_str.split(",") if p.strip()]
+        if patterns:
+            groups.append(patterns)
+    return groups or None
 
 
 def discover_sources(mode: Mode, root_path: str) -> List[Path]:
@@ -168,15 +183,9 @@ def generate_experiment_config(
 
 
 if __name__ == "__main__":
-    # PLACEHOLDER - define long city/year pattern groups here when filtering needed.
-    # AND within group, OR across groups. Example:
-    pattern_groups = [
-        # ["krakow", "2020"],
-        ["krakow", "2021"],
-        ["warszawa", "2022"],
-        # ["amsterdam", "2020"],
-    ]
-    # pattern_groups: List[List[str]] | None = None
+    output_format = questionary.select(
+        "Output format:", choices=["full", "compact"]
+    ).ask()
 
     source_type = questionary.select(
         "Source type:",
@@ -191,6 +200,12 @@ if __name__ == "__main__":
     root = questionary.text("Source data directory:").ask()
     output = questionary.text("Experiment config json output path:").ask()
     results_base_path = questionary.text("Results base path:").ask()
+
+    pattern_groups_raw = questionary.text(
+        "Pattern groups (groups ';', patterns ',', blank = all):",
+        default="",
+    ).ask()
+    pattern_groups = parse_pattern_groups(pattern_groups_raw)
 
     allowed_solvers = prompt_allowed_solvers()
 
@@ -241,18 +256,39 @@ if __name__ == "__main__":
         "Deduplicate objectives?", default=False
     ).ask()
 
-    config = generate_experiment_config(
-        mode=mode,
-        source_type=source_type,
-        root_path=root,
-        experiment_results_base_path=results_base_path,
-        solvers_with_options=solvers_with_options,
-        # utilities=utilities,
-        pattern_groups=pattern_groups,
-        concurrency=concurrency,
-        constraints_configs_path=constraints_cfg,
-        deduplicate_objectives=deduplicate_objectives,
-    )
+    config: ExperimentConfig | CompactExperimentConfig
+    if output_format == "full":
+        config = generate_experiment_config(
+            mode=mode,
+            source_type=source_type,
+            root_path=root,
+            experiment_results_base_path=results_base_path,
+            solvers_with_options=solvers_with_options,
+            # utilities=utilities,
+            pattern_groups=pattern_groups,
+            concurrency=concurrency,
+            constraints_configs_path=constraints_cfg,
+            deduplicate_objectives=deduplicate_objectives,
+        )
+    else:
+        paths = discover_sources(mode, root)
+        if pattern_groups:
+            paths = filter_paths(paths, pattern_groups)
+        config = CompactExperimentConfig(
+            compact_config=True,
+            concurrency=concurrency,
+            experiment_results_base_path=results_base_path,
+            runner_configs_generator=RunnerConfigsGenerator(
+                solvers=[
+                    SolverSpec(type=solver, options=options)
+                    for solver, options in solvers_with_options
+                ],
+                source_type=source_type,
+                sources=[str(path) for path in paths],
+                constraints_configs_path=constraints_cfg,
+                deduplicate_objectives=deduplicate_objectives,
+            ),
+        )
 
     output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)

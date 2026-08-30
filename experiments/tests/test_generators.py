@@ -3,7 +3,10 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from generate_experiment_config import build_runner_configs
+from generate_experiment_config import (
+    build_runner_configs,
+    parse_pattern_groups,
+)
 from helpers.runners.model import (
     Solver,
     SolverSpec,
@@ -137,3 +140,31 @@ def test_main_writes_and_reads_back_valid_config(tmp_path):
     assert output_path == Path(spec_dict["output_path"])
     written = read_from_json(output_path)
     parse_experiment_config(written)
+
+
+def test_parse_pattern_groups_blank_returns_none():
+    assert parse_pattern_groups("") is None
+    assert parse_pattern_groups("   ") is None
+
+
+def test_parse_pattern_groups_single_group():
+    assert parse_pattern_groups("krakow,2021") == [["krakow", "2021"]]
+
+
+def test_parse_pattern_groups_multiple_groups():
+    assert parse_pattern_groups("krakow,2021;warszawa,2022") == [
+        ["krakow", "2021"],
+        ["warszawa", "2022"],
+    ]
+
+
+def test_parse_pattern_groups_strips_whitespace():
+    assert parse_pattern_groups(" krakow , 2021 ; warszawa , 2022 ") == [
+        ["krakow", "2021"],
+        ["warszawa", "2022"],
+    ]
+
+
+def test_generator_modules_import_without_prompting():
+    import generate_experiment_config  # noqa: F401
+    import generate_sweep_config  # noqa: F401
