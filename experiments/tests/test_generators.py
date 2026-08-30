@@ -168,3 +168,25 @@ def test_parse_pattern_groups_strips_whitespace():
 def test_generator_modules_import_without_prompting():
     import generate_experiment_config  # noqa: F401
     import generate_sweep_config  # noqa: F401
+
+
+def test_generate_and_run_produces_meta_files(tmp_path):
+    import experiment_runner
+    import generate_sweep_config as gsc
+
+    results_path = tmp_path / "results"
+    spec_dict = {
+        "mode": "citywide",
+        "root_path": str(SWEEP_INPUT_DIR),
+        "solvers": [{"type": "GREEDY"}],
+        "experiment_results_base_path": str(results_path),
+        "output_path": str(tmp_path / "generated-config.json"),
+    }
+    spec_path = tmp_path / "spec.json"
+    write_to_json(spec_path, spec_dict)
+
+    generated_path = gsc.main(spec_path)
+    experiment_runner.main(read_from_json(generated_path))
+
+    meta_paths = list(results_path.glob("meta_*.json"))
+    assert len(meta_paths) >= 1
