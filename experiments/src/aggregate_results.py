@@ -115,9 +115,14 @@ def _normalize_relative_to_baseline(
 ) -> pd.DataFrame:
     mask = df["Metric"] == metric_label
     metric_df = df[mask]
-    baseline = metric_df[
-        metric_df["Solver"].str.startswith(baseline_solver)
-    ].set_index("City")["Value"]
+    # groupby+mean (not set_index) so duplicate City rows (e.g. multiple
+    # utilities/instance sizes sharing a city) collapse to one scalar
+    # baseline instead of crashing the per-row division below.
+    baseline = (
+        metric_df[metric_df["Solver"].str.startswith(baseline_solver)]
+        .groupby("City")["Value"]
+        .mean()
+    )
 
     df.loc[mask, "Value"] = df.loc[mask].apply(
         lambda row: (
