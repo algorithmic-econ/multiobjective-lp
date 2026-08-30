@@ -18,7 +18,7 @@ FIXTURE_INPUT = (
 
 def _instance_with(**meta) -> Instance:
     instance = make_instance([make_project("p1", 100)], budget=100)
-    instance.meta.update(meta)
+    instance.meta = {**(instance.meta or {}), **meta}
     return instance
 
 
@@ -74,10 +74,10 @@ def test_load_pabutools_by_district_reads_directory():
     # keyed by meta["subunit"], one entry per .pb file
     assert set(instances) == set(profiles)
     assert len(instances) == 2
-    assert all(
-        instance.meta["subunit"] in instances
-        for instance in instances.values()
-    )
+    subunits = {
+        (instance.meta or {}).get("subunit") for instance in instances.values()
+    }
+    assert subunits == set(instances)
 
 
 def test_load_pabutools_by_district_reads_single_file():
