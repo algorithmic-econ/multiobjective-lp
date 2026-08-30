@@ -1,169 +1,227 @@
-## V3 - buckets
 import logging
 import sys
 from pathlib import Path
-from typing import List, Union
 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from src.helpers.utils.utils import read_from_json
+from helpers.analyzers.model import AggregatorConfig, AnalyzerResult
+from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
 
+# metric key -> (value key inside the metric dict, display name)
+METRIC_DISPLAY_MAP = {
+    "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
+    "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
+    "TOTAL_COST": ("total_cost", "Total Cost"),
+    "EJR_PLUS": ("ejr_plus", "EJR Plus"),
+}
 
-# rows are raw metrics-json dicts (T23 rewrites aggregators on models)
-def main(result: Union[dict, List[dict]]) -> None:
-    # --- 1. Data Processing ---
+TIME_METRIC = "running time (s.)"
+SUM_OBJECTIVES_LABEL = METRIC_DISPLAY_MAP["SUM_OBJECTIVES"][1]
+TOTAL_COST_LABEL = METRIC_DISPLAY_MAP["TOTAL_COST"][1]
 
-    data_source = result if isinstance(result, list) else [result]
 
-    processed_data = []
+def load_rows(metrics_json_path: Path) -> list[AnalyzerResult]:
+    raw = read_from_json(metrics_json_path)
+    entries = raw if isinstance(raw, list) else [raw]
 
-    metric_display_map = {
-        "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
-        "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
-        "TOTAL_COST": ("total_cost", "Total Cost"),
-        "EJR_PLUS": ("ejr_plus", "EJR Plus"),
-        # "CONSTRAINTS": ("invalid_count", "Constraints (Invalid)"),
-    }
+    rows = []
+    for entry in entries:
+        try:
+            rows.append(AnalyzerResult.model_validate(entry))
+        except Exception as exc:
+            logger.warning("Skipping invalid row: %s", exc)
+    return rows
 
-    for entry in data_source:
-        solver = entry.get("solver", "Unknown")
-        options = entry.get("solver_options", {})
-        solver_label = f"{solver}_{options}" if options else solver
 
-        instance_size = entry.get("INSTANCE_SIZE", {}).get("size")
-        metrics_list = entry.get("metrics", [])
+def _solver_label(row: AnalyzerResult) -> str:
+    return (
+        f"{row.solver}_{row.solver_options}"
+        if row.solver_options
+        else str(row.solver)
+    )
 
-        for metric_key in metrics_list:
-            if metric_key in metric_display_map:
-                val_key, display_name = metric_display_map[metric_key]
-                val = entry.get(metric_key, {}).get(val_key)
-                if val is not None:
-                    processed_data.append(
-                        {
-                            "Instance Size": instance_size,
-                            "Solver": solver_label,
-                            "Metric": display_name,
-                            "Value": val,
-                            "City": entry.get("city"),
-                        }
-                    )
 
-        if "time" in entry:
-            processed_data.append(
-                {
-                    "Instance Size": instance_size,
-                    "Solver": solver_label,
-                    "Metric": "running time (s.)",
-                    "Value": entry["time"],
-                    "City": entry.get("city"),
-                }
+def _city_year(city: str) -> tuple[str, str]:
+    try:
+        name, year = city.rsplit("_", 1)
+        return name.capitalize(), year
+    except ValueError:
+        return city, ""
+
+
+def _rows_to_frame(rows: list[AnalyzerResult], group_by: str) -> pd.DataFrame:
+    records = []
+    for row in rows:
+        solver_label = _solver_label(row)
+        if group_by == "city":
+            city_display, _ = _city_year(row.city)
+        else:
+            city_display = row.city
+
+        for metric_key, (val_key, display_name) in METRIC_DISPLAY_MAP.items():
+            metric_dict = getattr(row, metric_key)
+            val = metric_dict.get(val_key) if metric_dict else None
+            if val is None:
+                continue
+            record = {
+                "City": city_display,
+                "Solver": solver_label,
+                "Metric": display_name,
+                "Value": val,
+            }
+            if group_by == "instance_size_bucket":
+                instance_size = (
+                    row.INSTANCE_SIZE.get("size")
+                    if row.INSTANCE_SIZE
+                    else None
+                )
+                record["Instance Size"] = instance_size
+            records.append(record)
+
+        time_record = {
+            "City": city_display,
+            "Solver": solver_label,
+            "Metric": TIME_METRIC,
+            "Value": row.time,
+        }
+        if group_by == "instance_size_bucket":
+            instance_size = (
+                row.INSTANCE_SIZE.get("size") if row.INSTANCE_SIZE else None
             )
+            time_record["Instance Size"] = instance_size
+        records.append(time_record)
 
-    df = pd.DataFrame(processed_data)
+    return pd.DataFrame(records)
 
-    # Normalize SUM_OBJECTIVES relative to GREEDY baseline
-    sum_obj_label = metric_display_map["SUM_OBJECTIVES"][1]
-    mask = df["Metric"] == sum_obj_label
-    sum_df = df[mask]
-    greedy_baseline = sum_df[
-        sum_df["Solver"].str.startswith("GREEDY")
+
+def _apply_filters(df: pd.DataFrame, config: AggregatorConfig) -> pd.DataFrame:
+    if config.exclude_cities:
+        df = df.loc[~df["City"].isin(config.exclude_cities)]
+    if config.include_solvers is not None:
+        df = df.loc[df["Solver"].isin(config.include_solvers)]
+    return df
+
+
+def _normalize_relative_to_baseline(
+    df: pd.DataFrame,
+    metric_label: str,
+    baseline_solver: str,
+    clip_upper: float,
+    new_label: str,
+) -> pd.DataFrame:
+    mask = df["Metric"] == metric_label
+    metric_df = df[mask]
+    baseline = metric_df[
+        metric_df["Solver"].str.startswith(baseline_solver)
     ].set_index("City")["Value"]
+
     df.loc[mask, "Value"] = df.loc[mask].apply(
         lambda row: (
-            row["Value"] / greedy_baseline[row["City"]]
-            if row["City"] in greedy_baseline.index
+            row["Value"] / baseline[row["City"]]
+            if row["City"] in baseline.index
             else row["Value"]
         ),
         axis=1,
     )
-    df.loc[mask, "Value"] = df.loc[mask, "Value"].clip(upper=5.0)
-    df.loc[mask, "Metric"] = "Sum Objectives (rel. to Greedy)"
+    df.loc[mask, "Value"] = df.loc[mask, "Value"].clip(upper=clip_upper)
+    df.loc[mask, "Metric"] = new_label
+    return df
 
-    # Normalize TOTAL_COST relative to GREEDY baseline
-    cost_label = metric_display_map["TOTAL_COST"][1]
-    cost_mask = df["Metric"] == cost_label
-    cost_df = df[cost_mask]
-    greedy_cost_baseline = cost_df[
-        cost_df["Solver"].str.startswith("GREEDY")
-    ].set_index("City")["Value"]
-    df.loc[cost_mask, "Value"] = df.loc[cost_mask].apply(
-        lambda row: (
-            row["Value"] / greedy_cost_baseline[row["City"]]
-            if row["City"] in greedy_cost_baseline.index
-            else row["Value"]
-        ),
-        axis=1,
-    )
-    df.loc[cost_mask, "Value"] = df.loc[cost_mask, "Value"].clip(upper=5.0)
-    df.loc[cost_mask, "Metric"] = "Total Cost (rel. to Greedy)"
 
-    if df.empty:
-        logger.warning("No data found to plot.")
-        return
-
-    # df = df[(df["Solver"] == "GREEDY") | (df["Solver"] == "PHRAGMEN_{'kappa': 1.0, 'increasing_scalings': False}") | (df["Solver"] == "PHRAGMEN_{'kappa': 1.0, 'increasing_scalings': True}")]
-    # --- 2. Binning & Aggregation ---
-
-    # Create buckets of size 10 (e.g., 30, 40, 50...)
-    bucket_size = 10
-    df["Bucket"] = (df["Instance Size"] // bucket_size) * bucket_size
-
-    # Group by Bucket + Solver + Metric and calculate the Mean
-    df_agg = df.groupby(["Bucket", "Solver", "Metric"], as_index=False)[
-        "Value"
-    ].mean()
-
-    # Sort by Bucket to ensure proper line connections
-    df_agg = df_agg.sort_values(by="Bucket")
-
-    # Add zoomed Total Cost panel (IQR-filtered, no outliers)
+def _add_zoomed_cost_panel(df_agg: pd.DataFrame) -> pd.DataFrame:
     cost_rows = df_agg[
         df_agg["Metric"] == "Total Cost (rel. to Greedy)"
     ].copy()
-    if not cost_rows.empty:
-        q1 = cost_rows["Value"].quantile(0.25)
-        q3 = cost_rows["Value"].quantile(0.75)
-        iqr = q3 - q1
-        lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
-        zoomed = cost_rows[
-            (cost_rows["Value"] >= lo) & (cost_rows["Value"] <= hi)
-        ].copy()
-        zoomed["Metric"] = "Total Cost (zoomed)"
-        df_agg = pd.concat([df_agg, zoomed], ignore_index=True)
+    if cost_rows.empty:
+        return df_agg
+    q1 = cost_rows["Value"].quantile(0.25)
+    q3 = cost_rows["Value"].quantile(0.75)
+    iqr = q3 - q1
+    lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+    zoomed = cost_rows[
+        (cost_rows["Value"] >= lo) & (cost_rows["Value"] <= hi)
+    ].copy()
+    zoomed["Metric"] = "Total Cost (zoomed)"
+    return pd.concat([df_agg, zoomed], ignore_index=True)
 
-    # Order "Total Cost (zoomed)" directly after "Total Cost (rel. to Greedy)"
+
+def _build_bucket_dataframe(
+    df: pd.DataFrame, config: AggregatorConfig
+) -> pd.DataFrame:
+    if config.normalize_baseline is not None:
+        baseline = str(config.normalize_baseline)
+        df = _normalize_relative_to_baseline(
+            df,
+            SUM_OBJECTIVES_LABEL,
+            baseline,
+            config.clip_upper,
+            "Sum Objectives (rel. to Greedy)",
+        )
+        df = _normalize_relative_to_baseline(
+            df,
+            TOTAL_COST_LABEL,
+            baseline,
+            config.clip_upper,
+            "Total Cost (rel. to Greedy)",
+        )
+
+    if df.empty:
+        return df
+
+    df["Bucket"] = (
+        df["Instance Size"] // config.bucket_size
+    ) * config.bucket_size
+    df_agg = df.groupby(["Bucket", "Solver", "Metric"], as_index=False)[
+        "Value"
+    ].mean()
+    df_agg = df_agg.sort_values(by="Bucket")
+
+    if config.normalize_baseline is not None:
+        df_agg = _add_zoomed_cost_panel(df_agg)
+
+    return df_agg
+
+
+def _build_city_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return df
+    df_agg = df.groupby(["City", "Solver", "Metric"], as_index=False)[
+        "Value"
+    ].mean()
+    return df_agg.sort_values(by="City")
+
+
+def build_dataframe(
+    rows: list[AnalyzerResult], config: AggregatorConfig
+) -> pd.DataFrame:
+    df = _rows_to_frame(rows, config.group_by)
+    if df.empty:
+        return df
+
+    df = _apply_filters(df, config)
+    if df.empty:
+        return df
+
+    if config.group_by == "instance_size_bucket":
+        return _build_bucket_dataframe(df, config)
+    return _build_city_dataframe(df)
+
+
+def _metric_col_order(df_agg: pd.DataFrame) -> list[str]:
     desired_order = []
-    for m in df_agg["Metric"].unique():
-        desired_order.append(m)
-        if m == "Total Cost (rel. to Greedy)":
+    for metric in df_agg["Metric"].unique():
+        desired_order.append(metric)
+        if metric == "Total Cost (rel. to Greedy)":
             desired_order.append("Total Cost (zoomed)")
-    col_order = list(dict.fromkeys(desired_order))
+    return list(dict.fromkeys(desired_order))
 
-    # --- 3. Jitter / Dodge Logic ---
 
-    unique_solvers = sorted(df_agg["Solver"].unique())
-    n_solvers = len(unique_solvers)
-
-    # Shift scale: Since buckets are 10 units wide, a shift of ~2.0 is visible but safe
-    shift_scale = 0
-    solver_offsets = {
-        solver: (i - (n_solvers - 1) / 2) * shift_scale
-        for i, solver in enumerate(unique_solvers)
-    }
-
-    # Apply shift to the Bucket value for plotting X-axis
-    df_agg["Bucket Plot"] = df_agg.apply(
-        lambda row: row["Bucket"] + solver_offsets[row["Solver"]], axis=1
-    )
-
-    # --- 4. Visualization Style ---
-
+def _apply_style() -> None:
     sns.set_theme(style="whitegrid", rc={"grid.linestyle": ":"})
-
     plt.rcParams.update(
         {
             "font.family": "serif",
@@ -174,20 +232,23 @@ def main(result: Union[dict, List[dict]]) -> None:
             "legend.fontsize": 11,
             "xtick.labelsize": 10,
             "ytick.labelsize": 10,
-            "lines.linewidth": 1.5,
-            "lines.markersize": 7,
             "axes.edgecolor": "black",
             "axes.linewidth": 1.0,
         }
     )
 
-    # --- 5. Plotting ---
 
+def _plot_bucket(df_agg: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+    plt.rcParams.update({"lines.linewidth": 1.5, "lines.markersize": 7})
+
+    unique_solvers = sorted(df_agg["Solver"].unique())
     markers_list = ["D", "o", "s", "^", "v", "X", "*"]
+    col_order = _metric_col_order(df_agg)
 
     g = sns.relplot(
         data=df_agg,
-        x="Bucket Plot",  # Use the shifted bucket values
+        x="Bucket",
         y="Value",
         col="Metric",
         col_order=col_order,
@@ -203,25 +264,19 @@ def main(result: Union[dict, List[dict]]) -> None:
         alpha=0.85,
     )
 
-    # --- 6. Customizing Axes & Legend ---
-
     for ax in g.axes.flat:
         title = ax.get_title()
         clean_title = title.split("=")[-1].strip()
         ax.set_title("")
         ax.set_ylabel(clean_title, fontweight="bold")
-        ax.set_xlabel("instance size (grouped by 10)", fontweight="bold")
-
-        if "running time" in clean_title.lower():
+        ax.set_xlabel("instance size (grouped by bucket)", fontweight="bold")
+        if TIME_METRIC in clean_title.lower():
             ax.set_yscale("log")
-
         ax.set_axisbelow(True)
 
     if g.legend:
         g.legend.remove()
-
     handles, labels = g.axes[0].get_legend_handles_labels()
-
     g.fig.legend(
         handles,
         labels,
@@ -232,308 +287,75 @@ def main(result: Union[dict, List[dict]]) -> None:
         edgecolor="black",
         fancybox=False,
     )
-
     g.fig.subplots_adjust(bottom=0.18, wspace=0.25, hspace=0.3)
 
-    output_filename = "../resources/pabulib-all-single-auto.png"
-    plt.savefig(output_filename, dpi=300, bbox_inches="tight")
-    logger.info(f"Chart saved to {output_filename}")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(g.fig)
+    logger.info("Chart saved to %s", output_path)
+
+
+def _plot_city(df_agg: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+
+    g = sns.catplot(
+        data=df_agg,
+        x="City",
+        y="Value",
+        col="Metric",
+        hue="Solver",
+        kind="bar",
+        col_wrap=1,
+        height=4,
+        aspect=2.0,
+        sharey=False,
+        sharex=True,
+        legend_out=True,
+        palette="viridis",
+        edgecolor="black",
+        alpha=0.9,
+    )
+
+    for ax in g.axes.flat:
+        title = ax.get_title()
+        clean_title = title.split("=")[-1].strip()
+        ax.set_title("")
+        ax.set_ylabel(clean_title, fontweight="bold")
+        ax.set_xlabel("City (Avg. over available years)", fontweight="bold")
+        if TIME_METRIC in clean_title.lower():
+            ax.set_yscale("log")
+        ax.set_axisbelow(True)
+
+    if g.legend:
+        g.legend.set_title("Solver")
+    g.fig.subplots_adjust(top=0.9, hspace=0.3)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(g.fig)
+    logger.info("Chart saved to %s", output_path)
+
+
+def plot(df: pd.DataFrame, config: AggregatorConfig) -> None:
+    if df.empty:
+        logger.warning("No data found to plot.")
+        return
+
+    output_path = Path(config.output_path)
+    if config.group_by == "instance_size_bucket":
+        _plot_bucket(df, output_path)
+    else:
+        _plot_city(df, output_path)
+
+
+def main(config_path: Path) -> Path:
+    config = AggregatorConfig.model_validate(read_from_json(config_path))
+    rows = load_rows(Path(config.metrics_json_path))
+    df = build_dataframe(rows, config)
+    plot(df, config)
+    return Path(config.output_path)
 
 
 if __name__ == "__main__":
-    analyzer_result = read_from_json(Path(sys.argv[1]))
-    main(analyzer_result)
-
-## V2 - academic + jitter
-# import logging
-# import sys
-# from pathlib import Path
-# from typing import List, Union
-#
-# import pandas as pd
-# import seaborn as sns
-# import matplotlib.pyplot as plt
-#
-# from helpers.utils.logger import setup_logging
-# from helpers.analyzers.model import AnalyzerResult
-# from helpers.utils.utils import read_from_json
-#
-# logger = logging.getLogger(__name__)
-#
-#
-# def main(result: Union[AnalyzerResult, List[AnalyzerResult]]) -> None:
-#     # --- 1. Data Processing ---
-#
-#     # Ensure we are working with a list of results
-#     data_source = result if isinstance(result, list) else [result]
-#
-#     processed_data = []
-#
-#     # Dictionary to map internal keys to display names matching the academic style
-#     metric_display_map = {
-#         'EXCLUSION_RATION': ('exclusion_ratio', 'Exclusion Ratio'),
-#         'SUM_OBJECTIVES': ('sum', 'Sum Objectives'),
-#         'EJR_PLUS': ('ejr_plus', 'EJR Plus'),
-#         'CONSTRAINTS': ('invalid_count', 'Constraints (Invalid)'),
-#     }
-#
-#     for entry in data_source:
-#         solver = entry.get('solver', 'Unknown')
-#         options = entry.get('solver_options', {})
-#         # Create a combined label for Solver + Options
-#         solver_label = f"{solver}_{options}" if options else solver
-#
-#         instance_size = entry.get('INSTANCE_SIZE', {}).get('size')
-#         metrics_list = entry.get('metrics', [])
-#
-#         # Extract standard metrics
-#         for metric_key in metrics_list:
-#             if metric_key in metric_display_map:
-#                 val_key, display_name = metric_display_map[metric_key]
-#                 val = entry.get(metric_key, {}).get(val_key)
-#                 if val is not None:
-#                     processed_data.append({
-#                         'Instance Size': instance_size,
-#                         'Solver': solver_label,
-#                         'Metric': display_name,
-#                         'Value': val
-#                     })
-#
-#         # Extract Time
-#         if 'time' in entry:
-#             processed_data.append({
-#                 'Instance Size': instance_size,
-#                 'Solver': solver_label,
-#                 'Metric': 'running time (s.)',
-#                 'Value': entry['time']
-#             })
-#
-#     df = pd.DataFrame(processed_data)
-#
-#     # df = df[df["Instance Size"] <= 100] # TODO FILTERS
-#     df = df[(df["Solver"] == "GREEDY") | (df["Solver"] == "PHRAGMEN_{'kappa': 1.0, 'increasing_scalings': False}") | (df["Solver"] == "PHRAGMEN_{'kappa': 1.0, 'increasing_scalings': True}")]
-#
-#
-#     if df.empty:
-#         logger.warning("No data found to plot.")
-#         return
-#
-#     # Sort by size to ensure lines connect in correct order
-#     df = df.sort_values(by='Instance Size')
-#
-#     # --- 2. Jitter / Dodge Logic ---
-#     # Manually shift X-values slightly for each solver to avoid perfect overlap
-#     unique_solvers = sorted(df['Solver'].unique())
-#     n_solvers = len(unique_solvers)
-#
-#     # Define a small shift per solver (e.g., -0.6, -0.2, +0.2, +0.6)
-#     # Adjust 'shift_scale' based on how close your instance sizes are.
-#     # If instance sizes differ by ~2-5, a shift of 0.5 is safe.
-#     shift_scale = 0
-#     solver_offsets = {
-#         solver: (i - (n_solvers - 1) / 2) * shift_scale
-#         for i, solver in enumerate(unique_solvers)
-#     }
-#
-#     # Apply the shift to create a new plotting column
-#     df['Instance Size Plot'] = df.apply(
-#         lambda row: row['Instance Size'] + solver_offsets[row['Solver']],
-#         axis=1
-#     )
-#
-#     # --- 3. Visualization Style Configuration ---
-#
-#     sns.set_theme(style="whitegrid", rc={"grid.linestyle": ":"})
-#
-#     # Update matplotlib params for "Academic/LaTeX" look
-#     plt.rcParams.update({
-#         "font.family": "serif",
-#         "font.serif": ["Times New Roman", "DejaVu Serif", "serif"],
-#         "axes.labelsize": 12,
-#         "axes.titlesize": 12,
-#         "font.size": 11,
-#         "legend.fontsize": 11,
-#         "xtick.labelsize": 10,
-#         "ytick.labelsize": 10,
-#         "lines.linewidth": 1.5,
-#         "lines.markersize": 7,
-#         "axes.edgecolor": "black",
-#         "axes.linewidth": 1.0,
-#     })
-#
-#     # --- 4. Plotting ---
-#
-#     # Define distinct markers
-#     markers_list = ['D', 'o', 's', '^', 'v', 'X', '*']
-#
-#     g = sns.relplot(
-#         data=df,
-#         x='Instance Size Plot',  # Use the shifted X-axis
-#         y='Value',
-#         col='Metric',
-#         hue='Solver',
-#         style='Solver',
-#         kind='line',
-#         markers=markers_list[:len(unique_solvers)],
-#         dashes=False,
-#         col_wrap=1,
-#         height=6,
-#         aspect=1.5,
-#         facet_kws={'sharey': False, 'sharex': False, 'legend_out': False},
-#         alpha=0.85         # Slight transparency to show overlaps
-#     )
-#
-#     # --- 5. Customizing Axes & Legend ---
-#
-#     for ax in g.axes.flat:
-#         title = ax.get_title()
-#         clean_title = title.split('=')[-1].strip()
-#         ax.set_title("")
-#         ax.set_ylabel(clean_title, fontweight='bold')
-#         # Manually set X-label since we used the jittered column name
-#         ax.set_xlabel("number of projects", fontweight='bold')
-#
-#         # Apply Log Scale specifically to Time
-#         if "running time" in clean_title.lower():
-#             ax.set_yscale('log')
-#
-#         ax.set_axisbelow(True)
-#
-#     # Re-create legend at bottom
-#     if g.legend:
-#         g.legend.remove()
-#
-#     handles, labels = g.axes[0].get_legend_handles_labels()
-#
-#     g.fig.legend(
-#         handles, labels,
-#         loc='lower center',
-#         bbox_to_anchor=(0.5, 0.02),
-#         ncol=len(unique_solvers),
-#         frameon=True,
-#         edgecolor='black',
-#         fancybox=False
-#     )
-#
-#     g.fig.subplots_adjust(bottom=0.18, wspace=0.25, hspace=0.3)
-#
-#     # --- 6. Save ---
-#     output_filename = "../resources/experiment_results_academic.png"
-#     plt.savefig(output_filename, dpi=300, bbox_inches='tight')
-#     logger.info(f"Chart saved to {output_filename}")
-#
-#
-# if __name__ == "__main__":
-#     analyzer_result = read_from_json(Path(sys.argv[1]))
-#     main(analyzer_result)
-
-
-## V1
-# import logging
-# import sys
-# from pathlib import Path
-#
-# import matplotlib.pyplot as plt
-# import pandas as pd
-# import seaborn as sns
-#
-# from helpers.analyzers.model import AnalyzerResult
-# from helpers.utils.utils import read_from_json
-#
-# logger = logging.getLogger(__name__)
-#
-#
-# def main(result: list[AnalyzerResult]) -> None:
-#     processed_data = []
-#
-#     for entry in result:
-#         solver = entry.get("solver", "Unknown")
-#         options = entry.get("solver_options", {})
-#
-#         solver_full = f"{solver}_{options}" if options else solver
-#
-#         # Get grouping variable (x-axis)
-#         instance_size = entry.get("INSTANCE_SIZE", {}).get("size")
-#
-#         metrics_list = entry.get("metrics", [])
-#
-#         # Mapping known metrics to their specific value keys
-#         # You can extend this mapping if new metrics are added
-#         metric_value_map = {
-#             "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
-#             "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
-#             "EJR_PLUS": ("ejr_plus", "EJR Plus"),
-#             "CONSTRAINTS": ("invalid_count", "Constraints Invalid Count"),
-#         }
-#
-#         # Add explicitly listed metrics
-#         for metric_key in metrics_list:
-#             if metric_key in metric_value_map:
-#                 val_key, display_name = metric_value_map[metric_key]
-#                 val = entry.get(metric_key, {}).get(val_key)
-#                 if val is not None:
-#                     processed_data.append(
-#                         {
-#                             "Instance Size": instance_size,
-#                             "Solver": solver_full,
-#                             "Metric": display_name,
-#                             "Value": val,
-#                         }
-#                     )
-#
-#         # Optionally add 'Time' if it's not in the metrics list but present in the root
-#         if "time" in entry:
-#             processed_data.append(
-#                 {
-#                     "Instance Size": instance_size,
-#                     "Solver": solver_full,
-#                     "Metric": "Time (s)",
-#                     "Value": entry["time"],
-#                 }
-#             )
-#
-#     df = pd.DataFrame(processed_data)
-#
-#     if df.empty:
-#         logger.warning("No data found to plot.")
-#         return
-#
-#     # Sort to ensure line plots connect points in order
-#     df = df.sort_values(by="Instance Size")
-#
-#     # 2. Use seaborn graphing library to create charts
-#     # 2.1 Charts should be line plots
-#     # 2.2 Results grouped by instance size (x-axis)
-#     # 2.2 Each metric has its own subplot (y-axis is Value, col is Metric)
-#     sns.set_theme(style="whitegrid")
-#
-#     # greedy pokrywa się z PHRAGMEN_{'kappa': 0.0, 'increasing_scalings': True} ?
-#     df = df[(df["Solver"] == "GREEDY") | (df["Solver"] == "PHRAGMEN_{'kappa': 0.0, 'increasing_scalings': False}") | (df["Solver"] == "PHRAGMEN_{'kappa': 1.0, 'increasing_scalings': True}")]
-#
-#     g = sns.relplot(
-#         data=df,
-#         x="Instance Size",
-#         y="Value",
-#         col="Metric",
-#         hue="Solver",
-#         style="Solver",
-#         kind="line",
-#         markers=True,
-#         dashes=False,
-#         col_wrap=2,  # Adjust columns per row as needed
-#         facet_kws={"sharey": False},  # Allow independent y-axis scales
-#         alpha=0.8
-#     )
-#
-#     g.set_titles("{col_name}")
-#     g.tight_layout()
-#
-#     # Save the figure
-#     output_filename = "../resources/experiment_results.png"
-#     plt.savefig(output_filename)
-#     logger.info(f"Chart saved to {output_filename}")
-#
-#
-# if __name__ == "__main__":
-#     analyzer_result: list[AnalyzerResult] = read_from_json(Path(sys.argv[1]))
-#     main(analyzer_result)
+    result_path = main(Path(sys.argv[1]))
+    print(f"Chart saved to {result_path}")
