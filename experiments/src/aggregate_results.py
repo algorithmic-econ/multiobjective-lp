@@ -138,10 +138,14 @@ def _normalize_relative_to_baseline(
     return df
 
 
-def _add_zoomed_cost_panel(df_agg: pd.DataFrame) -> pd.DataFrame:
-    cost_rows = df_agg.loc[
-        df_agg["Metric"] == "Total Cost (rel. to Greedy)"
-    ].copy()
+def _relative_label(metric_label: str, baseline: str) -> str:
+    return f"{metric_label} (rel. to {baseline})"
+
+
+def _add_zoomed_cost_panel(
+    df_agg: pd.DataFrame, cost_label: str
+) -> pd.DataFrame:
+    cost_rows = df_agg.loc[df_agg["Metric"] == cost_label].copy()
     if cost_rows.empty:
         return df_agg
     q1 = cost_rows["Value"].quantile(0.25)
@@ -171,14 +175,14 @@ def _build_bucket_dataframe(
             SUM_OBJECTIVES_LABEL,
             baseline,
             config.clip_upper,
-            "Sum Objectives (rel. to Greedy)",
+            _relative_label(SUM_OBJECTIVES_LABEL, baseline),
         )
         df = _normalize_relative_to_baseline(
             df,
             TOTAL_COST_LABEL,
             baseline,
             config.clip_upper,
-            "Total Cost (rel. to Greedy)",
+            _relative_label(TOTAL_COST_LABEL, baseline),
         )
 
     if df.empty:
@@ -191,7 +195,10 @@ def _build_bucket_dataframe(
     df_agg = df_agg.sort_values(by="Bucket")
 
     if config.normalize_baseline is not None:
-        df_agg = _add_zoomed_cost_panel(df_agg)
+        df_agg = _add_zoomed_cost_panel(
+            df_agg,
+            _relative_label(TOTAL_COST_LABEL, str(config.normalize_baseline)),
+        )
 
     return df_agg
 
@@ -223,7 +230,7 @@ def _metric_col_order(df_agg: pd.DataFrame) -> list[str]:
     desired_order = []
     for metric in df_agg["Metric"].unique():
         desired_order.append(metric)
-        if metric == "Total Cost (rel. to Greedy)":
+        if metric.startswith(f"{TOTAL_COST_LABEL} (rel. to "):
             desired_order.append("Total Cost (zoomed)")
     return list(dict.fromkeys(desired_order))
 
