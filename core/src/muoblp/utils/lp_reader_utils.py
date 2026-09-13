@@ -1,3 +1,11 @@
+"""Reader for the LP dialect written by
+`MultiObjectiveLpProblem.write_lp` (pulp's `writeLP` output plus the
+OBJECTIVES/WEIGHTS sections).
+
+It is a deliberately narrow, hand-rolled parser, not a general LP reader -
+see `read_lp_file` for the known limitations.
+"""
+
 from pulp import (
     LpAffineExpression,
     LpBinary,
@@ -21,6 +29,25 @@ def get_constraint_sign(constraint: str) -> int:
 
 
 def read_lp_file(filename) -> MultiObjectiveLpProblem:
+    """Read a file written by `MultiObjectiveLpProblem.write_lp`.
+
+    Known limitations (documented, not fixed - this reader only has to
+    handle what `write_lp` emits for binary PB programs):
+
+    - Coefficients and right-hand sides are coerced with `int()`; a
+      fractional value is truncated. `write_lp` now raises on non-integer
+      objective coefficients, so files it produces never hit this.
+    - Constraint left-hand sides and objectives are split on `"+"` only,
+      so a term written with a `"-"` sign (a negative coefficient) is not
+      parsed back correctly.
+    - The section markers `Binaries`, `Subject To`, `Bounds`,
+      `OBJECTIVES:`, `END_OBJECTIVES:`, `WEIGHTS:`, `END_WEIGHTS:` must be
+      present on their own lines, in pulp's `writeLP` order; a missing
+      marker raises `ValueError` from `list.index`.
+    - Every variable is rebuilt as binary with an initial value of 0;
+      declared bounds, variable categories and expression constants in the
+      file are ignored.
+    """
     problem_data = {
         "name": "",
         "sense": None,  # 'Minimize' or 'Maximize'
