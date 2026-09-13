@@ -297,8 +297,8 @@ Deps: T02, T05 · GH: — · PR: [#63](https://github.com/algorithmic-econ/multi
 AC: unit test per fix; core pytest + e2e golden identical.
 Verify: core pytest; write/read roundtrip test.
 
-#### [ ] T28 Docs finalization + issue triage
-Deps: phases substantially done · GH: closes folded issues
+#### [x] T28 Docs finalization + issue triage
+Deps: phases substantially done · GH: closes folded issues · PR: [#64](https://github.com/algorithmic-econ/multiobjective-lp/pull/64)
 - Per-subproject READMEs (incl. bindings build instructions); root README dev workflow (poetry per project, sample-experiment entry point, tag/publish conventions); CLAUDE.md 4-subproject structure.
 - Close folded GH issues with commit refs; triage `documentation/docs/meeting-notes.md` — convert remaining unimplemented ideas (LB strategies, exp-MES B_init, PropRank removal logic, MES generic utilities) into GH issues, trim notes file.
 
@@ -306,6 +306,8 @@ Deps: phases substantially done · GH: closes folded issues
 
 AC: fresh-clone instructions reproduce sample experiment; no doc refs to dead paths (mes-standard-experiments, old bindings repo).
 Verify: follow README in scratch venv.
+
+> **From the T28 session (2026-09-13)** — user decisions override bullets above: GH issues NOT closed/commented/created (close refs drafted in §7, close at base→main merge); meeting-notes ideas → §5 triage, NOT GH issues; `meeting-notes.md` + `documentation/` untouched; extras done: `.coverage` untracked, `notebook` dep dropped, sample analysis metrics +`INSTANCE_SIZE`/`TOTAL_COST`, `[project.urls]` → algorithmic-econ.
 
 ### Phase 5 — Release & hardening
 
