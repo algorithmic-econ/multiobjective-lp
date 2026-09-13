@@ -15,7 +15,7 @@ Build happens transparently on `poetry install` in `solvers` (path dep). No
 auto-rebuild on C++ edits — re-run install to rebuild.
 
 ### macOS broken-CommandLineTools workaround
-If bare `clang++` can't find `c++/v1` headers (broken CLT on this machine):
+If bare `clang++` can't find `c++/v1` headers (broken CommandLineTools install):
 ```sh
 export SDKROOT=$(xcrun --show-sdk-path)
 export CXXFLAGS="-cxx-isystem $SDKROOT/usr/include/c++/v1"

@@ -15,7 +15,15 @@ pip install muoblp
 Example instance of PB election defined as multi objective linear program [source](./example/define_pb.py)
 
 ```shell
-python example/define_pb.py
+python example/define_pb.py  # or: poetry run python example/define_pb.py
+```
+
+### Development
+```shell
+$ cd multiobjective-lp/core # package root
+$ poetry install
+$ poetry run pytest
+$ poetry run pyright
 ```
 
 ### Known limitations
