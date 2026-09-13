@@ -1,6 +1,7 @@
 import pytest
 from pulp import LpConstraintGE, LpConstraintLE
 
+from helpers.runners.model import ConstraintConfig, Strategy, Utility
 from helpers.transformers.pabutools_constants import CONSTRAINT_PREFIX
 from helpers.transformers.pabutools_to_molp import (
     create_baseline_constraints,
@@ -86,15 +87,15 @@ def test_baseline_coefficients(single_district_setup):
 def test_category_upper_ratio(single_district_setup):
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "UPPER",
-        "budget_ratio": 0.5,
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="UPPER",
+        budget_ratio=0.5,
+    )
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, Utility.APPROVAL
     )
 
     assert result.sense == LpConstraintLE
@@ -104,15 +105,21 @@ def test_category_upper_ratio(single_district_setup):
 def test_category_lower_ratio(single_district_setup):
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "LOWER",
-        "budget_ratio": 0.3,
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="LOWER",
+        budget_ratio=0.3,
+    )
 
     result = create_category_constraint(
-        config, variables, projects, 1000, instances, profiles, "APPROVAL"
+        config,
+        variables,
+        projects,
+        1000,
+        instances,
+        profiles,
+        Utility.APPROVAL,
     )
 
     assert result.sense == LpConstraintGE
@@ -123,21 +130,21 @@ def test_category_lower_ratio(single_district_setup):
     "utility, profile_factory, ballots, expected_lb",
     [
         pytest.param(
-            "APPROVAL",
+            Utility.APPROVAL,
             make_approval_profile,
             {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
             -113,
             id="approval: w=1 each → edu_share=187.5",
         ),
         pytest.param(
-            "ORDINAL",
+            Utility.ORDINAL,
             make_ordinal_profile,
             {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
             -92,
             id="ordinal: w=[2,1] by rank → edu_share=208.3",
         ),
         pytest.param(
-            "CUMULATIVE",
+            Utility.CUMULATIVE,
             make_cumulative_profile,
             {"v1": {"p1": 3, "p2": 2}, "v2": {"p2": 1, "p3": 4}},
             -50,
@@ -155,12 +162,12 @@ def test_category_strategy_vote_share(
     instances, _, by_name, variables = single_district_setup
     projects = list(by_name.values())
     profiles = {"d1": profile_factory(ballots, by_name)}
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "LOWER",
-        "strategy": "category_vote_share",
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="LOWER",
+        strategy=Strategy.CATEGORY_VOTE_SHARE,
+    )
 
     result = create_category_constraint(
         config, variables, projects, 500, instances, profiles, utility
@@ -179,19 +186,19 @@ def test_category_strategy_vote_share(
     "utility, profile_factory, ballots",
     [
         pytest.param(
-            "APPROVAL",
+            Utility.APPROVAL,
             make_approval_profile,
             {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
             id="approval",
         ),
         pytest.param(
-            "ORDINAL",
+            Utility.ORDINAL,
             make_ordinal_profile,
             {"v1": ["p1", "p2"], "v2": ["p2", "p3"]},
             id="ordinal",
         ),
         pytest.param(
-            "CUMULATIVE",
+            Utility.CUMULATIVE,
             make_cumulative_profile,
             {"v1": {"p1": 3, "p2": 2}, "v2": {"p2": 1, "p3": 4}},
             id="cumulative",
@@ -208,12 +215,12 @@ def test_category_strategy_cost_share(
     instances, _, by_name, variables = single_district_setup
     projects = list(by_name.values())
     profiles = {"d1": profile_factory(ballots, by_name)}
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "LOWER",
-        "strategy": "category_cost_share",
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="LOWER",
+        strategy=Strategy.CATEGORY_COST_SHARE,
+    )
 
     result = create_category_constraint(
         config, variables, projects, 500, instances, profiles, utility
@@ -232,15 +239,15 @@ def test_category_strategy_cost_share(
 def test_category_only_matching_projects(single_district_setup):
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "UPPER",
-        "budget_ratio": 1.0,
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="UPPER",
+        budget_ratio=1.0,
+    )
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, Utility.APPROVAL
     )
 
     # p2 (env only) should not appear in constraint
@@ -255,28 +262,41 @@ def test_category_constraint_name_prefix(single_district_setup):
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
 
-    ub_config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "UPPER",
-        "budget_ratio": 0.5,
-    }
-    lb_config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "LOWER",
-        "budget_ratio": 0.3,
-    }
+    ub_config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="UPPER",
+        budget_ratio=0.5,
+    )
+    lb_config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="LOWER",
+        budget_ratio=0.3,
+    )
 
     ub = create_category_constraint(
-        ub_config, variables, projects, 500, instances, profiles, "APPROVAL"
+        ub_config,
+        variables,
+        projects,
+        500,
+        instances,
+        profiles,
+        Utility.APPROVAL,
     )
     lb = create_category_constraint(
-        lb_config, variables, projects, 500, instances, profiles, "APPROVAL"
+        lb_config,
+        variables,
+        projects,
+        500,
+        instances,
+        profiles,
+        Utility.APPROVAL,
     )
 
-    assert ub.name.startswith(f"{CONSTRAINT_PREFIX}_ub_")  # pyright: ignore[reportOptionalMemberAccess]  # pulp 3.3.2 LpElement.name Optional str
-    assert lb.name.startswith(f"{CONSTRAINT_PREFIX}_lb_")  # pyright: ignore[reportOptionalMemberAccess]
+    assert ub.name is not None and lb.name is not None
+    assert ub.name.startswith(f"{CONSTRAINT_PREFIX}_ub_")
+    assert lb.name.startswith(f"{CONSTRAINT_PREFIX}_lb_")
 
 
 def test_category_lower_ratio_clamped_when_infeasible(single_district_setup):
@@ -284,15 +304,15 @@ def test_category_lower_ratio_clamped_when_infeasible(single_district_setup):
     budget_ratio=0.9 × 500 = 450 > 400 → clamp to 400."""
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "LOWER",
-        "budget_ratio": 0.9,
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="LOWER",
+        budget_ratio=0.9,
+    )
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, Utility.APPROVAL
     )
 
     assert result.sense == LpConstraintGE
@@ -303,15 +323,15 @@ def test_category_upper_ratio_not_clamped(single_district_setup):
     """UB constraints should not be clamped even if ratio exceeds max possible."""
     instances, profiles, by_name, variables = single_district_setup
     projects = list(by_name.values())
-    config = {
-        "key": "CATEGORY",
-        "value": "edu",
-        "bound": "UPPER",
-        "budget_ratio": 0.9,
-    }
+    config = ConstraintConfig(
+        key="CATEGORY",
+        value="edu",
+        bound="UPPER",
+        budget_ratio=0.9,
+    )
 
     result = create_category_constraint(
-        config, variables, projects, 500, instances, profiles, "APPROVAL"
+        config, variables, projects, 500, instances, profiles, Utility.APPROVAL
     )
 
     assert result.sense == LpConstraintLE
@@ -324,12 +344,12 @@ def test_category_upper_ratio_not_clamped(single_district_setup):
 def test_district_upper_ratio(multi_district_setup):
     instances, _, by_name, variables = multi_district_setup
     d1_projects = list(instances["d1"])
-    config = {
-        "key": "DISTRICT",
-        "value": "d1",
-        "bound": "UPPER",
-        "budget_ratio": 0.6,
-    }
+    config = ConstraintConfig(
+        key="DISTRICT",
+        value="d1",
+        bound="UPPER",
+        budget_ratio=0.6,
+    )
 
     result = create_district_constraint(
         config, variables, d1_projects, 500, instances["d1"]
@@ -342,12 +362,12 @@ def test_district_upper_ratio(multi_district_setup):
 def test_district_lower_ratio(multi_district_setup):
     instances, _, by_name, variables = multi_district_setup
     d1_projects = list(instances["d1"])
-    config = {
-        "key": "DISTRICT",
-        "value": "d1",
-        "bound": "LOWER",
-        "budget_ratio": 0.2,
-    }
+    config = ConstraintConfig(
+        key="DISTRICT",
+        value="d1",
+        bound="LOWER",
+        budget_ratio=0.2,
+    )
 
     result = create_district_constraint(
         config, variables, d1_projects, 500, instances["d1"]
@@ -360,12 +380,12 @@ def test_district_lower_ratio(multi_district_setup):
 def test_district_strategy_budget_minus_max(multi_district_setup):
     instances, _, by_name, variables = multi_district_setup
     d1_projects = list(instances["d1"])
-    config = {
-        "key": "DISTRICT",
-        "value": "d1",
-        "bound": "LOWER",
-        "strategy": "district_budget_minus_max",
-    }
+    config = ConstraintConfig(
+        key="DISTRICT",
+        value="d1",
+        bound="LOWER",
+        strategy=Strategy.DISTRICT_BUDGET_MINUS_MAX,
+    )
 
     result = create_district_constraint(
         config, variables, d1_projects, 500, instances["d1"]
@@ -379,12 +399,12 @@ def test_district_strategy_budget_minus_max(multi_district_setup):
 def test_district_only_includes_district_projects(multi_district_setup):
     instances, _, by_name, variables = multi_district_setup
     d1_projects = list(instances["d1"])
-    config = {
-        "key": "DISTRICT",
-        "value": "d1",
-        "bound": "UPPER",
-        "budget_ratio": 1.0,
-    }
+    config = ConstraintConfig(
+        key="DISTRICT",
+        value="d1",
+        bound="UPPER",
+        budget_ratio=1.0,
+    )
 
     result = create_district_constraint(
         config, variables, d1_projects, 500, instances["d1"]
@@ -401,12 +421,12 @@ def test_district_lower_ratio_clamped_when_infeasible(multi_district_setup):
     budget_ratio=0.8 × 500 = 400 > 300 → clamp to 300."""
     instances, _, by_name, variables = multi_district_setup
     d1_projects = list(instances["d1"])
-    config = {
-        "key": "DISTRICT",
-        "value": "d1",
-        "bound": "LOWER",
-        "budget_ratio": 0.8,
-    }
+    config = ConstraintConfig(
+        key="DISTRICT",
+        value="d1",
+        bound="LOWER",
+        budget_ratio=0.8,
+    )
 
     result = create_district_constraint(
         config, variables, d1_projects, 500, instances["d1"]
@@ -423,7 +443,7 @@ def test_config_empty(single_district_setup):
     instances, profiles, _, variables = single_district_setup
 
     result = create_constraints_from_config(
-        [], instances, profiles, variables, "APPROVAL"
+        [], instances, profiles, variables, Utility.APPROVAL
     )
 
     assert result == []
@@ -432,16 +452,16 @@ def test_config_empty(single_district_setup):
 def test_config_single_category(single_district_setup):
     instances, profiles, _, variables = single_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "edu",
-            "bound": "UPPER",
-            "budget_ratio": 0.5,
-        }
+        ConstraintConfig(
+            key="CATEGORY",
+            value="edu",
+            bound="UPPER",
+            budget_ratio=0.5,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     assert len(result) == 1
@@ -450,16 +470,16 @@ def test_config_single_category(single_district_setup):
 def test_config_single_district(multi_district_setup):
     instances, profiles, _, variables = multi_district_setup
     configs = [
-        {
-            "key": "DISTRICT",
-            "value": "d1",
-            "bound": "LOWER",
-            "budget_ratio": 0.2,
-        }
+        ConstraintConfig(
+            key="DISTRICT",
+            value="d1",
+            bound="LOWER",
+            budget_ratio=0.2,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     assert len(result) == 1
@@ -468,16 +488,16 @@ def test_config_single_district(multi_district_setup):
 def test_config_wildcard_category(single_district_setup):
     instances, profiles, _, variables = single_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "*",
-            "bound": "UPPER",
-            "budget_ratio": 0.8,
-        }
+        ConstraintConfig(
+            key="CATEGORY",
+            value="*",
+            bound="UPPER",
+            budget_ratio=0.8,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     # 2 categories: edu, env
@@ -487,16 +507,16 @@ def test_config_wildcard_category(single_district_setup):
 def test_config_wildcard_district(multi_district_setup):
     instances, profiles, _, variables = multi_district_setup
     configs = [
-        {
-            "key": "DISTRICT",
-            "value": "*",
-            "bound": "LOWER",
-            "budget_ratio": 0.1,
-        }
+        ConstraintConfig(
+            key="DISTRICT",
+            value="*",
+            bound="LOWER",
+            budget_ratio=0.1,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     # 2 districts
@@ -506,16 +526,16 @@ def test_config_wildcard_district(multi_district_setup):
 def test_config_unknown_category_skipped(single_district_setup):
     instances, profiles, _, variables = single_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "nonexistent",
-            "bound": "UPPER",
-            "budget_ratio": 0.5,
-        }
+        ConstraintConfig(
+            key="CATEGORY",
+            value="nonexistent",
+            bound="UPPER",
+            budget_ratio=0.5,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     assert len(result) == 0
@@ -524,16 +544,16 @@ def test_config_unknown_category_skipped(single_district_setup):
 def test_config_unknown_district_skipped(multi_district_setup):
     instances, profiles, _, variables = multi_district_setup
     configs = [
-        {
-            "key": "DISTRICT",
-            "value": "nonexistent",
-            "bound": "LOWER",
-            "budget_ratio": 0.1,
-        }
+        ConstraintConfig(
+            key="DISTRICT",
+            value="nonexistent",
+            bound="LOWER",
+            budget_ratio=0.1,
+        )
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     assert len(result) == 0
@@ -542,22 +562,22 @@ def test_config_unknown_district_skipped(multi_district_setup):
 def test_config_mixed(multi_district_setup):
     instances, profiles, _, variables = multi_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "edu",
-            "bound": "UPPER",
-            "budget_ratio": 0.5,
-        },
-        {
-            "key": "DISTRICT",
-            "value": "d1",
-            "bound": "LOWER",
-            "budget_ratio": 0.1,
-        },
+        ConstraintConfig(
+            key="CATEGORY",
+            value="edu",
+            bound="UPPER",
+            budget_ratio=0.5,
+        ),
+        ConstraintConfig(
+            key="DISTRICT",
+            value="d1",
+            bound="LOWER",
+            budget_ratio=0.1,
+        ),
     ]
 
     result = create_constraints_from_config(
-        configs, instances, profiles, variables, "APPROVAL"
+        configs, instances, profiles, variables, Utility.APPROVAL
     )
 
     assert len(result) == 2

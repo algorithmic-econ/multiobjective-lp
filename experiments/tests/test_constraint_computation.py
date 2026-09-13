@@ -1,5 +1,6 @@
 import pytest
 
+from helpers.runners.model import Utility
 from helpers.transformers.pabutools_to_molp import (
     compute_category_lb,
     compute_district_lb,
@@ -54,7 +55,11 @@ def test_shares_empty_profiles():
     profile = make_approval_profile({}, {})
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 1000, False
+        {"district": instance},
+        {"district": profile},
+        Utility.APPROVAL,
+        1000,
+        False,
     )
 
     assert result == {}
@@ -68,7 +73,11 @@ def test_shares_single_voter_approval():
     profile = make_approval_profile({"v1": ["p1", "p2"]}, {"p1": p1, "p2": p2})
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 1000, False
+        {"district": instance},
+        {"district": profile},
+        Utility.APPROVAL,
+        1000,
+        False,
     )
 
     # voter_budget=1000, weight 1 each, total_weight=2
@@ -84,7 +93,11 @@ def test_shares_cost_weighting():
     profile = make_approval_profile({"v1": ["p1", "p2"]}, {"p1": p1, "p2": p2})
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 900, True
+        {"district": instance},
+        {"district": profile},
+        Utility.APPROVAL,
+        900,
+        True,
     )
 
     # use_cost=True → cost weights: 100, 200, total=300
@@ -100,7 +113,11 @@ def test_shares_multi_cat_project_splits():
     profile = make_approval_profile({"v1": ["p1"]}, {"p1": p1})
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 1000, False
+        {"district": instance},
+        {"district": profile},
+        Utility.APPROVAL,
+        1000,
+        False,
     )
 
     # single project, single voter, weight=1, voter_budget=1000
@@ -118,7 +135,11 @@ def test_shares_two_voters_different_prefs():
     )
 
     result = compute_voter_category_shares(
-        {"district": instance}, {"district": profile}, "APPROVAL", 1000, False
+        {"district": instance},
+        {"district": profile},
+        Utility.APPROVAL,
+        1000,
+        False,
     )
 
     # 2 voters, voter_budget = 1000/2 = 500
@@ -140,7 +161,7 @@ def test_category_lb_single_voter():
         "edu",
         {"district": instance},
         {"district": profile},
-        "APPROVAL",
+        Utility.APPROVAL,
         1000,
         False,
     )
@@ -159,7 +180,7 @@ def test_category_lb_two_cats():
         "edu",
         {"district": instance},
         {"district": profile},
-        "APPROVAL",
+        Utility.APPROVAL,
         1000,
         False,
     )
@@ -178,7 +199,7 @@ def test_category_lb_use_cost():
         "edu",
         {"district": instance},
         {"district": profile},
-        "APPROVAL",
+        Utility.APPROVAL,
         900,
         True,
     )
@@ -197,7 +218,7 @@ def test_category_lb_missing_category():
         "sports",
         {"district": instance},
         {"district": profile},
-        "APPROVAL",
+        Utility.APPROVAL,
         1000,
         False,
     )

@@ -1,6 +1,7 @@
 import logging
 import sys
 from pathlib import Path
+from typing import cast
 
 import pandas as pd
 import seaborn as sns
@@ -114,12 +115,12 @@ def _normalize_relative_to_baseline(
     new_label: str,
 ) -> pd.DataFrame:
     mask = df["Metric"] == metric_label
-    metric_df = df[mask]
+    metric_df = df.loc[mask]
     # groupby+mean (not set_index) so duplicate City rows (e.g. multiple
     # utilities/instance sizes sharing a city) collapse to one scalar
     # baseline instead of crashing the per-row division below.
     baseline = (
-        metric_df[metric_df["Solver"].str.startswith(baseline_solver)]
+        metric_df.loc[metric_df["Solver"].str.startswith(baseline_solver)]
         .groupby("City")["Value"]
         .mean()
     )
@@ -138,7 +139,7 @@ def _normalize_relative_to_baseline(
 
 
 def _add_zoomed_cost_panel(df_agg: pd.DataFrame) -> pd.DataFrame:
-    cost_rows = df_agg[
+    cost_rows = df_agg.loc[
         df_agg["Metric"] == "Total Cost (rel. to Greedy)"
     ].copy()
     if cost_rows.empty:
@@ -147,11 +148,17 @@ def _add_zoomed_cost_panel(df_agg: pd.DataFrame) -> pd.DataFrame:
     q3 = cost_rows["Value"].quantile(0.75)
     iqr = q3 - q1
     lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
-    zoomed = cost_rows[
+    zoomed = cost_rows.loc[
         (cost_rows["Value"] >= lo) & (cost_rows["Value"] <= hi)
     ].copy()
     zoomed["Metric"] = "Total Cost (zoomed)"
     return pd.concat([df_agg, zoomed], ignore_index=True)
+
+
+def _mean_value(df: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
+    # as_index=False yields a DataFrame at runtime; pandas' inline hints
+    # widen groupby reductions to an NDFrame/Series union
+    return cast(pd.DataFrame, df.groupby(keys, as_index=False)["Value"].mean())
 
 
 def _build_bucket_dataframe(
@@ -180,9 +187,7 @@ def _build_bucket_dataframe(
     df["Bucket"] = (
         df["Instance Size"] // config.bucket_size
     ) * config.bucket_size
-    df_agg = df.groupby(["Bucket", "Solver", "Metric"], as_index=False)[
-        "Value"
-    ].mean()
+    df_agg = _mean_value(df, ["Bucket", "Solver", "Metric"])
     df_agg = df_agg.sort_values(by="Bucket")
 
     if config.normalize_baseline is not None:
@@ -194,9 +199,7 @@ def _build_bucket_dataframe(
 def _build_city_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
-    df_agg = df.groupby(["City", "Solver", "Metric"], as_index=False)[
-        "Value"
-    ].mean()
+    df_agg = _mean_value(df, ["City", "Solver", "Metric"])
     return df_agg.sort_values(by="City")
 
 

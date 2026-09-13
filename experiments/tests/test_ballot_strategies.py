@@ -5,6 +5,7 @@ from pabutools.election import (
     OrdinalBallot,
 )
 
+from helpers.runners.model import Utility
 from helpers.transformers.pabutools_to_molp import (
     ballot_to_cost_weights,
     ballot_to_expression_strategy,
@@ -25,7 +26,7 @@ def projects():
 
 
 def test_approval_returns_1_per_project(projects):
-    fn = ballot_to_expression_strategy("APPROVAL")
+    fn = ballot_to_expression_strategy(Utility.APPROVAL)
     ballot = ApprovalBallot(init=[projects["p1"], projects["p2"]])
 
     # when
@@ -36,7 +37,7 @@ def test_approval_returns_1_per_project(projects):
 
 
 def test_cost_returns_project_cost(projects):
-    fn = ballot_to_expression_strategy("COST")
+    fn = ballot_to_expression_strategy(Utility.COST)
     ballot = ApprovalBallot(init=[projects["p1"], projects["p2"]])
 
     result = fn(ballot)
@@ -45,7 +46,7 @@ def test_cost_returns_project_cost(projects):
 
 
 def test_ordinal_returns_rank_weights(projects):
-    fn = ballot_to_expression_strategy("ORDINAL")
+    fn = ballot_to_expression_strategy(Utility.ORDINAL)
     ballot = OrdinalBallot(
         init=[projects["p1"], projects["p2"], projects["p3"]]
     )
@@ -57,7 +58,7 @@ def test_ordinal_returns_rank_weights(projects):
 
 
 def test_cumulative_returns_points(projects):
-    fn = ballot_to_expression_strategy("CUMULATIVE")
+    fn = ballot_to_expression_strategy(Utility.CUMULATIVE)
     ballot = CumulativeBallot(init={projects["p1"]: 5, projects["p2"]: 3})
 
     result = fn(ballot)
@@ -66,7 +67,7 @@ def test_cumulative_returns_points(projects):
 
 
 def test_cost_ordinal_multiplies(projects):
-    fn = ballot_to_expression_strategy("COST_ORDINAL")
+    fn = ballot_to_expression_strategy(Utility.COST_ORDINAL)
     ballot = OrdinalBallot(init=[projects["p1"], projects["p2"]])
 
     result = fn(ballot)
@@ -76,7 +77,7 @@ def test_cost_ordinal_multiplies(projects):
 
 
 def test_cost_cumulative_multiplies(projects):
-    fn = ballot_to_expression_strategy("COST_CUMULATIVE")
+    fn = ballot_to_expression_strategy(Utility.COST_CUMULATIVE)
     ballot = CumulativeBallot(init={projects["p1"]: 5, projects["p2"]: 3})
 
     result = fn(ballot)
@@ -86,7 +87,9 @@ def test_cost_cumulative_multiplies(projects):
 
 def test_unknown_utility_raises():
     with pytest.raises(Exception, match="Unknown utility"):
-        ballot_to_expression_strategy("UNKNOWN")
+        ballot_to_expression_strategy(
+            "UNKNOWN"  # pyright: ignore[reportArgumentType]  # deliberately invalid Utility to hit the error branch
+        )
 
 
 # -- ballot_to_cost_weights --

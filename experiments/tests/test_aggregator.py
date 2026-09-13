@@ -98,8 +98,8 @@ def test_build_dataframe_normalization_and_clip(tmp_path):
     config = _base_config(normalize_baseline="GREEDY", clip_upper=1.05)
     df = build_dataframe(rows, config)
 
-    sum_rows = df[df["Metric"] == "Sum Objectives (rel. to Greedy)"]
-    greedy_val = sum_rows[sum_rows["Solver"] == "GREEDY"]["Value"].iloc[0]
+    sum_rows = df.loc[df["Metric"] == "Sum Objectives (rel. to Greedy)"]
+    greedy_val = sum_rows.loc[sum_rows["Solver"] == "GREEDY", "Value"].iloc[0]
     assert greedy_val == pytest.approx(1.0)
     assert (sum_rows["Value"] <= 1.05).all()
 
@@ -168,7 +168,7 @@ def test_build_dataframe_city_mode_mean_over_years(tmp_path):
     df = build_dataframe(rows, _base_config(group_by="city"))
 
     assert "Bucket" not in df.columns
-    sum_rows = df[df["Metric"] == "Sum Objectives"]
+    sum_rows = df.loc[df["Metric"] == "Sum Objectives"]
     assert sum_rows["City"].tolist() == ["Krakow"]
     assert sum_rows["Value"].iloc[0] == pytest.approx(150.0)
 
