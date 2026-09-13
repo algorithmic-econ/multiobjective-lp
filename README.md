@@ -72,9 +72,18 @@ Publish workflow is triggered by creating a git tag.
    * Publish to PyPI - use tag pattern: `packageName@x.y.z`
    * Where `packageName` is `core` or `solvers`
 3. Tag must match the `pyproject.toml` version (checked by the workflow);
-   already-uploaded versions are skipped.
+   already-uploaded versions are skipped. The `-rc` tag uploads plain
+   `x.y.z` to TestPyPI, so rehearsing the same version twice is a silent
+   no-op — bump the version instead.
+   Rehearsal install check:
+   `pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ muoblpsolvers==x.y.z`
+   (bindings/pulp resolve from PyPI).
 4. Publish order for dependent releases: `bindings` → `core` → `solvers`.
 5. `bindings` publishes via a separate workflow
    ([wheels.yml](.github/workflows/wheels.yml)): tag `bindings@x.y.z`
    (must match `bindings/pyproject.toml` version) builds sdist + multi-OS
    wheels (cibuildwheel, cp313+cp314) and uploads to PyPI. No `-rc` route.
+6. Uploads use OIDC trusted publishing — each index (PyPI and TestPyPI)
+   needs a publisher for repo `algorithmic-econ/multiobjective-lp`:
+   `publish.yml` (no environment) for `muoblp`/`muoblpsolvers`,
+   `wheels.yml` + environment `pypi` for `muoblpbindings`.

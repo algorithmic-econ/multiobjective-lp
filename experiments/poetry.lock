@@ -637,7 +637,7 @@ dev = ["meson-python (>=0.13.1,<0.17.0)", "pybind11 (>=2.13.2,!=2.13.3)", "setup
 
 [[package]]
 name = "muoblp"
-version = "1.0.4"
+version = "1.0.5"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.13"
@@ -668,7 +668,7 @@ url = "../bindings"
 
 [[package]]
 name = "muoblpsolvers"
-version = "0.0.14"
+version = "0.0.15"
 description = "Solvers for multi objective linear programming"
 optional = false
 python-versions = ">=3.13"
@@ -677,7 +677,7 @@ files = []
 develop = true
 
 [package.dependencies]
-muoblp = ">=1.0.4,<2.0"
+muoblp = ">=1.0.5,<2.0"
 muoblpbindings = ">=0.0.18,<0.1"
 pulp = "3.3.2"
 

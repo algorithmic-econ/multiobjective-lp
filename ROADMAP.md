@@ -313,8 +313,8 @@ Verify: follow README in scratch venv.
 
 Added 2026-08-25: gaps carried through P1/P2 judge verdicts + T13/T16/T17 deferrals that had no owning ticket.
 
-#### [ ] T29 Release chain: publish bindings 0.0.18 + rc rehearsal
-Deps: T18 · GH: #25
+#### [x] T29 Release chain: publish bindings 0.0.18 + rc rehearsal
+Deps: T18 · GH: #25 · PR: [#65](https://github.com/algorithmic-econ/multiobjective-lp/pull/65)
 - **Active defect**: `solvers/pyproject.toml:18` pins `muoblpbindings>=0.0.18,<0.1`; PyPI has only 0.0.17 (`bindings/pyproject.toml:7` = 0.0.18, never tagged) → any published solvers wheel is uninstallable.
 - Push `bindings@0.0.18` → wheels.yml tag path (validate_tag + 6-wheel matrix + OIDC upload; never exercised end-to-end, T07 leftover).
 - rc rehearsal (T08 leftover): `core@X.Y.Z-rc`, `solvers@X.Y.Z-rc` → test.pypi; `pip download` METADATA check. Publish order bindings → core → solvers.
@@ -322,6 +322,8 @@ Deps: T18 · GH: #25
 
 AC: clean-venv `pip install muoblpsolvers` resolves bindings from the index; wheels.yml tag run green; old repo archived.
 Verify: clean venv install from (test.)pypi; `gh repo view … --json isArchived`.
+
+> **From the T29 session (2026-09-13)** — user decisions: FULL real release (not rc-only); core 1.0.4→**1.0.5** (PyPI 1.0.4 pinned pulp==2.9.0 → unsatisfiable w/ solvers' pulp==3.3.2), solvers 0.0.14→**0.0.15** (`solvers@0.0.14` tag burned by failed May publish), floor `muoblp>=1.0.5`. Published: PyPI `muoblpbindings 0.0.18` (12 wheels + sdist), `muoblp 1.0.5`, `muoblpsolvers 0.0.15`; TestPyPI `muoblp 1.0.5`, `muoblpsolvers 0.0.15`. Clean-venv `pip install muoblpsolvers` → all 3 from PyPI, 115/115 solvers tests pass against installed pkgs. **Old-repo archive NOT done — user archives manually after other users confirm new setup** (AC item deferred to user).
 
 #### [ ] T30 Finish pyright ratchet (D12)
 Deps: T23, T26, T27 · GH: —
@@ -398,7 +400,7 @@ Verify: Actions run on branch.
 | #22 available() | T11 | #47 `69047d2` |
 | #23 native options | T10 | #46 `e7408e4` |
 | #24 register in PuLP | T15 | #50 `a7b6be0` |
-| #25 fix publish | T08, T29 | #44 `3cd0db9` — **keep open → T29** (publish never exercised end-to-end) |
+| #25 fix publish | T08, T29 | #44 `3cd0db9`, #65 (T29: bindings/core/solvers published end-to-end) |
 | #26 no manual timing | T14 | #53 `b461f27` |
 | #27 respect timeLimit | T14 | #53 `b461f27` |
 | #32 respect msg | T14 | #53 `b461f27` |
@@ -408,5 +410,5 @@ Verify: Actions run on branch.
 No GH issue closed/commented in T28 (user decision). Paste into base→main PR body (GitHub auto-closes on merge to default branch):
 
 ```
-Closes #20, Closes #22, Closes #23, Closes #24, Closes #26, Closes #27, Closes #32
+Closes #20, Closes #22, Closes #23, Closes #24, Closes #25, Closes #26, Closes #27, Closes #32
 ```

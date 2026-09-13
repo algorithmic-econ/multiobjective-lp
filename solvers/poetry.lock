@@ -27,7 +27,7 @@ files = [
 
 [[package]]
 name = "muoblp"
-version = "1.0.4"
+version = "1.0.5"
 description = "Implementation of multi objective linear programming module"
 optional = false
 python-versions = ">=3.13"
@@ -221,4 +221,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "01c828f948fca1c8ac1512037e5dceed084584bd5f457311e0709a92a0ff81d4"
+content-hash = "e3e76434cda06f61b809d4b02561826316d311a19d351b74d0c7465fba0ca422"
