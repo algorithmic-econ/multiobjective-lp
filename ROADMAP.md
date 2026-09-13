@@ -354,6 +354,31 @@ Verify: Actions run on branch.
 - New metrics (EJR+, exclusion ratio extensions, cost utilities)
 - Exponential-MES B_init tuning; full CLI package for experiments; uv migration
 
+### Meeting-notes triage (T28, 2026-09-13)
+
+`documentation/docs/meeting-notes.md` kept immutable; ideas recorded here, NOT filed as GH issues (user decisions, T28).
+
+| Idea (`meeting-notes.md` line) | Status |
+|---|---|
+| LB constraint strategies (`:12-23`) | DONE — `Strategy` enum (`experiments/src/helpers/runners/model.py:7`), applied in `pabutools_to_molp.py` |
+| 5 LB experiment variants (`:25-30`) | future (above) |
+| Objective sum relative to greedy (`:33-34`) | DONE — `AggregatorConfig.normalize_baseline` (T23) |
+| Auto-detect utility type (`:36`) | DONE — `RunnerConfig.utility_type: Utility \| None` |
+| PropRank removal constraint-based (`:101-103`) | DONE — `FeasibilityChecker` in `phragmen.py` (T16) |
+| Exp-MES B_init auto-derivation (`:112-125`) | PARTIAL — `budget_init` manual required option; epsilon / best-ratio derivation future |
+| MES generic utilities (`:127-133`) | PARTIAL — `MES_UTILS` exists; weight-aware bindings open (`# TODO: weight-aware via binding update` in `mes_add1.py`, `mes_utility.py`, `mes_constrains.py`) |
+| One voter citywide + district, no split (`:144`) | unverified — future |
+
+### Unowned findings (T28)
+
+- `DISTRICT`/`UPPER` `ConstraintConfig` collides by name with baseline per-district cap → `PulpError: overlapping constraint names` (TODO `pabutools_to_molp.py:509`; T26). Candidate: T31.
+- pulp 4.0 migration debt (T05 leftovers).
+- Stale MkDocs code-reference: `documentation/docs/code-reference/*.md` point at `multiobjective_lp.model…` / `examples.summing…` (documentation/ untouched per §6).
+- District results get aggregator city label `Poland_krakow_2024` (P3 verdict #5).
+- `os.path` residue `experiments/src/helpers/transformers/pabutools_utils.py:49-57` → T30 candidate.
+- Interactive generator (`generate_experiment_config.py`) TTY flow never click-tested.
+- `sample-experiment/run.sh`/`analyze.sh` have no shebang → run as `poetry run sh run.sh` (documented).
+
 ## 6. TODO: decide
 
 - **D8** DECIDED (T14): binding-backed solvers (STV, ExpandingApprovals, SolidCoalitionRefinement, MES-Add1, MES-Utility) `warnings.warn` + ignore `timeLimit` (C++ changes out of scope). MES-Constrains honors it coarsely per-iteration (no warn).
@@ -365,17 +390,21 @@ Verify: Actions run on branch.
 
 ## 7. GH issue map
 
-| Issue | Ticket |
-|---|---|
-| #20 merge bindings | T06, T07 |
-| #22 available() | T11 |
-| #23 native options | T10 |
-| #24 register in PuLP | T15 |
-| #25 fix publish | T08 |
-| #26 no manual timing | T14 |
-| #27 respect timeLimit | T14 |
-| #32 respect msg | T14 |
-| #36 raise incompatible | T13, T31 |
-| #30 #31 #34 #35 | excluded → §5 |
+| Issue | Ticket | Close refs (draft — close at base→main merge) |
+|---|---|---|
+| #20 merge bindings | T06, T07 | #42 `3fe7618`, #43 `ae5a2a9` |
+| #22 available() | T11 | #47 `69047d2` |
+| #23 native options | T10 | #46 `e7408e4` |
+| #24 register in PuLP | T15 | #50 `a7b6be0` |
+| #25 fix publish | T08, T29 | #44 `3cd0db9` — **keep open → T29** (publish never exercised end-to-end) |
+| #26 no manual timing | T14 | #53 `b461f27` |
+| #27 respect timeLimit | T14 | #53 `b461f27` |
+| #32 respect msg | T14 | #53 `b461f27` |
+| #36 raise incompatible | T13, T31 | #49 `12c6c8f` — **keep open → T31/D15** (GE gap) |
+| #30 #31 #34 #35 | excluded → §5 | — |
 
-All folded issues (#20, #22, #23, #24, #25, #26, #27, #32, #36) are still OPEN as of 2026-08-25 — closed with commit refs in T28; #25 also exercised by T29.
+No GH issue closed/commented in T28 (user decision). Paste into base→main PR body (GitHub auto-closes on merge to default branch):
+
+```
+Closes #20, Closes #22, Closes #23, Closes #24, Closes #26, Closes #27, Closes #32
+```
