@@ -89,7 +89,7 @@ def update_local_scalings(
     m_spent,
     sorted_utils,
     candidates: dict[CandidateId, Cost],
-    weights: dict[VoterId, int],
+    weights: dict[VoterId, float],
 ):
     for candidate in remaining:
         scaling_for_c = 0
@@ -157,7 +157,9 @@ def phragmen_cardinal(
         for candidate in profile.keys()
     }
 
-    money_spent = {voter: 0 for voter in election["voters"]}
+    money_spent: dict[VoterId, float] = {
+        voter: 0 for voter in election["voters"]
+    }
     timestamp_low = 0
     timestamp_high = timestamp_low + timestamp_step
     rank = []
@@ -165,7 +167,7 @@ def phragmen_cardinal(
         candidate for candidate in profile.keys() if candidate not in rank
     ])
 
-    local_caps = {
+    local_caps: dict[CandidateId, dict[VoterId, float]] = {
         candidate: {voter: 0 for voter in profile[candidate].keys()}
         for candidate in profile.keys()
     }
@@ -210,7 +212,7 @@ def phragmen_cardinal(
                 timestamp_high *= 2
 
         timestamp_low = timestamp_high / 2
-        local_caps_tmp = {
+        local_caps_tmp: dict[CandidateId, dict[VoterId, float]] = {
             candidate: {voter: 0 for voter in profile[candidate].keys()}
             for candidate in profile.keys()
         }

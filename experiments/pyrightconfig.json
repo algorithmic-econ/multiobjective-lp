@@ -1,8 +1,5 @@
 {
   "typeCheckingMode": "basic",
   "extraPaths": ["src"],
-  "exclude": ["archived_code", ".venv"],
-  "reportArgumentType": "none",
-  "reportAttributeAccessIssue": "none",
-  "reportCallIssue": "none"
+  "exclude": ["archived_code", ".venv"]
 }

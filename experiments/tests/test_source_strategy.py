@@ -115,7 +115,7 @@ def test_load_and_transform_strategy_passes_constraints_through():
 def test_load_and_transform_strategy_rejects_unknown_source():
     with pytest.raises(Exception, match="Strategy not implemented"):
         load_and_transform_strategy(
-            "PREFLIB",  # type: ignore[arg-type]
+            "PREFLIB",  # pyright: ignore[reportArgumentType]  # deliberately unimplemented Source to hit the error branch
             Utility.COST,
             str(FIXTURE_INPUT),
             [],

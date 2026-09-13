@@ -1,5 +1,5 @@
 from typing import TypeAlias
-import os
+from pathlib import Path
 from pabutools.election import Instance, Profile, parse_pabulib
 
 from helpers.runners.model import Utility
@@ -45,22 +45,22 @@ def load_pabutools_by_district(
     instances: dict[District, Instance] = {}
     profiles: dict[District, Profile] = {}
 
-    relevant_files: list[str] = []
-    if os.path.isfile(path) and path.endswith(".pb"):
-        relevant_files.append(path)
+    source = Path(path)
+    relevant_files: list[Path] = []
+    if source.is_file() and source.suffix == ".pb":
+        relevant_files.append(source)
 
-    if os.path.isdir(path):
-        # sorted: os.listdir order is fs-dependent; district order defines LP
-        # var order -> solver tie-breaks -> nondeterministic `selected`
-        for filename in sorted(os.listdir(path)):
-            if filename.endswith(".pb"):
-                relevant_files.append(os.path.join(path, filename))
+    if source.is_dir():
+        # sorted by name: iterdir order is fs-dependent; district order defines
+        # LP var order -> solver tie-breaks -> nondeterministic `selected`
+        for file in sorted(source.iterdir(), key=lambda f: f.name):
+            if file.suffix == ".pb":
+                relevant_files.append(file)
 
-    for filename in relevant_files:
-        if filename.endswith(".pb"):
-            instance, profile = parse_pabulib(filename)
-            meta = instance.meta or {}
-            district = meta["subunit"] if "subunit" in meta else "citywide"
-            instances[district] = instance
-            profiles[district] = profile
+    for file in relevant_files:
+        instance, profile = parse_pabulib(str(file))
+        meta = instance.meta or {}
+        district = meta["subunit"] if "subunit" in meta else "citywide"
+        instances[district] = instance
+        profiles[district] = profile
     return instances, profiles

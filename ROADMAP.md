@@ -325,14 +325,16 @@ Verify: clean venv install from (test.)pypi; `gh repo view … --json isArchived
 
 > **From the T29 session (2026-09-13)** — user decisions: FULL real release (not rc-only); core 1.0.4→**1.0.5** (PyPI 1.0.4 pinned pulp==2.9.0 → unsatisfiable w/ solvers' pulp==3.3.2), solvers 0.0.14→**0.0.15** (`solvers@0.0.14` tag burned by failed May publish), floor `muoblp>=1.0.5`. Published: PyPI `muoblpbindings 0.0.18` (12 wheels + sdist), `muoblp 1.0.5`, `muoblpsolvers 0.0.15`; TestPyPI `muoblp 1.0.5`, `muoblpsolvers 0.0.15`. Clean-venv `pip install muoblpsolvers` → all 3 from PyPI, 115/115 solvers tests pass against installed pkgs. **Old-repo archive NOT done — user archives manually after other users confirm new setup** (AC item deferred to user).
 
-#### [ ] T30 Finish pyright ratchet (D12)
-Deps: T23, T26, T27 · GH: —
+#### [x] T30 Finish pyright ratchet (D12)
+Deps: T23, T26, T27 · GH: — · PR: [#66](https://github.com/algorithmic-econ/multiobjective-lp/pull/66)
 - solvers: drop config `reportArgumentType: "none"` (15 systemic `Utility`/int + float/int + dict-invariance errors across mes_*, phragmen) — fix or narrow per-file.
 - experiments: drop remaining 3 of the original 10 rules (`reportArgumentType`, `reportAttributeAccessIssue`, `reportCallIssue`); T19 already re-enabled 7.
 - 6 inline ignores, all pulp-3.3.2 Optional-`name`: `core/…/multi_objective_lp.py:19` (the one labelled "fix in T27"), `solvers/…/mes/common.py:62,63`, `solvers/…/election_solver.py:196`, `experiments/tests/test_constraint_creation.py:278,279`.
 
 AC: no rule suppressions in the 3 pyrightconfigs, 0 errors each; every surviving inline ignore carries an upstream-unfixable justification.
 Verify: pyright ×3; full pytest ×3 + e2e golden.
+
+> **From the T30 session (2026-09-13)** — real inventory was solvers 22 (not 15) / experiments 69. All 6 listed inline ignores removed; 2 survive (negative tests passing deliberately invalid enum values, justified). User decisions: unnamed objective → new `validate_election_program` rejection; MES binding int boundary = type-only cast helper; extras done — `os.path` residue → pathlib, aggregator `(rel. to {baseline})` labels, test-only `model_validate` coercions dropped.
 
 #### [ ] T31 GE/lower-bound constraints in MES-family
 Deps: T16 · GH: #36 · **blocked on D15**
@@ -379,7 +381,7 @@ Verify: Actions run on branch.
 - pulp 4.0 migration debt (T05 leftovers).
 - Stale MkDocs code-reference: `documentation/docs/code-reference/*.md` point at `multiobjective_lp.model…` / `examples.summing…` (documentation/ untouched per §6).
 - District results get aggregator city label `Poland_krakow_2024` (P3 verdict #5).
-- `os.path` residue `experiments/src/helpers/transformers/pabutools_utils.py:49-57` → T30 candidate.
+- ~~`os.path` residue `pabutools_utils.py:49-57`~~ → done T30.
 - Interactive generator (`generate_experiment_config.py`) TTY flow never click-tested.
 - `sample-experiment/run.sh`/`analyze.sh` have no shebang → run as `poetry run sh run.sh` (documented).
 
@@ -387,7 +389,7 @@ Verify: Actions run on branch.
 
 - **D8** DECIDED (T14): binding-backed solvers (STV, ExpandingApprovals, SolidCoalitionRefinement, MES-Add1, MES-Utility) `warnings.warn` + ignore `timeLimit` (C++ changes out of scope). MES-Constrains honors it coarsely per-iteration (no warn).
 - **D11** RESOLVED (T02): normalization field list lives in `experiments/tests/golden_utils.py`, confirmed in PR #38.
-- **D12** pyright strictness ramp — scoped as **T30**: finish the basic-mode ratchet (remove remaining rule suppressions + inline ignores) first; standard/strict per subproject stays a later question.
+- **D12** pyright strictness ramp — basic-mode ratchet DONE in **T30** (0 rule suppressions ×3); standard/strict per subproject stays a later question.
 - **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)? — owned by **T32**.
 - **D15** MES-family (MES-*, STV, ExpandingApprovals, SCR) + GE/lower-bound constraints: reject with `PulpSolverError`, or document as known limitation + GH issue? Blocks **T31**.
 - Default kept: `papers/`, `documentation/` MkDocs untouched by this roadmap.

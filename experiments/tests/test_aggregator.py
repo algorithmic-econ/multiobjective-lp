@@ -98,8 +98,8 @@ def test_build_dataframe_normalization_and_clip(tmp_path):
     config = _base_config(normalize_baseline="GREEDY", clip_upper=1.05)
     df = build_dataframe(rows, config)
 
-    sum_rows = df[df["Metric"] == "Sum Objectives (rel. to Greedy)"]
-    greedy_val = sum_rows[sum_rows["Solver"] == "GREEDY"]["Value"].iloc[0]
+    sum_rows = df.loc[df["Metric"] == "Sum Objectives (rel. to GREEDY)"]
+    greedy_val = sum_rows.loc[sum_rows["Solver"] == "GREEDY", "Value"].iloc[0]
     assert greedy_val == pytest.approx(1.0)
     assert (sum_rows["Value"] <= 1.05).all()
 
@@ -129,11 +129,23 @@ def test_build_dataframe_normalization_with_duplicate_city_baseline(tmp_path):
 
     df = build_dataframe(rows, _base_config(normalize_baseline="GREEDY"))
 
-    sum_rows = df[df["Metric"] == "Sum Objectives (rel. to Greedy)"]
+    sum_rows = df[df["Metric"] == "Sum Objectives (rel. to GREEDY)"]
     values = dict(zip(sum_rows["Solver"], sum_rows["Value"]))
     # GREEDY: mean(100/200, 300/200) == 1.0; MES_ADD1: 400/200 == 2.0
     assert values["GREEDY"] == pytest.approx(1.0)
     assert values["MES_ADD1"] == pytest.approx(2.0)
+
+
+def test_build_dataframe_label_names_non_greedy_baseline(tmp_path):
+    from aggregate_results import build_dataframe, load_rows
+
+    rows = load_rows(_rows_with_time(tmp_path))
+    df = build_dataframe(rows, _base_config(normalize_baseline="MES_ADD1"))
+
+    metrics = set(df["Metric"])
+    assert "Sum Objectives (rel. to MES_ADD1)" in metrics
+    assert "Total Cost (rel. to MES_ADD1)" in metrics
+    assert not any("GREEDY" in m or "Greedy" in m for m in metrics)
 
 
 def test_build_dataframe_filters(tmp_path):
@@ -168,7 +180,7 @@ def test_build_dataframe_city_mode_mean_over_years(tmp_path):
     df = build_dataframe(rows, _base_config(group_by="city"))
 
     assert "Bucket" not in df.columns
-    sum_rows = df[df["Metric"] == "Sum Objectives"]
+    sum_rows = df.loc[df["Metric"] == "Sum Objectives"]
     assert sum_rows["City"].tolist() == ["Krakow"]
     assert sum_rows["Value"].iloc[0] == pytest.approx(150.0)
 

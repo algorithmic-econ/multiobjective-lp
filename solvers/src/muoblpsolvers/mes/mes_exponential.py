@@ -13,7 +13,7 @@ from muoblpsolvers.election_solver import (
     FeasibilityChecker,
     validate_election_program,
 )
-from muoblpsolvers.types import CandidateId, VoterId
+from muoblpsolvers.types import CandidateId, Utility, VoterId
 from muoblpsolvers.utils import set_solved
 
 from .common import prepare_mes_parameters
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 def break_ties(
     cost: dict[CandidateId, float],
-    total_utility: dict[CandidateId, int],
+    total_utility: dict[CandidateId, Utility],
     choices: list[CandidateId],
     msg: bool = True,
 ) -> CandidateId:
@@ -44,8 +44,8 @@ def equal_shares_exponential(
     voters: dict[VoterId, float],
     projects: list[CandidateId],
     cost: dict[CandidateId, float],
-    approvals_utilities: dict[CandidateId, list[tuple[VoterId, int]]],
-    total_utility: dict[CandidateId, int],
+    approvals_utilities: dict[CandidateId, list[tuple[VoterId, Utility]]],
+    total_utility: dict[CandidateId, Utility],
     lp: MultiObjectiveLpProblem,
     budget_init: float,
     deadline: float | None = None,

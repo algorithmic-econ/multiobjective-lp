@@ -368,9 +368,9 @@ def create_constraints_from_config(
         ior, [instance.categories for instance in instances.values()], set()
     )
 
-    # expand wildcard configs (validate: tests pass plain dicts)
+    # expand wildcard configs
     expanded_configs: list[ConstraintConfig] = []
-    for config in map(ConstraintConfig.model_validate, constraints_configs):
+    for config in constraints_configs:
         if config.value == "*":
             targets = (
                 allowed_categories
@@ -432,7 +432,6 @@ def create_category_constraint(
     profiles: dict[District, Profile],
     utility: Utility,
 ) -> LpConstraint:
-    constraint_config = ConstraintConfig.model_validate(constraint_config)
     category = constraint_config.value
     bound = constraint_config.bound
     projects_costs = reduce(
@@ -479,7 +478,6 @@ def create_district_constraint(
     total_budget: int,
     district_instance: Instance,
 ) -> LpConstraint:
-    constraint_config = ConstraintConfig.model_validate(constraint_config)
     district = constraint_config.value
     bound = constraint_config.bound
     projects_costs = reduce(

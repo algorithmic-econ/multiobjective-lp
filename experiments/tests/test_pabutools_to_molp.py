@@ -1,3 +1,4 @@
+from helpers.runners.model import ConstraintConfig, Utility
 from helpers.transformers.pabutools_to_molp import (
     pabutools_to_multi_objective_lp,
 )
@@ -7,7 +8,7 @@ def test_variable_count(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     assert len(problem.variables()) == 3
@@ -17,7 +18,7 @@ def test_objective_count(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     # 2 voters → 2 objectives
@@ -28,7 +29,7 @@ def test_baseline_constraint_present(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
@@ -39,16 +40,16 @@ def test_baseline_constraint_present(single_district_setup):
 def test_additional_constraints_from_config(single_district_setup):
     instances, profiles, _, _ = single_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "edu",
-            "bound": "UPPER",
-            "budget_ratio": 0.5,
-        }
+        ConstraintConfig(
+            key="CATEGORY",
+            value="edu",
+            bound="UPPER",
+            budget_ratio=0.5,
+        )
     ]
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, configs, "APPROVAL"
+        instances, profiles, configs, Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
@@ -62,7 +63,7 @@ def test_objective_weights_are_integers(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     weights = problem.objectives_weights
@@ -74,7 +75,7 @@ def test_multi_district_constraints(multi_district_setup):
     instances, profiles, _, _ = multi_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
