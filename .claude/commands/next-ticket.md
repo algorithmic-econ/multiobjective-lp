@@ -14,7 +14,7 @@ Execute the next ROADMAP ticket as one session. Base branch = `feat/roadmap-base
 - Read `multiobjective-lp/ROADMAP.md`. Ticket headers: `#### [ ] TXX ...` (open) / `#### [x] ...` (done).
 - Pick FIRST open ticket (top-down) whose every `Deps:` ticket is `[x]`.
 - **D-gate**: if ticket body says a §6 TODO-decide item blocks it (e.g. T14 "per D8 (blocked until decided)"), and that decision is still open in §6, SKIP to next eligible ticket. If none eligible, STOP and report why.
-- Read `multiobjective-lp/plans/TXX-plan.md` — implementiation plan created by high level model, use it as base, some points might become stale since the planning
+- Read `multiobjective-lp/plans/TXX-plan.md` — implementiation plan created by high level model, use it as base, some points might become stale since the planning. If task plan is not present, then enter investigation and planning phase on your own. If neccessary you can spin subagent.
 - Read `multiobjective-lp/plans/leftovers.md` — surface entries relevant to this ticket (env state, deferred bugs pointing here, machine workarounds).
 
 ## 3. Branch
