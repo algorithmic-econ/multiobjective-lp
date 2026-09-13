@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/jasieksz/multiobjective-lp"
+repository = "https://github.com/algorithmic-econ/multiobjective-lp"
 documentation = "https://jasieksz.github.io/multiobjective-lp"
 
 [tool.poetry]

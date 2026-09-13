@@ -5,6 +5,7 @@ __pycache__/
 /output
 /resources/**/*
 .ipynb_checkpoints/
+.coverage
 .idea/
 .fleet/
 .zed/

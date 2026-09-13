@@ -311,4 +311,4 @@ def test_sample_analyzer_config_validates():
     config = AnalyzerConfig.model_validate(
         read_from_json(SAMPLE_DIR / "sample-analysis-config.jsonc")
     )
-    assert len(config.metrics) == 3
+    assert len(config.metrics) == 5

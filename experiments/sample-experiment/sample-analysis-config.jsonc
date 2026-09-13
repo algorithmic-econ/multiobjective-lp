@@ -1,5 +1,5 @@
 {
   "analyzer_result_path": "results/sample-analysis/",
   "experiment_results_base_path": "results/sample-experiment/",
-  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS"]
+  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS", "INSTANCE_SIZE", "TOTAL_COST"]
 }
