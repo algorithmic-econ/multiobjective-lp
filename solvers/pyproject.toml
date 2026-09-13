@@ -1,5 +1,5 @@
 [project]
-version = "0.0.14"
+version = "0.0.15"
 name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 
 dependencies = [
-    "muoblp>=1.0.4,<2.0",
+    "muoblp>=1.0.5,<2.0",
     "pulp==3.3.2",
     "muoblpbindings>=0.0.18,<0.1",
 ]
