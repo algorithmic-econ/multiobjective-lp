@@ -1,5 +1,6 @@
 import logging
 from collections import defaultdict
+from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import LpConstraint, LpConstraintLE, PulpSolverError
@@ -35,6 +36,21 @@ def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
     return pb_constraints[0]
 
 
+def binding_utilities(
+    approvals_utilities: dict[CandidateId, list[tuple[VoterId, Utility]]],
+    total_utilities: dict[CandidateId, Utility],
+) -> tuple[dict[str, list[tuple[str, int]]], dict[str, int]]:
+    """Narrow utilities to the MES bindings' `int` signature (C++ long long).
+
+    Type-only: utilities are ints at runtime (B6 int-utility invariant, core
+    writer enforces it); pybind11 rejects floats, so no conversion here.
+    """
+    return (
+        cast(dict[str, list[tuple[str, int]]], approvals_utilities),
+        cast(dict[str, int], total_utilities),
+    )
+
+
 def prepare_mes_parameters(
     lp: MultiObjectiveLpProblem,
     msg: bool = True,
@@ -59,19 +75,23 @@ def prepare_mes_parameters(
         for candidate, cost in constraint.items()
     }
 
-    voters: dict[VoterId, float] = {  # pyright: ignore[reportAssignmentType]  # pulp 3.3.2 LpElement.name Optional str
-        voter.name: lp.objectives_weights.get(voter.name, 1)  # pyright: ignore[reportCallIssue]
-        for voter in lp.objectives
+    # named: validate_election_program rejects unnamed objectives
+    voter_ids: list[VoterId] = [
+        cast(VoterId, voter.name) for voter in lp.objectives
+    ]
+    voters: dict[VoterId, float] = {
+        voter_id: lp.objectives_weights.get(voter_id, 1)
+        for voter_id in voter_ids
     }
 
     approvals_utilities: dict[CandidateId, list[tuple[VoterId, Utility]]] = (
         defaultdict(list)
     )
-    for voter in (
-        lp.objectives
+    for voter_id, voter in zip(
+        voter_ids, lp.objectives
     ):  # [T_6080: 80550 V_BO.D10.14_24 + 340000 V_BO.D10.1_24, ....]
         for candidate, utility in voter.items():
-            approvals_utilities[candidate.name] += [(voter.name, utility)]
+            approvals_utilities[candidate.name] += [(voter_id, utility)]
 
     total_utilities: dict[CandidateId, Utility] = {
         candidate: sum(voters[v] * u for v, u in voters_utilities)

@@ -22,7 +22,6 @@ from muoblpsolvers import (
     SingleTransferableVote,
     SolidCoalitionRefinement,
 )
-from muoblpsolvers.types import Utility
 
 # All PB-shaped solvers except SummedObjectivesLpSolver, which is a
 # deliberately generic LP/MIP pass-through and stays unvalidated.
@@ -66,6 +65,15 @@ def test_non_binary_variable_rejected(
     mutate(variable)
 
     with pytest.raises(PulpSolverError, match="not a 0/1 binary PB variable"):
+        GreedySolver().actualSolve(basic_pb_approval)
+
+
+def test_unnamed_objective_rejected(
+    basic_pb_approval: MultiObjectiveLpProblem,
+):
+    basic_pb_approval.objectives[0].name = None
+
+    with pytest.raises(PulpSolverError, match="unnamed objective"):
         GreedySolver().actualSolve(basic_pb_approval)
 
 
@@ -115,7 +123,7 @@ def test_negative_constraint_coefficient_rejected():
 
 
 def test_valid_program_not_rejected(
-    basic_pb_factory: Callable[[Utility], MultiObjectiveLpProblem],
+    basic_pb_factory: Callable[[str], MultiObjectiveLpProblem],
 ):
     problem = basic_pb_factory("APPROVAL")
     problem.solve(PhragmenSolver(msg=False))

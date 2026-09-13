@@ -15,7 +15,7 @@ from pulp import (
 from muoblpsolvers.election_solver import validate_election_program
 from muoblpsolvers.utils import bindings_available, set_solved
 
-from .common import prepare_mes_parameters
+from .common import binding_utilities, prepare_mes_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -123,8 +123,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 list(voters.keys()),
                 projects,
                 costs,
-                approvals_utilities,
-                total_utilities,
+                *binding_utilities(approvals_utilities, total_utilities),
                 total_budget,
             )
             if self.msg:

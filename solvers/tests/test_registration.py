@@ -51,7 +51,10 @@ def test_get_solver_round_trips_options():
         cost_modification_base=1.01,
         max_iterations=50,
     )
-    rebuilt = pulp.getSolverFromDict(solver.toDict())
+    # pulp's unannotated toDict() infers dict[str, str]; widen to the
+    # getSolverFromDict param type (dict is invariant)
+    data: dict[str, str | bool | float | int] = {**solver.toDict()}
+    rebuilt = pulp.getSolverFromDict(data)
 
     assert rebuilt.name == "MethodOfEqualSharesConstrains"
     assert rebuilt.optionsDict["cost_modification_base"] == 1.01

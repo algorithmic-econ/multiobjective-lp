@@ -6,7 +6,6 @@ from pulp import (
     LpConstraint,
     LpConstraintVar,
     LpMaximize,
-    LpMinimize,
     LpProblem,
     LpVariable,
 )
@@ -24,7 +23,7 @@ class MultiObjectiveLpProblem(LpProblem):
     def __init__(
         self,
         name: str,
-        sense: LpMaximize | LpMinimize = LpMaximize,  # pyright: ignore[reportInvalidTypeForm]  # pulp sense consts are ints, not types (fix in T30)
+        sense: int = LpMaximize,  # pulp LpMaximize/LpMinimize are int consts
         objectives: list[LpAffineExpression] | None = None,
         objectives_weights: dict[str, float] | None = None,
     ) -> None:

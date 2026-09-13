@@ -1,6 +1,6 @@
 import logging
 from collections import defaultdict
-from typing import TypedDict
+from typing import TypedDict, cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from pulp import (
@@ -168,6 +168,11 @@ def validate_election_program(lp: MultiObjectiveLpProblem) -> None:
             )
 
     for voter in lp.objectives:
+        if not voter.name:
+            raise PulpSolverError(
+                f"Problem '{lp.name}' has an unnamed objective "
+                "(objective names identify voters)"
+            )
         for candidate, utility in voter.items():
             if utility < 0:
                 raise PulpSolverError(
@@ -193,9 +198,11 @@ def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
     for voter in (
         lp.objectives
     ):  # [T_6080: 80550 V_BO.D10.14_24 + 340000 V_BO.D10.1_24, ....]
-        voters[voter.name] = lp.objectives_weights.get(voter.name, 1)  # pyright: ignore[reportCallIssue]  # pulp 3.3.2 LpElement.name Optional str
+        # named: validate_election_program rejects unnamed objectives
+        voter_id = cast(VoterId, voter.name)
+        voters[voter_id] = lp.objectives_weights.get(voter_id, 1)
         for candidate, utility in voter.items():
-            approvals_utilities[candidate.name][voter.name] = utility
+            approvals_utilities[candidate.name][voter_id] = utility
 
     candidates = set([
         candidate.name

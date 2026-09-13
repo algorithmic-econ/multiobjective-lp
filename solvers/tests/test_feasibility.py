@@ -3,7 +3,6 @@ from collections.abc import Callable
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.election_solver import ElectionSolver, FeasibilityChecker
-from muoblpsolvers.types import Utility
 
 
 def test_no_lb_delegates_to_valid(
@@ -37,7 +36,7 @@ def test_is_feasible_matches_checker(
 
 
 def test_lb_checker_reused_across_checks(
-    pb_with_lb_factory: Callable[[Utility], MultiObjectiveLpProblem],
+    pb_with_lb_factory: Callable[[str], MultiObjectiveLpProblem],
 ):
     """Reused LB completion model must return identical results to fresh
     FeasibilityChecker instances for the same assignment (model-reuse lock)."""
