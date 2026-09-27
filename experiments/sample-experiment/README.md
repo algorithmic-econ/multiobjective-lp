@@ -4,7 +4,7 @@
 
 ### 0. Setup
 
-Requires Python 3.13, Poetry 2.x and a C++20 toolchain (bindings are built
+Requires Python 3.13+ (CI: 3.13, 3.14), Poetry 2.x and a C++20 toolchain (bindings are built
 from source, see [bindings README](../../bindings/README.md)).
 
 ```shell

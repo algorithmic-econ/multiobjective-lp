@@ -30,7 +30,7 @@ For details and installation guide see the READMEs for each package linked above
 * [pre-commit](https://pre-commit.com/#intro) - git hooks
 
 ### Prerequisites
-* Python 3.13, Poetry 2.x
+* Python 3.13+ (CI: 3.13, 3.14), Poetry 2.x
 * C++20 toolchain for `bindings` (CMake/Ninja are fetched automatically by scikit-build-core), see [bindings readme](bindings/README.md)
 
 ```sh
@@ -61,7 +61,7 @@ The workflow is configured in [ruff.yml](.github/workflows/ruff.yml).
 [test.yml](.github/workflows/test.yml) runs on pull requests and pushes to `main`:
 builds a linux `bindings` wheel (import smoke test), runs `pytest` for
 `core`, `solvers` (against the built wheel) and `experiments` (incl. e2e
-golden), and `pyright` for each of them.
+golden), and `pyright` for each of them — every job on Python 3.13 and 3.14.
 
 ### Publishing packages
 Publish workflow is triggered by creating a git tag.

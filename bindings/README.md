@@ -6,7 +6,7 @@ multiobjective-lp monorepo; consumed by `solvers` as a path dependency.
 
 ## Build requirements
 - C++20 toolchain (gcc/clang/MSVC).
-- Python `>=3.13`.
+- Python `>=3.13` (CI: 3.13, 3.14; wheels: cp313, cp314).
 - CMake + Ninja: auto-provisioned by scikit-build-core during `pip`/`poetry`
   install (build isolation) — no manual install needed.
 - pybind11 `>=3`, scikit-build-core `>=0.12` (build-system deps, auto-fetched).
