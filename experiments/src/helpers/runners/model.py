@@ -50,7 +50,7 @@ class ConstraintConfig(StrictModel):
 
 class RunnerConfig(StrictModel):
     solver_type: Solver
-    # keys MUST be valid solver-constructor kwargs (T10 contract)
+    # keys MUST be valid solver-constructor kwargs (pulp optionsDict)
     solver_options: dict[str, Any] = {}
     source_type: Source
     utility_type: Utility | None = None
@@ -69,7 +69,7 @@ class ExperimentConfig(StrictModel):
 
 class SolverSpec(StrictModel):
     type: Solver
-    options: dict[str, Any] = {}  # constructor kwargs (T10)
+    options: dict[str, Any] = {}  # solver-constructor kwargs
 
 
 class RunnerConfigsGenerator(StrictModel):

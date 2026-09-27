@@ -1,4 +1,4 @@
-"""Golden-file helpers for the e2e test (normalization list = D11).
+"""Golden-file helpers for the e2e test.
 
 Normalization strips nondeterminism:
 1. drop `time` (wall-clock)
