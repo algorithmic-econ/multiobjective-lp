@@ -347,13 +347,15 @@ Verify: solvers pytest; e2e golden (no GE in fixtures → must stay identical).
 
 > **From the T31 session (2026-09-27)** — D15 = **reject**. Ticket's 7-solver list was inaccurate: MES-Exponential (`FeasibilityChecker`) and MES-Constrains (cost-modification loop checks GE) already honor GE → keep. Reject set = MES-Add1, MES-Utility, STV, ExpandingApprovals, SCR. User folded in §5 DISTRICT/UPPER collision → `ValueError`. `get_total_budget_constraint` → `solvers/archived_code/` (experiments `metrics.py` switched to `validate_pb_constraint`).
 
-#### [ ] T32 py3.14 in test matrix (resolves D14)
-Deps: — · GH: —
+#### [x] T32 py3.14 in test matrix (resolves D14)
+Deps: — · GH: — · PR: [#68](https://github.com/algorithmic-econ/multiobjective-lp/pull/68)
 - `.github/workflows/test.yml:22,55,104` are 3.13-only; wheels.yml already builds cp314.
 - Add 3.14 to test + pyright matrix, or resolve D14 as "no" and record the rationale.
 
 AC: CI green on 3.13 (+3.14 if adopted), or D14 closed in §6 with rationale.
 Verify: Actions run on branch.
+
+> **From the T32 session (2026-09-27)** — D14 = **adopt**. `test.yml` `build-bindings` / `test` / `pyright` all matrix `python: [3.13, 3.14]` → 14 jobs (was 7); per-version bindings wheel artifact + venv cache key. Only cp314 gaps in locks were experiments `pandas 2.3.1`/`pyyaml 6.0.2` → **2.3.3 / 6.0.3** (0 other lock changes). Job check names now `test (core, 3.13)` etc.; only required check (main ruleset) is `format` → unaffected. No src changes, no classifiers added. **Roadmap complete.**
 
 ## 5. Future / explicitly excluded (no tickets)
 
@@ -393,7 +395,7 @@ Verify: Actions run on branch.
 - **D8** DECIDED (T14): binding-backed solvers (STV, ExpandingApprovals, SolidCoalitionRefinement, MES-Add1, MES-Utility) `warnings.warn` + ignore `timeLimit` (C++ changes out of scope). MES-Constrains honors it coarsely per-iteration (no warn).
 - **D11** RESOLVED (T02): normalization field list lives in `experiments/tests/golden_utils.py`, confirmed in PR #38.
 - **D12** pyright strictness ramp — basic-mode ratchet DONE in **T30** (0 rule suppressions ×3); standard/strict per subproject stays a later question.
-- **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)? — owned by **T32**.
+- **D14** DECIDED (T32): adopt — test + pyright + bindings-build CI matrix 3.13 + 3.14; experiments pandas 2.3.3 / pyyaml 6.0.3 for cp314 wheels.
 - **D15** DECIDED (T31): reject GE with `PulpSolverError` in GE-blind solvers (MES-Add1, MES-Utility, STV, ExpandingApprovals, SCR); Greedy/Phragmen/MES-Exp/MES-Constrains keep GE support.
 - Default kept: `papers/`, `documentation/` MkDocs untouched by this roadmap.
 
