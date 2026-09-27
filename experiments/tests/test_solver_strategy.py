@@ -14,7 +14,7 @@ def test_get_solver_with_none_options(solver_type):
 
 
 def test_get_solver_unknown_type_raises():
-    with pytest.raises(Exception, match="Strategy not implemented"):
+    with pytest.raises(NotImplementedError, match="Strategy not implemented"):
         get_solver(cast(Solver, "NOT_A_SOLVER"), None)
 
 

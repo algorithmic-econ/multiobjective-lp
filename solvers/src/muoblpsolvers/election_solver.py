@@ -174,7 +174,7 @@ def validate_election_program(
     See GH #36: no capability widening — this only rejects, it never
     implements the excluded features (continuous vars, arbitrary bounds,
     negative coefficients). Solvers that ignore GE constraints pass
-    ``allow_lower_bound=False`` (D15: reject rather than answer wrongly).
+    ``allow_lower_bound=False`` (reject rather than answer wrongly).
 
     Returns the PB constraint so callers need not walk constraints again.
     """
@@ -251,7 +251,7 @@ def molp_to_simple_election(
     }
 
     if len(set(candidates).difference(set(candidates_costs.keys()))) != 0:
-        raise Exception(
+        raise PulpSolverError(
             "Candidates mismatch between variables and constraints"
         )
 

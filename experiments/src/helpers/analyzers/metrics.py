@@ -29,7 +29,7 @@ def get_metric_strategy(
     if metric == "TOTAL_COST":
         return total_cost
 
-    raise Exception("Metric not implemented")
+    raise NotImplementedError("Metric not implemented")
 
 
 def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:

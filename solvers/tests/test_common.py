@@ -1,4 +1,5 @@
 import pytest
+from pulp import PulpSolverError
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
 from muoblpsolvers.election_solver import validate_pb_constraint
@@ -8,7 +9,7 @@ def test_validate_pb_constraint_throws_missing_pb(
     empty_pb: MultiObjectiveLpProblem,
 ):
     # when
-    with pytest.raises(Exception) as err:
+    with pytest.raises(PulpSolverError) as err:
         _ = validate_pb_constraint(empty_pb)
 
     # then
@@ -19,7 +20,7 @@ def test_validate_pb_constraint_throws_too_many_pb(
     invalid_pb: MultiObjectiveLpProblem,
 ):
     # when
-    with pytest.raises(Exception) as err:
+    with pytest.raises(PulpSolverError) as err:
         _ = validate_pb_constraint(invalid_pb)
 
     # then
