@@ -82,7 +82,9 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
         return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem):
-        validate_election_program(lp)
+        pb_constraint = validate_election_program(
+            lp, allow_lower_bound=True, solver_name=self.name
+        )
         from muoblpbindings import equal_shares_utils
 
         if self.msg:
@@ -98,7 +100,7 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
             approvals_utilities,
             total_utilities,
             total_budget,
-        ) = prepare_mes_parameters(lp, msg=self.msg)
+        ) = prepare_mes_parameters(lp, pb_constraint, msg=self.msg)
 
         # zero all vars up front so an abort before iteration 1 yields a
         # fully-defined 0 assignment (incl. pulp's lazy __dummy)

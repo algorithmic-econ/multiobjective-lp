@@ -50,8 +50,12 @@ All solvers follow PuLP's `LpSolver` contract:
 * **Validation**: all PB solvers (all except SummedObjectives) reject programs
   outside the binary PB shape — no objectives, non 0/1 variables, negative
   utilities or costs — with `PulpSolverError`.
-* **Known limitation**: MES-family, STV, ExpandingApprovals and
-  SolidCoalitionRefinement ignore lower-bound (`>=`) constraints.
+* **Lower-bound (`>=`) constraints**: supported by Greedy, Phragmen,
+  MES-Exponential and MES-Constrains; MES-Add1, MES-Utility, STV,
+  ExpandingApprovals and SolidCoalitionRefinement reject them with
+  `PulpSolverError` (they would ignore them and return a wrong answer).
+* **Known limitation**: those five also ignore upper-bound (`<=`) constraints
+  other than the PB budget constraint (e.g. per-district caps).
 
 ## Example Solver
 1. See example [SummedObjectivesLpSolver](src/muoblpsolvers/summed_objectives_lp_solver.py)

@@ -180,7 +180,9 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
         return True
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **_):
-        validate_election_program(lp)
+        pb_constraint = validate_election_program(
+            lp, allow_lower_bound=True, solver_name=self.name
+        )
         if "budget_init" not in self.optionsDict:
             raise PulpSolverError(
                 "MethodOfEqualSharesExponentialSolver requires budget_init"
@@ -195,7 +197,7 @@ class MethodOfEqualSharesExponentialSolver(LpSolver):
             approvals_utilities,
             total_utilities,
             total_budget,
-        ) = prepare_mes_parameters(lp, msg=self.msg)
+        ) = prepare_mes_parameters(lp, pb_constraint, msg=self.msg)
 
         deadline = (
             time.monotonic() + self.timeLimit

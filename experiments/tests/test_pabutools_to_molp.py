@@ -1,3 +1,5 @@
+import pytest
+
 from helpers.runners.model import ConstraintConfig, Utility
 from helpers.transformers.pabutools_to_molp import (
     pabutools_to_multi_objective_lp,
@@ -81,3 +83,36 @@ def test_multi_district_constraints(multi_district_setup):
     constraint_names = list(problem.constraints.keys())
     # 2 per-district + 1 total = 3
     assert len(constraint_names) == 3
+
+
+def test_district_upper_config_colliding_with_baseline_raises(
+    multi_district_setup,
+):
+    # multi-district baseline already caps each district at its budget
+    instances, profiles, _, _ = multi_district_setup
+    configs = [
+        ConstraintConfig(
+            key="DISTRICT", value="d1", bound="UPPER", budget_ratio=0.5
+        )
+    ]
+
+    with pytest.raises(ValueError, match="'C_ub_d1' duplicates a baseline"):
+        pabutools_to_multi_objective_lp(
+            instances, profiles, configs, Utility.APPROVAL
+        )
+
+
+def test_district_lower_config_does_not_collide(multi_district_setup):
+    instances, profiles, _, _ = multi_district_setup
+    configs = [
+        ConstraintConfig(
+            key="DISTRICT", value="d1", bound="LOWER", budget_ratio=0.1
+        )
+    ]
+
+    problem = pabutools_to_multi_objective_lp(
+        instances, profiles, configs, Utility.APPROVAL
+    )
+
+    # 2 per-district + 1 total + 1 lower bound
+    assert len(problem.constraints) == 4

@@ -28,13 +28,23 @@ class Election(TypedDict):
     voters: dict[VoterId, float]
 
 
+# Solvers honoring GE constraints (named in the rejection message).
+LOWER_BOUND_SOLVERS = (
+    "Greedy, Phragmen, MethodOfEqualSharesExponential, "
+    "MethodOfEqualSharesConstrains"
+)
+
+
 class ElectionSolver(LpSolver):
     def available(self) -> bool:
         return True
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs):
-        validate_election_program(lp)
-        election = molp_to_simple_election(lp)
+        # ElectionSolver subclasses (Greedy, Phragmen) use FeasibilityChecker
+        pb_constraint = validate_election_program(
+            lp, allow_lower_bound=True, solver_name=self.name
+        )
+        election = molp_to_simple_election(lp, pb_constraint)
 
         for var in lp.variables():
             var.varValue = 0
@@ -121,7 +131,13 @@ class FeasibilityChecker:
         return status == LpStatusOptimal
 
 
-def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
+def validate_pb_constraint(
+    lp: MultiObjectiveLpProblem,
+    allow_lower_bound: bool = True,
+    solver_name: str = "solver",
+) -> LpConstraint:
+    """Single walk over the constraints: find the PB constraint and, when
+    ``allow_lower_bound`` is False, reject GE constraints on the way."""
     all_candidates: set[str] = set([
         variable.name
         for variable in lp.variables()
@@ -130,6 +146,12 @@ def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
 
     pb_constraints = []
     for constraint in lp.constraints.values():
+        if not allow_lower_bound and constraint.sense == LpConstraintGE:
+            raise PulpSolverError(
+                f"Constraint '{constraint.name}' is a lower-bound (>=) "
+                f"constraint; {solver_name} would ignore it and return a "
+                f"wrong answer. Use one of: {LOWER_BOUND_SOLVERS}"
+            )
         candidates = set([variable.name for variable, _ in constraint.items()])
         if candidates == all_candidates and constraint.sense == LpConstraintLE:
             pb_constraints.append(constraint)
@@ -141,12 +163,20 @@ def validate_pb_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
     return pb_constraints[0]
 
 
-def validate_election_program(lp: MultiObjectiveLpProblem) -> None:
+def validate_election_program(
+    lp: MultiObjectiveLpProblem,
+    *,
+    allow_lower_bound: bool,
+    solver_name: str = "solver",
+) -> LpConstraint:
     """Reject programs outside the binary-PB shape every ElectionSolver assumes.
 
     See GH #36: no capability widening — this only rejects, it never
     implements the excluded features (continuous vars, arbitrary bounds,
-    negative coefficients).
+    negative coefficients). Solvers that ignore GE constraints pass
+    ``allow_lower_bound=False`` (D15: reject rather than answer wrongly).
+
+    Returns the PB constraint so callers need not walk constraints again.
     """
     if not lp.objectives:
         raise PulpSolverError(f"Problem '{lp.name}' has no objectives")
@@ -180,16 +210,22 @@ def validate_election_program(lp: MultiObjectiveLpProblem) -> None:
                     f"{utility} for variable '{candidate.name}'"
                 )
 
-    pb_constraint = validate_pb_constraint(lp)
+    pb_constraint = validate_pb_constraint(
+        lp, allow_lower_bound=allow_lower_bound, solver_name=solver_name
+    )
     for candidate, cost in pb_constraint.items():
         if cost < 0:
             raise PulpSolverError(
                 f"PB constraint '{pb_constraint.name}' has negative "
                 f"coefficient {cost} for variable '{candidate.name}'"
             )
+    return pb_constraint
 
 
-def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
+def molp_to_simple_election(
+    lp: MultiObjectiveLpProblem, pb_constraint: LpConstraint
+) -> Election:
+    """``pb_constraint`` = the one returned by ``validate_election_program``."""
     approvals_utilities: dict[CandidateId, dict[VoterId, Utility]] = (
         defaultdict(dict)
     )
@@ -210,7 +246,6 @@ def molp_to_simple_election(lp: MultiObjectiveLpProblem) -> Election:
         if candidate.name != "__dummy"
     ])
 
-    pb_constraint = validate_pb_constraint(lp)
     candidates_costs: dict[str, float] = {
         candidate.name: coef for candidate, coef in pb_constraint.items()
     }

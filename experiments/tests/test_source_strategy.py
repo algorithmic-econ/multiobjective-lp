@@ -95,8 +95,8 @@ def test_load_and_transform_strategy_honours_explicit_utility():
 
 
 def test_load_and_transform_strategy_passes_constraints_through():
-    # bound=LOWER on purpose: an UPPER district constraint collides by name
-    # with the baseline per-district cap (pabutools_to_molp.py:509 TODO).
+    # bound=LOWER on purpose: an UPPER district constraint duplicates the
+    # baseline per-district cap -> ValueError in pabutools_to_multi_objective_lp.
     constraints = [
         ConstraintConfig(
             key="DISTRICT", value="*", bound="LOWER", budget_ratio=0.1

@@ -68,7 +68,14 @@ def pabutools_to_multi_objective_lp(
         project_variables,
         utility,
     )
+    baseline_names = {constraint.name for constraint in district_constraints}
     for constraint in additional_constraints:
+        if constraint.name in baseline_names:
+            raise ValueError(
+                f"constraint '{constraint.name}' duplicates a baseline "
+                "constraint: every district is already capped at its own "
+                "budget; drop the DISTRICT/UPPER constraint config"
+            )
         problem.addConstraint(constraint)
 
     return problem
@@ -504,7 +511,6 @@ def create_district_constraint(
         )
         constraint_limit = max_possible
 
-    # TODO: Validate constraint config, district upper bound is created in baseline constraints
     sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
     return define_constraint(
         district, sense, projects_variables, projects_costs, constraint_limit

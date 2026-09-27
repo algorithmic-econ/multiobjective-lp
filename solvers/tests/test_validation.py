@@ -6,12 +6,14 @@ from pulp import (
     LpAffineExpression,
     LpConstraint,
     LpConstraintLE,
+    LpStatusOptimal,
     LpVariable,
     PulpSolverError,
     lpSum,
 )
 
 from muoblpsolvers import (
+    election_solver,
     ExpandingApprovals,
     GreedySolver,
     MethodOfEqualSharesAdd1Solver,
@@ -147,3 +149,75 @@ def test_validation_wired_into_every_pb_solver(
 
     with pytest.raises(PulpSolverError, match="no objectives"):
         solver.actualSolve(basic_pb_approval)
+
+
+# D15 (T31): solvers that ignore GE constraints reject them instead of
+# silently returning a wrong answer.
+GE_BLIND_SOLVER_CLASSES = [
+    MethodOfEqualSharesAdd1Solver,
+    MethodOfEqualSharesUtilitySolver,
+    SingleTransferableVote,
+    ExpandingApprovals,
+    SolidCoalitionRefinement,
+]
+
+
+@pytest.mark.parametrize("solver_class", GE_BLIND_SOLVER_CLASSES)
+def test_lower_bound_rejected_by_ge_blind_solvers(
+    solver_class,
+    pb_with_lb_factory: Callable[[str], MultiObjectiveLpProblem],
+):
+    solver = solver_class(msg=False)
+    if not solver.available():
+        pytest.skip(f"{solver_class.__name__} unavailable (needs bindings)")
+
+    with pytest.raises(PulpSolverError, match="'lb_edu' is a lower-bound"):
+        solver.actualSolve(pb_with_lb_factory("APPROVAL"))
+
+
+@pytest.mark.parametrize(
+    "solver",
+    [
+        GreedySolver(msg=False),
+        PhragmenSolver(msg=False),
+        MethodOfEqualSharesExponentialSolver(msg=False, budget_init=1),
+        MethodOfEqualSharesConstrainsSolver(msg=False),
+    ],
+    ids=lambda solver: solver.name,
+)
+def test_lower_bound_accepted_by_ge_aware_solvers(
+    solver,
+    pb_with_lb_factory: Callable[[str], MultiObjectiveLpProblem],
+):
+    if not solver.available():
+        pytest.skip(f"{solver.name} unavailable (needs bindings)")
+
+    problem = pb_with_lb_factory("APPROVAL")
+    problem.solve(solver)
+
+    assert problem.status == LpStatusOptimal
+
+
+@pytest.mark.parametrize(
+    "solver_class", [GreedySolver, MethodOfEqualSharesAdd1Solver]
+)
+def test_pb_constraint_walked_once(
+    solver_class,
+    basic_pb_approval: MultiObjectiveLpProblem,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    solver = solver_class(msg=False)
+    if not solver.available():
+        pytest.skip(f"{solver_class.__name__} unavailable (needs bindings)")
+
+    calls = []
+    original = election_solver.validate_pb_constraint
+
+    def spy(*args, **kwargs):
+        calls.append(args)
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(election_solver, "validate_pb_constraint", spy)
+    basic_pb_approval.solve(solver)
+
+    assert len(calls) == 1

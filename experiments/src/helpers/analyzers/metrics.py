@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpsolvers.mes.common import get_total_budget_constraint
+from muoblpsolvers.election_solver import validate_pb_constraint
 
 from helpers.analyzers.model import Metric
 
@@ -48,7 +48,7 @@ def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def total_cost(problem: MultiObjectiveLpProblem) -> dict:
-    pb_constraint = get_total_budget_constraint(problem)
+    pb_constraint = validate_pb_constraint(problem)
     costs = {candidate.name: cost for candidate, cost in pb_constraint.items()}
     selected = [v for v in problem.variables() if v.value() == 1.0]
     return {
@@ -57,7 +57,7 @@ def total_cost(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def invalid_constraints(problem: MultiObjectiveLpProblem) -> dict:
-    total_budget_constraint = get_total_budget_constraint(problem)
+    total_budget_constraint = validate_pb_constraint(problem)
     return {
         "pb_constraint": total_budget_constraint.valid(),
         "invalid_count": sum(
@@ -81,7 +81,7 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
         for candidate, cost in constraint.items()
     }
 
-    total_budget = abs(get_total_budget_constraint(problem).constant)
+    total_budget = abs(validate_pb_constraint(problem).constant)
 
     voter_satisfaction = sorted(
         [(voter, cast(float, voter.value())) for voter in problem.objectives],

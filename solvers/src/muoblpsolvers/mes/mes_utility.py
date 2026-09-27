@@ -24,7 +24,9 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
                 f"{self.name} does not support timeLimit; "
                 "solving without limit"
             )
-        validate_election_program(lp)
+        pb_constraint = validate_election_program(
+            lp, allow_lower_bound=False, solver_name=self.name
+        )
         from muoblpbindings import equal_shares_utils
 
         (
@@ -34,7 +36,7 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
             approvals_utilities,
             total_utilities,
             total_budget,
-        ) = prepare_mes_parameters(lp, msg=self.msg)
+        ) = prepare_mes_parameters(lp, pb_constraint, msg=self.msg)
 
         if self.msg:
             logger.info("SOLVER START")
