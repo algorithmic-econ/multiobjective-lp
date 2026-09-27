@@ -6,7 +6,7 @@ This directory is self-contained and includes source code and resources required
 
 ## Initial Setup
 
-Requires Python 3.13, Poetry 2.x and a C++20 toolchain. `core`, `solvers` and
+Requires Python 3.13+ (CI: 3.13, 3.14), Poetry 2.x and a C++20 toolchain. `core`, `solvers` and
 `bindings` are path dependencies, installed from this repository (bindings are
 compiled on install, see [bindings README](../bindings/README.md)).
 ```shell
