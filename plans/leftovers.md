@@ -474,3 +474,13 @@ CI (test.yml) notes for T07/future:
 - Stale comment (not fixed, cosmetic): `experiments/pyproject.toml:30` says "0.0.18 not on PyPI" — false since T29.
 - **CI**: PR #68 test run 36341865975 — 14/14 jobs green (build 2 / test 6 / pyright 6), lint green.
 - **Roadmap complete (T01–T32).** Next: base→main PR — paste ROADMAP §7 `Closes …` block; old `muoblpbindings` repo archive still manual (user).
+
+### From T33 (feat/t33-pre-review-polish, 2026-09-27)
+
+- Pre-review sweep of ROADMAP §5 + this file. No plan doc; plan in-session. User picked: cheap set + typed raises + city label + ticket-ID comment strip. `plans/` pruning declined (kept as-is).
+- Shebangs added; sample README now `poetry run ./run.sh` / `./analyze.sh` (verified). `experiments/pyproject.toml` dead `# muoblp = …1.0.3` line dropped, "0.0.18 not on PyPI" comment reworded; `poetry check --lock` All set (comments not hashed).
+- Typed raises (messages unchanged): core `lp_reader_utils` ×3 + `pabutools_to_molp` ×3 → `ValueError`; `metrics`/`source_strategy`/`solver_strategy` → `NotImplementedError`; `election_solver` candidates-mismatch → `PulpSolverError`. Tests tightened from `pytest.raises(Exception…)`. `${utility}` JS-ism fixed.
+- Aggregator `_city_year` → `_city_label` (regex `^(.+?)_(\d{4})(?:_(.+))?$`): `poland_krakow_2024_bronowice` → `Poland_krakow (bronowice)`; citywide unchanged; no-year → raw. Plot-visible change only; no golden involves aggregator. Note `exclude_cities` matches the *display* label in city mode but raw city in bucket mode (pre-existing, untouched).
+- Ticket-ID comments stripped (13 sites across src/tests/`solvers/pyproject.toml`); rationale kept. `archived_code/`, `plans/`, ROADMAP untouched.
+- Verify GREEN: core 16 / solvers 127 / experiments 194→199 pytest; `-m e2e` golden (NO regen, fixtures clean); pyright 0 ×3; ruff 0.15.1 check+format clean (104 files). Sample smoke (50s) EXACT frozen refs (APPROVAL 0.0033/219239/167; COST 0.0035/1.34763e11/0; COST_ORDINAL 0.0032/2.79444e11/0; bronowice 0.0666/4.35159e9/0); city-mode PNG shows `Krakow` + `Poland_krakow (bronowice)`.
+- Post-merge (user): solvers src changed since `solvers@0.0.15` (T30/T31/T33; 0.0.15 still exports `get_total_budget_constraint`) → release `solvers@0.0.16`; core since `core@1.0.5` = annotation + typed raises → optional `core@1.0.6`; bindings unchanged. Archive old muoblpbindings repo. Paste ROADMAP §7 `Closes …` into base→main PR.
