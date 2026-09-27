@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 from pathlib import Path
 from typing import cast
@@ -46,12 +47,20 @@ def _solver_label(row: AnalyzerResult) -> str:
     )
 
 
-def _city_year(city: str) -> tuple[str, str]:
-    try:
-        name, year = city.rsplit("_", 1)
-        return name.capitalize(), year
-    except ValueError:
-        return city, ""
+# pabulib source names: {city}_{year} or {city}_{year}_{district}
+CITY_YEAR_PATTERN = re.compile(
+    r"^(?P<city>.+?)_(?P<year>\d{4})(?:_(?P<district>.+))?$"
+)
+
+
+def _city_label(source: str) -> str:
+    """Year-agnostic label; districts stay separate from their citywide row."""
+    match = CITY_YEAR_PATTERN.match(source)
+    if match is None:
+        return source
+    city = match["city"].capitalize()
+    district = match["district"]
+    return f"{city} ({district})" if district else city
 
 
 def _rows_to_frame(rows: list[AnalyzerResult], group_by: str) -> pd.DataFrame:
@@ -59,7 +68,7 @@ def _rows_to_frame(rows: list[AnalyzerResult], group_by: str) -> pd.DataFrame:
     for row in rows:
         solver_label = _solver_label(row)
         if group_by == "city":
-            city_display, _ = _city_year(row.city)
+            city_display = _city_label(row.city)
         else:
             city_display = row.city
 
