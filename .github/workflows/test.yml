@@ -13,13 +13,18 @@ on:
 jobs:
   build-bindings:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.13", "3.14"]
+
     steps:
     - uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: ${{ matrix.python }}
 
     - name: Build bindings wheel
       run: |
@@ -33,7 +38,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: bindings-wheel
+        name: bindings-wheel-py${{ matrix.python }}
         path: bindings/dist/*.whl
         if-no-files-found: error
 
@@ -44,6 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         project: [core, solvers, experiments]
+        python: ["3.13", "3.14"]
 
     steps:
     - uses: actions/checkout@v4
@@ -52,7 +58,7 @@ jobs:
       id: setup-python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: ${{ matrix.python }}
 
     - name: Install Poetry
       uses: snok/install-poetry@v1
@@ -65,7 +71,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ matrix.project }}/.venv
-        key: venv-${{ runner.os }}-py3.13-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
+        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
 
     - name: Install dependencies
       working-directory: ${{ matrix.project }}
@@ -75,7 +81,7 @@ jobs:
       if: matrix.project == 'solvers'
       uses: actions/download-artifact@v4
       with:
-        name: bindings-wheel
+        name: bindings-wheel-py${{ matrix.python }}
         path: bindings-wheel
 
     - name: Install bindings from built wheel
@@ -93,6 +99,7 @@ jobs:
       fail-fast: false
       matrix:
         project: [core, solvers, experiments]
+        python: ["3.13", "3.14"]
 
     steps:
     - uses: actions/checkout@v4
@@ -101,7 +108,7 @@ jobs:
       id: setup-python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: ${{ matrix.python }}
 
     - name: Install Poetry
       uses: snok/install-poetry@v1
@@ -114,7 +121,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ matrix.project }}/.venv
-        key: venv-${{ runner.os }}-py3.13-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
+        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
 
     - name: Install dependencies
       working-directory: ${{ matrix.project }}
