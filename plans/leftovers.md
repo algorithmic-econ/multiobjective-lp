@@ -475,7 +475,7 @@ CI (test.yml) notes for T07/future:
 - **CI**: PR #68 test run 36341865975 — 14/14 jobs green (build 2 / test 6 / pyright 6), lint green.
 - **Roadmap complete (T01–T32).** Next: base→main PR — paste ROADMAP §7 `Closes …` block; old `muoblpbindings` repo archive still manual (user).
 
-### From T33 (feat/t33-pre-review-polish, 2026-09-27)
+### From T33 (PR #69, feat/t33-pre-review-polish, 2026-09-27)
 
 - Pre-review sweep of ROADMAP §5 + this file. No plan doc; plan in-session. User picked: cheap set + typed raises + city label + ticket-ID comment strip. `plans/` pruning declined (kept as-is).
 - Shebangs added; sample README now `poetry run ./run.sh` / `./analyze.sh` (verified). `experiments/pyproject.toml` dead `# muoblp = …1.0.3` line dropped, "0.0.18 not on PyPI" comment reworded; `poetry check --lock` All set (comments not hashed).

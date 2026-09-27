@@ -357,8 +357,8 @@ Verify: Actions run on branch.
 
 > **From the T32 session (2026-09-27)** — D14 = **adopt**. `test.yml` `build-bindings` / `test` / `pyright` all matrix `python: [3.13, 3.14]` → 14 jobs (was 7); per-version bindings wheel artifact + venv cache key. Only cp314 gaps in locks were experiments `pandas 2.3.1`/`pyyaml 6.0.2` → **2.3.3 / 6.0.3** (0 other lock changes). Job check names now `test (core, 3.13)` etc.; only required check (main ruleset) is `format` → unaffected. No src changes, no classifiers added. **Roadmap complete.**
 
-#### [ ] T33 Pre-review polish
-Deps: T29–T32 · GH: — · PR: —
+#### [x] T33 Pre-review polish
+Deps: T29–T32 · GH: — · PR: [#69](https://github.com/algorithmic-econ/multiobjective-lp/pull/69)
 - Sweep of §5 unowned + `plans/leftovers.md` before base→main review; cheap, behavior-neutral fixes only.
 - `#!/bin/sh` on sample `run.sh`/`analyze.sh`; stale `experiments/pyproject.toml` comments; `${utility}` f-string typo.
 - Bare `raise Exception` in src → `ValueError` / `NotImplementedError` / `PulpSolverError` (messages unchanged); tests tightened.
