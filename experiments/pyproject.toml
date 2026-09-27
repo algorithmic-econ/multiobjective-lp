@@ -24,11 +24,10 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 pabutools = {version = "1.2.2"}
-# muoblp = {version = "1.0.3"}
 muoblp = {path = "../core", develop = true}
 muoblpsolvers = {path = "../solvers", develop = true}
-# path wiring for solvers' muoblpbindings range (0.0.18 not on PyPI);
-# transitive [tool.poetry] path enrichment doesn't propagate on relock
+# explicit path wiring: solvers' [tool.poetry] path enrichment for
+# muoblpbindings doesn't propagate transitively on relock
 muoblpbindings = {path = "../bindings", develop = false}
 pandas = "2.3.3"
 tabulate = "0.9.0"

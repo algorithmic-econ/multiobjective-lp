@@ -100,7 +100,7 @@ expanded from it (`CompactExperimentConfig` in [model.py](../src/helpers/runners
 ### 3. Run experiment
 ```shell
 $ cd {repository_root}/experiments/sample-experiment
-$ poetry run sh run.sh
+$ poetry run ./run.sh
 ```
 
 ### 4. Results
@@ -143,7 +143,7 @@ Analyzer configuration file defines (see [example](sample-analysis-config.jsonc)
 ### 6. Run analyzer
 ```shell
 $ cd {repository_root}/experiments/sample-experiment
-$ poetry run sh analyze.sh
+$ poetry run ./analyze.sh
 ```
 
 Analyzer results are available at path provided in config `analyzer_result_path`.
