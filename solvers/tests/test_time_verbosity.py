@@ -62,15 +62,17 @@ def _pb_with_zero_vote_project() -> MultiObjectiveLpProblem:
 
 
 def test_prepare_mes_parameters_msg_false_silent(capsys, caplog):
+    prob = _pb_with_zero_vote_project()
     with caplog.at_level(logging.DEBUG):
-        prepare_mes_parameters(_pb_with_zero_vote_project(), msg=False)
+        prepare_mes_parameters(prob, prob.constraints["pb"], msg=False)
     assert capsys.readouterr().out == ""
     assert caplog.records == []
 
 
 def test_prepare_mes_parameters_msg_true_logs_removal(capsys, caplog):
+    prob = _pb_with_zero_vote_project()
     with caplog.at_level(logging.INFO):
-        prepare_mes_parameters(_pb_with_zero_vote_project(), msg=True)
+        prepare_mes_parameters(prob, prob.constraints["pb"], msg=True)
     assert capsys.readouterr().out == ""  # logger, never print
     assert any("_Z" in r.getMessage() for r in caplog.records)
 

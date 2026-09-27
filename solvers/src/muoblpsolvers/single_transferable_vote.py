@@ -22,7 +22,9 @@ class SingleTransferableVote(LpSolver):
                 f"{self.name} does not support timeLimit; "
                 "solving without limit"
             )
-        validate_election_program(lp)
+        validate_election_program(
+            lp, allow_lower_bound=False, solver_name=self.name
+        )
         from muoblpbindings import single_transferable_vote
 
         if self.msg:

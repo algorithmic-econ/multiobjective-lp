@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpConstraint, LpConstraintLE, PulpSolverError
+from pulp import LpConstraint
 
 from muoblpsolvers.types import (
     CandidateId,
@@ -14,26 +14,6 @@ from muoblpsolvers.types import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def get_total_budget_constraint(lp: MultiObjectiveLpProblem) -> LpConstraint:
-    all_candidates: set[CandidateId] = {
-        variable.name
-        for variable in lp.variables()
-        if variable.name != "__dummy"
-    }
-
-    pb_constraints = []
-    for constraint in lp.constraints.values():
-        candidates = {variable.name for variable in constraint}
-        if candidates == all_candidates and constraint.sense == LpConstraintLE:
-            pb_constraints.append(constraint)
-
-    if len(pb_constraints) == 0:
-        raise PulpSolverError("Problem does not have PB constraint")
-    if len(pb_constraints) > 1:
-        raise PulpSolverError("Problem has too many PB constraint")
-    return pb_constraints[0]
 
 
 def binding_utilities(
@@ -53,6 +33,7 @@ def binding_utilities(
 
 def prepare_mes_parameters(
     lp: MultiObjectiveLpProblem,
+    pb_constraint: LpConstraint,
     msg: bool = True,
 ) -> tuple[
     list[CandidateId],
@@ -68,11 +49,9 @@ def prepare_mes_parameters(
         if candidate.name != "__dummy"
     ]
 
+    # pb_constraint = the one returned by validate_election_program
     costs: dict[CandidateId, Cost] = {
-        candidate.name: cost
-        # TODO: some constraints have repeated variables, but we just override them with the same value
-        for constraint in lp.constraints.values()  # [C_ub_Bieńczyce: 25000 V_BO.D16.10_24 + 40500 V_BO.D16.11_24 <= 100000, ...]
-        for candidate, cost in constraint.items()
+        candidate.name: cost for candidate, cost in pb_constraint.items()
     }
 
     # named: validate_election_program rejects unnamed objectives
@@ -109,7 +88,7 @@ def prepare_mes_parameters(
         projects.remove(project)
         del costs[project]
 
-    total_budget = abs(get_total_budget_constraint(lp).constant)
+    total_budget = abs(pb_constraint.constant)
     return (
         projects,
         costs,

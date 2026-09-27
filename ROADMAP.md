@@ -29,7 +29,7 @@ P1 toolchain     T04 → {T05, T06}; T06 → T07 → T08; T09 (after T02)
 P2 solver contract T10 → {T11..T16, T18}; T17 (after T12,T13)
 P3 experiments   T19 → T20 → T21 → {T22..T25}; T26 (after T20,T24)
 P4 core + docs   T27, T28
-P5 release+harden T29; T31 (D15); T32; T30 (after T23, T26, T27)
+P5 release+harden T29; T31; T32; T30 (after T23, T26, T27)
 ```
 
 | Phase | Goal | Tickets |
@@ -336,14 +336,16 @@ Verify: pyright ×3; full pytest ×3 + e2e golden.
 
 > **From the T30 session (2026-09-13)** — real inventory was solvers 22 (not 15) / experiments 69. All 6 listed inline ignores removed; 2 survive (negative tests passing deliberately invalid enum values, justified). User decisions: unnamed objective → new `validate_election_program` rejection; MES binding int boundary = type-only cast helper; extras done — `os.path` residue → pathlib, aggregator `(rel. to {baseline})` labels, test-only `model_validate` coercions dropped.
 
-#### [ ] T31 GE/lower-bound constraints in MES-family
-Deps: T16 · GH: #36 · **blocked on D15**
+#### [x] T31 GE/lower-bound constraints in MES-family
+Deps: T16 · GH: #36 · PR: [#67](https://github.com/algorithmic-econ/multiobjective-lp/pull/67)
 - MES-Add1/Utility/Constrains/Exponential, STV, ExpandingApprovals, SCR silently IGNORE GE constraints → wrong answers, not crashes (T13 dropped rule; P2 judge: open, no owner).
 - Per **D15**: either reject in `validate_election_program` with `PulpSolverError`, or document as a limitation + open a GH issue. Greedy keeps GE support (`FeasibilityChecker` LP path).
 - Also collapse (P2 judge misfiled these under core-only T27): `validate_pb_constraint` double-walk (`validate_election_program` + `molp_to_simple_election` each call it), and the redundant dup-PB check in `mes/common.py::get_total_budget_constraint`.
 
 AC: GE program + MES-family solver either raises an actionable error or is documented and tested as ignored; constraint list walked once per solve; negative test either way.
 Verify: solvers pytest; e2e golden (no GE in fixtures → must stay identical).
+
+> **From the T31 session (2026-09-27)** — D15 = **reject**. Ticket's 7-solver list was inaccurate: MES-Exponential (`FeasibilityChecker`) and MES-Constrains (cost-modification loop checks GE) already honor GE → keep. Reject set = MES-Add1, MES-Utility, STV, ExpandingApprovals, SCR. User folded in §5 DISTRICT/UPPER collision → `ValueError`. `get_total_budget_constraint` → `solvers/archived_code/` (experiments `metrics.py` switched to `validate_pb_constraint`).
 
 #### [ ] T32 py3.14 in test matrix (resolves D14)
 Deps: — · GH: —
@@ -377,7 +379,8 @@ Verify: Actions run on branch.
 
 ### Unowned findings (T28)
 
-- `DISTRICT`/`UPPER` `ConstraintConfig` collides by name with baseline per-district cap → `PulpError: overlapping constraint names` (TODO `pabutools_to_molp.py:509`; T26). Candidate: T31.
+- ~~`DISTRICT`/`UPPER` `ConstraintConfig` collides by name with baseline per-district cap~~ → done T31 (actionable `ValueError`).
+- GE-blind solvers (MES-Add1/Utility, STV, EA, SCR) also ignore non-PB `<=` caps (per-district `C_ub_*` in multi-district problems, e.g. sample citywide MES_ADD1) — not rejected (would break sample/golden); documented in solvers README (T31).
 - pulp 4.0 migration debt (T05 leftovers).
 - Stale MkDocs code-reference: `documentation/docs/code-reference/*.md` point at `multiobjective_lp.model…` / `examples.summing…` (documentation/ untouched per §6).
 - District results get aggregator city label `Poland_krakow_2024` (P3 verdict #5).
@@ -391,7 +394,7 @@ Verify: Actions run on branch.
 - **D11** RESOLVED (T02): normalization field list lives in `experiments/tests/golden_utils.py`, confirmed in PR #38.
 - **D12** pyright strictness ramp — basic-mode ratchet DONE in **T30** (0 rule suppressions ×3); standard/strict per subproject stays a later question.
 - **D14** Add py3.14/cp314 to test matrix (wheels already build cp314)? — owned by **T32**.
-- **D15** MES-family (MES-*, STV, ExpandingApprovals, SCR) + GE/lower-bound constraints: reject with `PulpSolverError`, or document as known limitation + GH issue? Blocks **T31**.
+- **D15** DECIDED (T31): reject GE with `PulpSolverError` in GE-blind solvers (MES-Add1, MES-Utility, STV, ExpandingApprovals, SCR); Greedy/Phragmen/MES-Exp/MES-Constrains keep GE support.
 - Default kept: `papers/`, `documentation/` MkDocs untouched by this roadmap.
 
 ## 7. GH issue map
@@ -406,11 +409,11 @@ Verify: Actions run on branch.
 | #26 no manual timing | T14 | #53 `b461f27` |
 | #27 respect timeLimit | T14 | #53 `b461f27` |
 | #32 respect msg | T14 | #53 `b461f27` |
-| #36 raise incompatible | T13, T31 | #49 `12c6c8f` — **keep open → T31/D15** (GE gap) |
+| #36 raise incompatible | T13, T31 | #49 `12c6c8f`, #67 (T31: GE rejection, D15) |
 | #30 #31 #34 #35 | excluded → §5 | — |
 
 No GH issue closed/commented in T28 (user decision). Paste into base→main PR body (GitHub auto-closes on merge to default branch):
 
 ```
-Closes #20, Closes #22, Closes #23, Closes #24, Closes #25, Closes #26, Closes #27, Closes #32
+Closes #20, Closes #22, Closes #23, Closes #24, Closes #25, Closes #26, Closes #27, Closes #32, Closes #36
 ```
