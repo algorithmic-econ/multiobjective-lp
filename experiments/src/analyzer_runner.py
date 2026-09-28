@@ -3,7 +3,7 @@ import multiprocessing
 import sys
 from itertools import repeat
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from muoblp.utils.lp_reader_utils import read_lp_file
 
@@ -61,9 +61,10 @@ def analyze_runner_result(
 
 
 def main(
-    config: AnalyzerConfig | dict, console_output_limit: int | None = None
+    raw_config: AnalyzerConfig | dict[str, Any],
+    console_output_limit: int | None = None,
 ) -> tuple[int, int]:
-    config = AnalyzerConfig.model_validate(config)
+    config: AnalyzerConfig = AnalyzerConfig.model_validate(raw_config)
     logger.info("Start analysis", extra={"config": config})
     runner_results = [
         result_path

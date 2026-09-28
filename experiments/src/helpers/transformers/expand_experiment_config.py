@@ -1,3 +1,5 @@
+from typing import Any
+
 from helpers.runners.model import (
     CompactExperimentConfig,
     ExperimentConfig,
@@ -6,7 +8,7 @@ from helpers.runners.model import (
 
 
 def parse_experiment_config(
-    data: dict | ExperimentConfig | CompactExperimentConfig,
+    data: dict[str, Any] | ExperimentConfig | CompactExperimentConfig,
 ) -> ExperimentConfig:
     """Single config-load boundary: validates + expands compact form."""
     if isinstance(data, ExperimentConfig):

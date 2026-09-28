@@ -3,6 +3,7 @@ import multiprocessing
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 from helpers.runners.model import (
     CompactExperimentConfig,
@@ -20,27 +21,27 @@ logger = logging.getLogger(__name__)
 
 
 def main(
-    experiment: ExperimentConfig | CompactExperimentConfig | dict,
+    raw_config: dict[str, Any] | ExperimentConfig | CompactExperimentConfig,
 ) -> None:
-    experiment = parse_experiment_config(experiment)
+    config = parse_experiment_config(raw_config)
 
-    Path(experiment.experiment_results_base_path).mkdir(
+    Path(config.experiment_results_base_path).mkdir(
         parents=True, exist_ok=True
     )
-    runner_configs = resolve_runner_configs(experiment)
+    runner_configs = resolve_runner_configs(config)
 
     start_time = time.time()
     logger.info(
         "Start experiment",
         extra={
-            "concurrency": experiment.concurrency,
+            "concurrency": config.concurrency,
             "experiment_results_base_path": (
-                experiment.experiment_results_base_path
+                config.experiment_results_base_path
             ),
         },
     )
     with multiprocessing.Pool(
-        processes=experiment.concurrency, initializer=setup_logging
+        processes=config.concurrency, initializer=setup_logging
     ) as pool:
         pool.map(problem_runner, runner_configs)
 
