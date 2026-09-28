@@ -25,11 +25,11 @@ documentation = "https://jasieksz.github.io/multiobjective-lp"
 [tool.poetry]
 packages = [{include = "muoblpsolvers", from = "src"}]
 
-# Single-style policy (T18): static [project.dependencies] holds the
+# Single-style policy: static [project.dependencies] holds the
 # published version pins; this table ONLY enriches them with local path
 # sources for dev installs. Poetry 2.x uses [project] for wheel METADATA
 # and this table for install/lock -- do not move deps back here alone or
-# wheels regain broken file:// refs (see T08).
+# wheels regain broken file:// refs.
 [tool.poetry.dependencies]
 muoblp = {path = "../core", develop = true}
 muoblpbindings = {path = "../bindings", develop = false}

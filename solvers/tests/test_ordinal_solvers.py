@@ -33,6 +33,6 @@ def test_ordinal_solver(
         var.name for var in ordinal_pb.variables() if var.value() == 1.0
     ]
     assert sorted(selected) == sorted(expected)
-    # closes T14's deferred msg coverage for these three (the old
-    # py::print __dummy warning is gone once the var is skipped)
+    # msg coverage for these three: the old py::print __dummy warning
+    # is gone once the var is skipped
     assert capsys.readouterr().out == ""

@@ -151,7 +151,7 @@ def test_validation_wired_into_every_pb_solver(
         solver.actualSolve(basic_pb_approval)
 
 
-# D15 (T31): solvers that ignore GE constraints reject them instead of
+# Solvers that ignore GE constraints reject them instead of
 # silently returning a wrong answer.
 GE_BLIND_SOLVER_CLASSES = [
     MethodOfEqualSharesAdd1Solver,

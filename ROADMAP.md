@@ -29,7 +29,7 @@ P1 toolchain     T04 → {T05, T06}; T06 → T07 → T08; T09 (after T02)
 P2 solver contract T10 → {T11..T16, T18}; T17 (after T12,T13)
 P3 experiments   T19 → T20 → T21 → {T22..T25}; T26 (after T20,T24)
 P4 core + docs   T27, T28
-P5 release+harden T29; T31; T32; T30 (after T23, T26, T27)
+P5 release+harden T29; T31; T32; T30 (after T23, T26, T27); T33 (last)
 ```
 
 | Phase | Goal | Tickets |
@@ -39,7 +39,7 @@ P5 release+harden T29; T31; T32; T30 (after T23, T26, T27)
 | P2 | Solvers implement PuLP contract | T10–T18 |
 | P3 | Experiments cleanup: Pydantic, lib extraction, dedup, tests | T19–T26 |
 | P4 | Core micro-fixes + docs | T27–T28 |
-| P5 | Release chain + hardening leftovers (added 2026-08-25) | T29–T32 |
+| P5 | Release chain + hardening leftovers (added 2026-08-25) | T29–T33 |
 
 ## 4. Tickets
 
@@ -357,6 +357,17 @@ Verify: Actions run on branch.
 
 > **From the T32 session (2026-09-27)** — D14 = **adopt**. `test.yml` `build-bindings` / `test` / `pyright` all matrix `python: [3.13, 3.14]` → 14 jobs (was 7); per-version bindings wheel artifact + venv cache key. Only cp314 gaps in locks were experiments `pandas 2.3.1`/`pyyaml 6.0.2` → **2.3.3 / 6.0.3** (0 other lock changes). Job check names now `test (core, 3.13)` etc.; only required check (main ruleset) is `format` → unaffected. No src changes, no classifiers added. **Roadmap complete.**
 
+#### [x] T33 Pre-review polish
+Deps: T29–T32 · GH: — · PR: [#69](https://github.com/algorithmic-econ/multiobjective-lp/pull/69)
+- Sweep of §5 unowned + `plans/leftovers.md` before base→main review; cheap, behavior-neutral fixes only.
+- `#!/bin/sh` on sample `run.sh`/`analyze.sh`; stale `experiments/pyproject.toml` comments; `${utility}` f-string typo.
+- Bare `raise Exception` in src → `ValueError` / `NotImplementedError` / `PulpSolverError` (messages unchanged); tests tightened.
+- Aggregator city label: year-anchored parse, districts labelled `City (district)`.
+- Ticket-ID refs (`T10`, `D15`, …) stripped from src/tests/toml comments (meaningless on main).
+
+AC: pytest ×3 + e2e golden identical; pyright 0 ×3; ruff clean; sample metrics = frozen refs.
+Verify: full matrix + sample smoke + aggregator city mode.
+
 ## 5. Future / explicitly excluded (no tickets)
 
 - GH #30 (metrics weights), #31/#34 (continuous vars), #35 (arbitrary upBound)
@@ -385,10 +396,10 @@ Verify: Actions run on branch.
 - GE-blind solvers (MES-Add1/Utility, STV, EA, SCR) also ignore non-PB `<=` caps (per-district `C_ub_*` in multi-district problems, e.g. sample citywide MES_ADD1) — not rejected (would break sample/golden); documented in solvers README (T31).
 - pulp 4.0 migration debt (T05 leftovers).
 - Stale MkDocs code-reference: `documentation/docs/code-reference/*.md` point at `multiobjective_lp.model…` / `examples.summing…` (documentation/ untouched per §6).
-- District results get aggregator city label `Poland_krakow_2024` (P3 verdict #5).
+- ~~District results get aggregator city label `Poland_krakow_2024` (P3 verdict #5).~~ → done T33 (`Poland_krakow (bronowice)`).
 - ~~`os.path` residue `pabutools_utils.py:49-57`~~ → done T30.
 - Interactive generator (`generate_experiment_config.py`) TTY flow never click-tested.
-- `sample-experiment/run.sh`/`analyze.sh` have no shebang → run as `poetry run sh run.sh` (documented).
+- ~~`sample-experiment/run.sh`/`analyze.sh` have no shebang~~ → done T33 (`#!/bin/sh`, `poetry run ./run.sh`).
 
 ## 6. TODO: decide
 

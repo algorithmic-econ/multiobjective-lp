@@ -25,7 +25,7 @@ def get_constraint_sign(constraint: str) -> int:
         return constraint.index("<")
     if ">=" in constraint:
         return constraint.index(">")
-    raise Exception("Unexpected constraint sign")
+    raise ValueError("Unexpected constraint sign")
 
 
 def read_lp_file(filename) -> MultiObjectiveLpProblem:
@@ -143,7 +143,7 @@ def parse_variable_with_coefficient(
         return (variables[parts[0]], 1)
     if len(parts) == 2:
         return (variables[parts[1]], int(parts[0]))
-    raise Exception("Unexpected variable parts")
+    raise ValueError("Unexpected variable parts")
 
 
 def parse_str_variable_with_coefficient(variable: str) -> tuple[int, str]:
@@ -152,4 +152,4 @@ def parse_str_variable_with_coefficient(variable: str) -> tuple[int, str]:
         return 1, parts[0]
     if len(parts) == 2:
         return int(parts[0]), parts[1]
-    raise Exception("Unexpected variable parts")
+    raise ValueError("Unexpected variable parts")

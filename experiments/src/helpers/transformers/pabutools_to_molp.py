@@ -125,7 +125,7 @@ def ballot_to_expression_strategy(
                 [str(c), int(c.cost) * int(points)]
                 for c, points in ballot.items()
             ]
-    raise Exception(f"Unknown utility ${utility}")
+    raise ValueError(f"Unknown utility {utility}")
 
 
 def validate_profile_type_matches_utility(
@@ -140,7 +140,7 @@ def validate_profile_type_matches_utility(
             return isinstance(profile, OrdinalProfile)
         case "CUMULATIVE" | "COST_CUMULATIVE":
             return isinstance(profile, CumulativeProfile)
-    raise Exception(f"Unknown utility ${utility}")
+    raise ValueError(f"Unknown utility {utility}")
 
 
 def create_voter_objectives(
@@ -154,7 +154,7 @@ def create_voter_objectives(
     for district, profile in profiles.items():
         # TODO: Extract input data validation
         if not validate_profile_type_matches_utility(profile, utility):
-            raise Exception(
+            raise ValueError(
                 f"Profile for {district} does not match utility {utility}"
             )
         for ballot in profile:

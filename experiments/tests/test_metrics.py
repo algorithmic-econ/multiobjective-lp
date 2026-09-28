@@ -145,7 +145,7 @@ def test_get_metric_strategy_dispatch(metric, expected):
 
 
 def test_get_metric_strategy_unknown_raises():
-    with pytest.raises(Exception, match="Metric not implemented"):
+    with pytest.raises(NotImplementedError, match="Metric not implemented"):
         get_metric_strategy(cast(Metric, "NOT_A_METRIC"))
 
 

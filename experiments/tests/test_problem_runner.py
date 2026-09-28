@@ -1,4 +1,4 @@
-"""Runner-level cache behaviour (ROADMAP T26 AC: cache-hit-skips-solve).
+"""Runner-level cache behaviour: a cache hit skips the solve.
 
 Uses a real GREEDY solve on the mini fixture (sub-second) so the assertion
 covers the actual round trip: what problem_runner writes must be what

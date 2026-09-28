@@ -47,7 +47,7 @@ SOLVER_OPTION_SPECS: dict[str, list[tuple[str, str, object | None]]] = {
     "SUMMING": [
         ("use_gurobi", "bool", False),
     ],
-    # binding-backed, no options (T10)
+    # binding-backed, no options
     "STV": [],
     "SOLID_COALITION_REFINEMENT": [],
     "EXPANDING_APPROVALS": [],

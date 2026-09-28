@@ -86,7 +86,7 @@ def test_cost_cumulative_multiplies(projects):
 
 
 def test_unknown_utility_raises():
-    with pytest.raises(Exception, match="Unknown utility"):
+    with pytest.raises(ValueError, match="Unknown utility"):
         ballot_to_expression_strategy(
             "UNKNOWN"  # pyright: ignore[reportArgumentType]  # deliberately invalid Utility to hit the error branch
         )

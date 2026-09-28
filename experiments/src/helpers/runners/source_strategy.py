@@ -59,4 +59,4 @@ def load_and_transform_strategy(
             resolved_utility,
         )
 
-    raise Exception("Strategy not implemented for the source type")
+    raise NotImplementedError("Strategy not implemented for the source type")

@@ -30,6 +30,8 @@ SOLVERS: dict[Solver, type[LpSolver]] = {
 
 def get_solver(solver_type: Solver, solver_options: dict | None) -> LpSolver:
     if solver_type not in SOLVERS:
-        raise Exception("Strategy not implemented for the solver type")
+        raise NotImplementedError(
+            "Strategy not implemented for the solver type"
+        )
     # options are keyword args of the solver constructor (pulp optionsDict)
     return SOLVERS[solver_type](**(solver_options or {}))

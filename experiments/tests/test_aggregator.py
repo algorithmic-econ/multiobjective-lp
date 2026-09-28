@@ -10,7 +10,7 @@ GOLDEN_METRICS = Path(__file__).parent / "fixtures" / "golden" / "metrics.json"
 
 
 def _rows_with_time(tmp_path: Path) -> Path:
-    """Golden metrics.json has `time` stripped (D11 normalization) - not a
+    """Golden metrics.json has `time` stripped (golden normalization) - not a
     valid AnalyzerResult on its own. Reinject a fixed value for tests that
     need to load it as real rows."""
     entries = json.loads(GOLDEN_METRICS.read_text())
@@ -105,7 +105,7 @@ def test_build_dataframe_normalization_and_clip(tmp_path):
 
 
 def test_build_dataframe_normalization_with_duplicate_city_baseline(tmp_path):
-    """Regression (T23): the baseline solver having >1 row for the same city
+    """Regression: the baseline solver having >1 row for the same city
     - the real shape, one row per utility - used to raise
     `ValueError: truth value of a Series is ambiguous`. The 1-row-per-city
     golden fixture never hit it."""
@@ -183,6 +183,22 @@ def test_build_dataframe_city_mode_mean_over_years(tmp_path):
     sum_rows = df.loc[df["Metric"] == "Sum Objectives"]
     assert sum_rows["City"].tolist() == ["Krakow"]
     assert sum_rows["Value"].iloc[0] == pytest.approx(150.0)
+
+
+@pytest.mark.parametrize(
+    ("source", "label"),
+    [
+        ("krakow_2024", "Krakow"),
+        ("poland_krakow_2024", "Poland_krakow"),
+        ("poland_krakow_2024_bronowice", "Poland_krakow (bronowice)"),
+        ("krakow_2024_mini", "Krakow (mini)"),
+        ("no_year_here", "no_year_here"),
+    ],
+)
+def test_city_label(source, label):
+    from aggregate_results import _city_label
+
+    assert _city_label(source) == label
 
 
 @pytest.mark.parametrize("group_by", ["instance_size_bucket", "city"])

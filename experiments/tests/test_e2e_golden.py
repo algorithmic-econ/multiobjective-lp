@@ -1,4 +1,4 @@
-"""E2E golden test: runner -> analyzer over tiny 2-district fixture (T02).
+"""E2E golden test: runner -> analyzer over tiny 2-district fixture.
 
 Guards the whole pipeline (pabulib parse -> transform -> solve -> persist ->
 analyze) before refactors. Goldens + normalization: see golden_utils.py and
