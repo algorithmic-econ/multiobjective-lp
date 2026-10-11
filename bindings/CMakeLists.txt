@@ -17,6 +17,11 @@ add_library(methods STATIC
   src/solid_coalition_refinement.cpp)
 set_target_properties(methods PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+add_library(metrics STATIC
+  src/metrics/solved_instance.cpp
+  src/metrics/exclusion_ratio.cpp)
+set_target_properties(metrics PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
@@ -25,6 +30,7 @@ include_directories(${pybind11_INCLUDE_DIRS})
 python_add_library(muoblpbindings MODULE src/binder.cpp WITH_SOABI)
 target_link_libraries(muoblpbindings PRIVATE pybind11::headers)
 target_link_libraries(muoblpbindings PRIVATE methods)
+target_link_libraries(muoblpbindings PRIVATE metrics)
 
 target_compile_definitions(muoblpbindings PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
