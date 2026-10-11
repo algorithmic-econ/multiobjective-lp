@@ -33,6 +33,25 @@ schemas are Pydantic models in `src/helpers/runners/model.py` and
 
 Relative paths in configs resolve against the current working directory.
 
+## Native metrics
+Some analyzer metrics are C++ implementations from `muoblpbindings.metrics`.
+They have their own `Metric` names (currently `EXCLUSION_RATIO_NATIVE`, twin of
+`EXCLUSION_RATION`) and own result columns; request them in the analyzer config
+`metrics` like any other. Both variants can run in one analysis.
+
+* Missing or outdated bindings: that result becomes a failure row (`ImportError`,
+  exit 1), there is no silent fallback to the python version.
+* One opaque `SolvedInstance` handle is built per result and shared by all
+  native metrics.
+* Adding one: follow "Adding new metric" in the
+  [bindings README](../bindings/README.md), then register the strategy and its
+  python counterpart in `src/helpers/analyzers/native_metrics.py` and add the
+  `Metric` + `AnalyzerResult` field in `src/helpers/analyzers/model.py`. Parity
+  tests (`tests/test_native_metrics.py`, `tests/test_e2e_native_parity.py`)
+  pick it up from `PYTHON_COUNTERPART`.
+* C++ edits need a reinstall of the bindings into this venv:
+  `poetry run pip install --force-reinstall --no-deps ../bindings`.
+
 ## Development
 ```shell
 $ poetry run pytest          # unit tests + e2e golden

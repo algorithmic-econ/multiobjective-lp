@@ -10,7 +10,7 @@
   - core - defines model of multiobjective linear program
   - solvers - independent set of algorithms that can be applied to solve an instance of multiobjective LP, sometimes with C++ bindings
   - experiments - scripts and utilities to generate, solve and analyse instances of multiobjective LPs
-  - bindings - performance-critical solver algorithms in C++20 (pybind11/scikit-build-core), consumed by solvers as a path dependency
+  - bindings - performance-critical solver algorithms in C++20 (pybind11/scikit-build-core), consumed by solvers as a path dependency and by experiments (native analysis metrics)
 
 ## Tools
 - This repository and every subproject uses poetry to manage dependencies. Use venv of given project when executing python.
