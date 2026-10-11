@@ -31,7 +31,7 @@ def get_metrics(
 def get_metric_strategy(
     metric: Metric,
 ) -> Callable[[MultiObjectiveLpProblem], dict]:
-    if metric == "EXCLUSION_RATION":
+    if metric == "EXCLUSION_RATIO":
         return exclusion_ratio
     if metric == "SUM_OBJECTIVES":
         return sum_objectives

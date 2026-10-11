@@ -51,7 +51,7 @@ experiment = {
 analyzer = {
   "analyzer_result_path": f"{tmp_path}/analysis/",           # trailing slash!
   "experiment_results_base_path": f"{tmp_path}/results/",
-  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS",
+  "metrics": ["EXCLUSION_RATIO", "SUM_OBJECTIVES", "EJR_PLUS",
               "CONSTRAINTS", "INSTANCE_SIZE", "TOTAL_COST"],  # all impl'd; METADATA raises
 }
 ```

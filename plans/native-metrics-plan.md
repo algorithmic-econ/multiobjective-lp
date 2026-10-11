@@ -15,7 +15,7 @@ Analyzer metrics (`experiments/src/helpers/analyzers/metrics.py`) = pure python 
 ## Global constraints
 
 - Branch `feat/native-metrics-bindings` off `feat/roadmap-base-branch`; PR → base. Never main. Stop after PR, wait review.
-- No golden regen; `test_e2e_golden.py` + goldens untouched. Existing `EXCLUSION_RATION` typo kept.
+- No golden regen; `test_e2e_golden.py` + goldens untouched. Existing `EXCLUSION_RATIO` typo kept.
 - Poetry venv per project. ruff line-length 79. C++: `bindings/.clang-format`.
 - Local bindings build may need (bindings/README): `export SDKROOT=$(xcrun --show-sdk-path); export CXXFLAGS="-cxx-isystem $SDKROOT/usr/include/c++/v1"` — try without first.
 - Impl by subagents `model: sonnet`, sequential (shared worktree + venv), agents don't commit; main reviews diff + commits per task.
@@ -62,7 +62,7 @@ New dir `src/metrics/`, namespace `metrics`, static lib `metrics` (PIC) linked i
   - `build_solved_instance(problem)` — lazy `from muoblpbindings.metrics import SolvedInstance`.
   - `exclusion_ratio_native(instance) -> {"exclusion_ratio": float}` (same inner key as python → direct compare).
   - `NATIVE_STRATEGIES: dict[Metric, Callable[[SolvedInstance], dict]]`.
-  - `PYTHON_COUNTERPART: dict[Metric, Metric]` = `{EXCLUSION_RATIO_NATIVE: EXCLUSION_RATION}` — drives parity tests generically.
+  - `PYTHON_COUNTERPART: dict[Metric, Metric]` = `{EXCLUSION_RATIO_NATIVE: EXCLUSION_RATIO}` — drives parity tests generically.
 - `metrics.py::get_metrics`: build handle once iff any requested metric ∈ `NATIVE_STRATEGIES`; dispatch native → handle, else existing `get_metric_strategy(metric)(problem)` (unchanged, python-only).
 - `analysis_table.py`: label `"Exclusion ratio (native)"`, round 4.
 - `analyzer_runner.py`: no change (ImportError already → `AnalyzerFailure`).

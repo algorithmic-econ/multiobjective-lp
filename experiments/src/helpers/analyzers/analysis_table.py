@@ -36,7 +36,7 @@ def transform_metrics_to_markdown_table(
             if metric_details is None:
                 continue
 
-            if metric_name == "EXCLUSION_RATION":
+            if metric_name == "EXCLUSION_RATIO":
                 row_data["Exclusion ratio"] = round(
                     metric_details.get("exclusion_ratio"), 4
                 )

@@ -120,10 +120,10 @@ def test_handcrafted_absolute_values():
     assert set(EXPECTED_EXCLUSION_RATIO) == set(HANDCRAFTED_FACTORIES)
     for factory, expected in EXPECTED_EXCLUSION_RATIO.items():
         result = get_metrics(
-            [Metric.EXCLUSION_RATION, Metric.EXCLUSION_RATIO_NATIVE],
+            [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE],
             factory(),
         )
-        assert result[Metric.EXCLUSION_RATION] == {"exclusion_ratio": expected}
+        assert result[Metric.EXCLUSION_RATIO] == {"exclusion_ratio": expected}
         assert result[Metric.EXCLUSION_RATIO_NATIVE] == {
             "exclusion_ratio": expected
         }, factory.__name__
@@ -195,9 +195,9 @@ def test_roundtrip_absolute_value(tmp_path):
         _runner_result(path, ["p2", "p3", "p4"]), read_lp_file(str(path))
     )
     result = get_metrics(
-        [Metric.EXCLUSION_RATION, Metric.EXCLUSION_RATIO_NATIVE], problem
+        [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE], problem
     )
-    assert result[Metric.EXCLUSION_RATION] == {"exclusion_ratio": 0.5}
+    assert result[Metric.EXCLUSION_RATIO] == {"exclusion_ratio": 0.5}
     assert result[Metric.EXCLUSION_RATIO_NATIVE] == {"exclusion_ratio": 0.5}
 
 
@@ -268,7 +268,7 @@ def test_empty_objectives_error_types():
     problem += 10 * p1 <= 20, "pb_constraint"
 
     with pytest.raises(ZeroDivisionError):
-        get_metrics([Metric.EXCLUSION_RATION], problem)
+        get_metrics([Metric.EXCLUSION_RATIO], problem)
     with pytest.raises(ValueError):
         get_metrics([Metric.EXCLUSION_RATIO_NATIVE], problem)
 
@@ -300,10 +300,10 @@ def test_missing_bindings_raise_import_error(monkeypatch, module):
         get_metrics([Metric.EXCLUSION_RATIO_NATIVE], problem)
     # python-only metrics are unaffected
     assert get_metrics(
-        [Metric.EXCLUSION_RATION, Metric.INSTANCE_SIZE, Metric.TOTAL_COST],
+        [Metric.EXCLUSION_RATIO, Metric.INSTANCE_SIZE, Metric.TOTAL_COST],
         problem,
     ) == {
-        Metric.EXCLUSION_RATION: {"exclusion_ratio": 0.0},
+        Metric.EXCLUSION_RATIO: {"exclusion_ratio": 0.0},
         Metric.INSTANCE_SIZE: {"size": 2},
         Metric.TOTAL_COST: {"total_cost": 100},
     }
@@ -326,13 +326,13 @@ def test_analyze_runner_result_populates_native_metric(tmp_path):
     meta_path = _persist_happy_meta(tmp_path)
 
     result = analyze_runner_result(
-        meta_path, [Metric.EXCLUSION_RATION, Metric.EXCLUSION_RATIO_NATIVE]
+        meta_path, [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE]
     )
 
     # selected p1, p3 -> v2, v4, v6 excluded
     assert isinstance(result, AnalyzerResult)
     assert result.EXCLUSION_RATIO_NATIVE == {"exclusion_ratio": 0.5}
-    assert result.EXCLUSION_RATIO_NATIVE == result.EXCLUSION_RATION
+    assert result.EXCLUSION_RATIO_NATIVE == result.EXCLUSION_RATIO
 
 
 # --- registry ---------------------------------------------------------

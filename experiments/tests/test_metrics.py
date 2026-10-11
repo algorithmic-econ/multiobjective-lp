@@ -93,7 +93,7 @@ def test_ejr_plus_violated():
 @pytest.mark.parametrize(
     ("metric", "expected"),
     [
-        (Metric.EXCLUSION_RATION, exclusion_ratio),
+        (Metric.EXCLUSION_RATIO, exclusion_ratio),
         (Metric.SUM_OBJECTIVES, sum_objectives),
         (Metric.EJR_PLUS, ejr_plus),
         (Metric.CONSTRAINTS, invalid_constraints),
@@ -123,15 +123,14 @@ def test_get_metrics_keys_results_by_metric():
 )
 def test_get_metrics_native_matches_python(factory):
     result = get_metrics(
-        [Metric.EXCLUSION_RATION, Metric.EXCLUSION_RATIO_NATIVE], factory()
+        [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE], factory()
     )
     assert list(result) == [
-        Metric.EXCLUSION_RATION,
+        Metric.EXCLUSION_RATIO,
         Metric.EXCLUSION_RATIO_NATIVE,
     ]
     assert (
-        result[Metric.EXCLUSION_RATIO_NATIVE]
-        == result[Metric.EXCLUSION_RATION]
+        result[Metric.EXCLUSION_RATIO_NATIVE] == result[Metric.EXCLUSION_RATIO]
     )
 
 

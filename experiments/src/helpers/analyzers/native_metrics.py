@@ -37,5 +37,5 @@ NATIVE_STRATEGIES: dict[Metric, Callable[["SolvedInstance"], dict]] = {
 
 # parity tests iterate this map: every native metric must be registered here
 PYTHON_COUNTERPART: dict[Metric, Metric] = {
-    Metric.EXCLUSION_RATIO_NATIVE: Metric.EXCLUSION_RATION,
+    Metric.EXCLUSION_RATIO_NATIVE: Metric.EXCLUSION_RATIO,
 }

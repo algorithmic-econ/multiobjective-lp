@@ -37,7 +37,7 @@
 - `core/example/define_pb.py` exists (T27), `core/README.md` link valid.
 - `git ls-files '*.DS_Store'` empty; `experiments/.coverage` tracked; `.gitignore` has no coverage rule.
 - `experiments/pyproject.toml:40` `notebook = "^7.5.4"` — zero refs (T25).
-- Sample config `experiments/sample-experiment/sample-analysis-config.jsonc` metrics = `EXCLUSION_RATION, SUM_OBJECTIVES, EJR_PLUS`. `Metric` enum: + `CONSTRAINTS, INSTANCE_SIZE, TOTAL_COST`. `EXCLUSION_RATION` typo is load-bearing — do NOT fix.
+- Sample config `experiments/sample-experiment/sample-analysis-config.jsonc` metrics = `EXCLUSION_RATIO, SUM_OBJECTIVES, EJR_PLUS`. `Metric` enum: + `CONSTRAINTS, INSTANCE_SIZE, TOTAL_COST`. `EXCLUSION_RATIO` typo is load-bearing — do NOT fix.
 - Entrypoints (`experiments/src/`, all `sys.argv[1]` = config path): `experiment_runner.py` (ExperimentConfig or CompactExperimentConfig), `analyzer_runner.py` (AnalyzerConfig; exit 1 on any failed analysis), `aggregate_results.py` (AggregatorConfig, `helpers/analyzers/model.py:55`), `generate_sweep_config.py` (SweepSpec, `helpers/runners/model.py`), `generate_experiment_config.py` (interactive `questionary`, needs TTY, no args).
 - Solvers (10; pulp name / experiments `Solver` enum / bindings? / ctor options):
   - `Greedy` / GREEDY / no / —
@@ -97,7 +97,7 @@ Implementer: re-verify each row (grep) before writing; mark unverifiable rows "u
 
 **Files:** `experiments/sample-experiment/sample-analysis-config.jsonc`, `core/pyproject.toml`, `solvers/pyproject.toml` (+ locks if `poetry check` demands)
 
-- [ ] Sample config metrics → `["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS", "INSTANCE_SIZE", "TOTAL_COST"]`. Confirm no test/golden reads it: `grep -rn "sample-analysis-config" experiments/tests experiments/src` (expect none / non-golden).
+- [ ] Sample config metrics → `["EXCLUSION_RATIO", "SUM_OBJECTIVES", "EJR_PLUS", "INSTANCE_SIZE", "TOTAL_COST"]`. Confirm no test/golden reads it: `grep -rn "sample-analysis-config" experiments/tests experiments/src` (expect none / non-golden).
 - [ ] `repository = "https://github.com/algorithmic-econ/multiobjective-lp"` in core + solvers. Keep `documentation` URL. `poetry check` both; if lock content-hash complains, `poetry lock` and confirm diff = hash only (experiments `poetry check --lock` too, path-dep chain).
 - [ ] Commit `T28: sample analysis metrics + repo urls`.
 

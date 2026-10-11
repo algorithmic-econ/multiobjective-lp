@@ -36,7 +36,7 @@ Relative paths in configs resolve against the current working directory.
 ## Native metrics
 Some analyzer metrics are C++ implementations from `muoblpbindings.metrics`.
 They have their own `Metric` names (currently `EXCLUSION_RATIO_NATIVE`, twin of
-`EXCLUSION_RATION`) and own result columns; request them in the analyzer config
+`EXCLUSION_RATIO`) and own result columns; request them in the analyzer config
 `metrics` like any other. Both variants can run in one analysis.
 
 * Missing or outdated bindings: that result becomes a failure row (`ImportError`,

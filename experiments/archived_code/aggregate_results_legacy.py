@@ -22,7 +22,7 @@ def main(result: Union[dict, List[dict]]) -> None:
     processed_data = []
 
     metric_display_map = {
-        "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
+        "EXCLUSION_RATIO": ("exclusion_ratio", "Exclusion Ratio"),
         "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
         "TOTAL_COST": ("total_cost", "Total Cost"),
         "EJR_PLUS": ("ejr_plus", "EJR Plus"),
@@ -271,7 +271,7 @@ if __name__ == "__main__":
 #
 #     # Dictionary to map internal keys to display names matching the academic style
 #     metric_display_map = {
-#         'EXCLUSION_RATION': ('exclusion_ratio', 'Exclusion Ratio'),
+#         'EXCLUSION_RATIO': ('exclusion_ratio', 'Exclusion Ratio'),
 #         'SUM_OBJECTIVES': ('sum', 'Sum Objectives'),
 #         'EJR_PLUS': ('ejr_plus', 'EJR Plus'),
 #         'CONSTRAINTS': ('invalid_count', 'Constraints (Invalid)'),
@@ -460,7 +460,7 @@ if __name__ == "__main__":
 #         # Mapping known metrics to their specific value keys
 #         # You can extend this mapping if new metrics are added
 #         metric_value_map = {
-#             "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
+#             "EXCLUSION_RATIO": ("exclusion_ratio", "Exclusion Ratio"),
 #             "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
 #             "EJR_PLUS": ("ejr_plus", "EJR Plus"),
 #             "CONSTRAINTS": ("invalid_count", "Constraints Invalid Count"),

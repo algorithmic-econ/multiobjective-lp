@@ -21,7 +21,7 @@ def main(result: Union[dict, List[dict]]) -> None:
     processed_data = []
 
     metric_display_map = {
-        "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
+        "EXCLUSION_RATIO": ("exclusion_ratio", "Exclusion Ratio"),
         "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
         "EJR_PLUS": ("ejr_plus", "EJR Plus"),
         "CONSTRAINTS": ("invalid_count", "Constraints (Invalid)"),
