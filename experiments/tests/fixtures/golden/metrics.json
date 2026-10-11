@@ -7,7 +7,7 @@
     "EJR_PLUS": {
       "ejr_plus": 0
     },
-    "EXCLUSION_RATION": {
+    "EXCLUSION_RATIO": {
       "exclusion_ratio": 0.0
     },
     "INSTANCE_SIZE": {
@@ -22,7 +22,7 @@
     "city": "krakow_2024_mini",
     "constraints_configs": [],
     "metrics": [
-      "EXCLUSION_RATION",
+      "EXCLUSION_RATIO",
       "SUM_OBJECTIVES",
       "EJR_PLUS",
       "CONSTRAINTS",
@@ -42,7 +42,7 @@
     "EJR_PLUS": {
       "ejr_plus": 0
     },
-    "EXCLUSION_RATION": {
+    "EXCLUSION_RATIO": {
       "exclusion_ratio": 0.0
     },
     "INSTANCE_SIZE": {
@@ -57,7 +57,7 @@
     "city": "krakow_2024_mini",
     "constraints_configs": [],
     "metrics": [
-      "EXCLUSION_RATION",
+      "EXCLUSION_RATIO",
       "SUM_OBJECTIVES",
       "EJR_PLUS",
       "CONSTRAINTS",
@@ -77,7 +77,7 @@
     "EJR_PLUS": {
       "ejr_plus": 0
     },
-    "EXCLUSION_RATION": {
+    "EXCLUSION_RATIO": {
       "exclusion_ratio": 0.033333
     },
     "INSTANCE_SIZE": {
@@ -92,7 +92,7 @@
     "city": "krakow_2024_mini",
     "constraints_configs": [],
     "metrics": [
-      "EXCLUSION_RATION",
+      "EXCLUSION_RATIO",
       "SUM_OBJECTIVES",
       "EJR_PLUS",
       "CONSTRAINTS",

@@ -44,7 +44,7 @@ url = "../core"
 
 [[package]]
 name = "muoblpbindings"
-version = "0.0.18"
+version = "0.0.19"
 description = ""
 optional = false
 python-versions = ">=3.13"

@@ -76,3 +76,23 @@ def test_empty_input_returns_no_analyzable_rows_message(tmp_path):
         transform_metrics_to_markdown_table(metrics_path, limit=None)
         == "no analyzable rows"
     )
+
+
+def test_native_exclusion_ratio_column_label(tmp_path):
+    metrics_path = tmp_path / "metrics.json"
+    write_to_json(
+        metrics_path,
+        [
+            {
+                "problem_path": "results/meta_ok.json",
+                "city": "krakow_2024",
+                "utility": "COST",
+                "solver": "GREEDY",
+                "metrics": ["EXCLUSION_RATIO_NATIVE"],
+                "EXCLUSION_RATIO_NATIVE": {"exclusion_ratio": 0.123456},
+            }
+        ],
+    )
+    table = transform_metrics_to_markdown_table(metrics_path, limit=None)
+    assert "Exclusion ratio (native)" in table
+    assert "0.1235" in table

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # metric key -> (value key inside the metric dict, display name)
 METRIC_DISPLAY_MAP = {
-    "EXCLUSION_RATION": ("exclusion_ratio", "Exclusion Ratio"),
+    "EXCLUSION_RATIO": ("exclusion_ratio", "Exclusion Ratio"),
     "SUM_OBJECTIVES": ("sum", "Sum Objectives"),
     "TOTAL_COST": ("total_cost", "Total Cost"),
     "EJR_PLUS": ("ejr_plus", "EJR Plus"),

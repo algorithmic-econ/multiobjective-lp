@@ -130,13 +130,13 @@ $ poetry run ./run.sh
 Analyzer configuration file defines (see [example](sample-analysis-config.jsonc)):
 * `analyzer_result_path` - base path for saving analyzer results.
 * `experiment_results_base_path` - experiment results directory as data source (from previous steps).
-* `metrics` - list of metrics: `EXCLUSION_RATION`, `SUM_OBJECTIVES`, `EJR_PLUS`, `CONSTRAINTS`, `INSTANCE_SIZE`, `TOTAL_COST`.
+* `metrics` - list of metrics: `EXCLUSION_RATIO`, `SUM_OBJECTIVES`, `EJR_PLUS`, `CONSTRAINTS`, `INSTANCE_SIZE`, `TOTAL_COST`.
 * `concurrency` - optional number of worker processes (default `3`).
 ```json
 {
   "analyzer_result_path": "results/sample-analysis/",
   "experiment_results_base_path": "results/sample-experiment/",
-  "metrics": ["EXCLUSION_RATION", "SUM_OBJECTIVES", "EJR_PLUS", "INSTANCE_SIZE", "TOTAL_COST"]
+  "metrics": ["EXCLUSION_RATIO", "SUM_OBJECTIVES", "EJR_PLUS", "INSTANCE_SIZE", "TOTAL_COST"]
 }
 ```
 

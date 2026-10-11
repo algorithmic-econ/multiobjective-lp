@@ -10,12 +10,14 @@ from helpers.runners.model import (
 
 
 class Metric(StrEnum):
-    EXCLUSION_RATION = "EXCLUSION_RATION"
+    EXCLUSION_RATIO = "EXCLUSION_RATIO"
     SUM_OBJECTIVES = "SUM_OBJECTIVES"
     EJR_PLUS = "EJR_PLUS"
     CONSTRAINTS = "CONSTRAINTS"
     INSTANCE_SIZE = "INSTANCE_SIZE"
     TOTAL_COST = "TOTAL_COST"
+    # native (C++ bindings) twin of EXCLUSION_RATIO
+    EXCLUSION_RATIO_NATIVE = "EXCLUSION_RATIO_NATIVE"
     # "METADATA" dropped: never implemented (metrics.py had no strategy)
 
 
@@ -38,12 +40,13 @@ class AnalyzerResult(StrictModel):
     solver_options: dict[str, Any]
     constraints_configs: list[ConstraintConfig]
     utility: Utility
-    EXCLUSION_RATION: dict[str, Any] | None = None
+    EXCLUSION_RATIO: dict[str, Any] | None = None
     SUM_OBJECTIVES: dict[str, Any] | None = None
     EJR_PLUS: dict[str, Any] | None = None
     CONSTRAINTS: dict[str, Any] | None = None
     INSTANCE_SIZE: dict[str, Any] | None = None
     TOTAL_COST: dict[str, Any] | None = None
+    EXCLUSION_RATIO_NATIVE: dict[str, Any] | None = None
 
 
 class AnalyzerFailure(StrictModel):

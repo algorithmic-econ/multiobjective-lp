@@ -86,7 +86,7 @@ def test_build_dataframe_bucket_mode_row_count_and_bucket_value(tmp_path):
     config = _base_config(bucket_size=10)
     df = build_dataframe(rows, config)
 
-    # 4 metrics (EXCLUSION_RATION, SUM_OBJECTIVES, TOTAL_COST, EJR_PLUS) + 1 time row, per solver
+    # 4 metrics (EXCLUSION_RATIO, SUM_OBJECTIVES, TOTAL_COST, EJR_PLUS) + 1 time row, per solver
     assert len(df) == 3 * 5
     assert set(df["Bucket"].unique()) == {10}
 

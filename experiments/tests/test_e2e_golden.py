@@ -22,7 +22,7 @@ FIXTURE = Path(__file__).parent / "fixtures" / "input" / "krakow_2024_mini"
 GOLDEN_DIR = Path(__file__).parent / "fixtures" / "golden"
 SOLVERS = ["GREEDY", "MES_UTILS", "MES_ADD1"]
 METRICS = [
-    "EXCLUSION_RATION",
+    "EXCLUSION_RATIO",
     "SUM_OBJECTIVES",
     "EJR_PLUS",
     "CONSTRAINTS",
