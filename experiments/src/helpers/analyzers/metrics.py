@@ -4,13 +4,28 @@ from typing import cast
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.election_solver import validate_pb_constraint
 
+from helpers.analyzers import native_metrics
 from helpers.analyzers.model import Metric
 
 
 def get_metrics(
     metrics: list[Metric], problem: MultiObjectiveLpProblem
 ) -> dict[str, dict]:
-    return {metric: get_metric_strategy(metric)(problem) for metric in metrics}
+    # native handle built once per problem, only if a native metric is asked
+    instance = (
+        native_metrics.build_solved_instance(problem)
+        if any(m in native_metrics.NATIVE_STRATEGIES for m in metrics)
+        else None
+    )
+    results: dict[str, dict] = {}
+    for metric in metrics:
+        if instance is not None and metric in native_metrics.NATIVE_STRATEGIES:
+            results[metric] = native_metrics.NATIVE_STRATEGIES[metric](
+                instance
+            )
+        else:
+            results[metric] = get_metric_strategy(metric)(problem)
+    return results
 
 
 def get_metric_strategy(

@@ -16,6 +16,8 @@ class Metric(StrEnum):
     CONSTRAINTS = "CONSTRAINTS"
     INSTANCE_SIZE = "INSTANCE_SIZE"
     TOTAL_COST = "TOTAL_COST"
+    # native (C++ bindings) twin of EXCLUSION_RATION
+    EXCLUSION_RATIO_NATIVE = "EXCLUSION_RATIO_NATIVE"
     # "METADATA" dropped: never implemented (metrics.py had no strategy)
 
 
@@ -44,6 +46,7 @@ class AnalyzerResult(StrictModel):
     CONSTRAINTS: dict[str, Any] | None = None
     INSTANCE_SIZE: dict[str, Any] | None = None
     TOTAL_COST: dict[str, Any] | None = None
+    EXCLUSION_RATIO_NATIVE: dict[str, Any] | None = None
 
 
 class AnalyzerFailure(StrictModel):

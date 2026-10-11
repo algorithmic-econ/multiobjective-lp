@@ -1,8 +1,6 @@
 from typing import cast
 
 import pytest
-from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpAffineExpression, LpVariable
 
 from helpers.analyzers.metrics import (
     ejr_plus,
@@ -14,50 +12,13 @@ from helpers.analyzers.metrics import (
     sum_objectives,
     total_cost,
 )
+from helpers.analyzers import native_metrics
 from helpers.analyzers.model import Metric
 
-
-def make_tiny_problem() -> MultiObjectiveLpProblem:
-    """2 candidates: p1 ($100, selected), p2 ($200, not selected).
-    2 voters: v1 approves p1, v2 approves both."""
-    p1 = LpVariable("p1", cat="Binary")
-    p2 = LpVariable("p2", cat="Binary")
-    p1.setInitialValue(1)
-    p2.setInitialValue(0)
-
-    v1 = LpAffineExpression({p1: 100})
-    v2 = LpAffineExpression({p1: 100, p2: 200})
-
-    problem = MultiObjectiveLpProblem(
-        "tiny", objectives=[v1, v2], objectives_weights={}
-    )
-    # PB constraint: covers all candidates, sense <=
-    problem += 100 * p1 + 200 * p2 <= 250, "pb_constraint"
-    return problem
-
-
-def make_ejr_violation_problem() -> MultiObjectiveLpProblem:
-    """4 voters, budget 250. p1 ($100, selected), p2 ($10, NOT selected).
-
-    v1/v2 approve only p1 (satisfaction 100 each); v3/v4 approve only p2
-    (satisfaction 0 each, since p2 is unselected). p2 is cheap and has a
-    2-voter support group that got nothing -> EJR+ violation.
-    """
-    p1 = LpVariable("p1", cat="Binary")
-    p2 = LpVariable("p2", cat="Binary")
-    p1.setInitialValue(1)
-    p2.setInitialValue(0)
-
-    v1 = LpAffineExpression({p1: 100})
-    v2 = LpAffineExpression({p1: 100})
-    v3 = LpAffineExpression({p2: 10})
-    v4 = LpAffineExpression({p2: 10})
-
-    problem = MultiObjectiveLpProblem(
-        "ejr_violation", objectives=[v1, v2, v3, v4], objectives_weights={}
-    )
-    problem += 100 * p1 + 10 * p2 <= 250, "pb_constraint"
-    return problem
+from .fixtures.problem_factories import (
+    make_ejr_violation_problem,
+    make_tiny_problem,
+)
 
 
 def test_total_cost():
@@ -155,3 +116,51 @@ def test_get_metrics_keys_results_by_metric():
         Metric.TOTAL_COST: {"total_cost": 100},
         Metric.INSTANCE_SIZE: {"size": 2},
     }
+
+
+@pytest.mark.parametrize(
+    "factory", [make_tiny_problem, make_ejr_violation_problem]
+)
+def test_get_metrics_native_matches_python(factory):
+    result = get_metrics(
+        [Metric.EXCLUSION_RATION, Metric.EXCLUSION_RATIO_NATIVE], factory()
+    )
+    assert list(result) == [
+        Metric.EXCLUSION_RATION,
+        Metric.EXCLUSION_RATIO_NATIVE,
+    ]
+    assert (
+        result[Metric.EXCLUSION_RATIO_NATIVE]
+        == result[Metric.EXCLUSION_RATION]
+    )
+
+
+def test_get_metric_strategy_native_not_python_strategy():
+    with pytest.raises(NotImplementedError, match="Metric not implemented"):
+        get_metric_strategy(Metric.EXCLUSION_RATIO_NATIVE)
+
+
+def test_handle_not_built_for_python_only_metrics(monkeypatch):
+    def boom(problem):
+        raise AssertionError("handle must not be built")
+
+    monkeypatch.setattr(native_metrics, "build_solved_instance", boom)
+    assert get_metrics([Metric.INSTANCE_SIZE], make_tiny_problem()) == {
+        Metric.INSTANCE_SIZE: {"size": 2}
+    }
+
+
+def test_handle_built_once_for_native_metrics(monkeypatch):
+    calls = []
+    real = native_metrics.build_solved_instance
+
+    def counting(problem):
+        calls.append(problem)
+        return real(problem)
+
+    monkeypatch.setattr(native_metrics, "build_solved_instance", counting)
+    get_metrics(
+        [Metric.EXCLUSION_RATIO_NATIVE, Metric.EXCLUSION_RATIO_NATIVE],
+        make_tiny_problem(),
+    )
+    assert len(calls) == 1

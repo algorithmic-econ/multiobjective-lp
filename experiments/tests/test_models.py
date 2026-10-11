@@ -4,7 +4,7 @@ from pathlib import Path as _Path
 import pytest
 from pydantic import ValidationError
 
-from helpers.analyzers.model import AnalyzerConfig
+from helpers.analyzers.model import AnalyzerConfig, Metric
 from helpers.runners.model import (
     ConstraintConfig,
     ExperimentConfig,
@@ -112,6 +112,17 @@ def test_metadata_metric_dropped():
             }
         )
     assert exc_info.value.errors()[0]["loc"] == ("metrics", 0)
+
+
+def test_analyzer_config_accepts_native_metric():
+    config = AnalyzerConfig.model_validate(
+        {
+            "analyzer_result_path": "analysis/",
+            "experiment_results_base_path": "results/",
+            "metrics": ["EXCLUSION_RATIO_NATIVE"],
+        }
+    )
+    assert config.metrics == [Metric.EXCLUSION_RATIO_NATIVE]
 
 
 def test_incompatible_meta_is_cache_miss(tmp_path):

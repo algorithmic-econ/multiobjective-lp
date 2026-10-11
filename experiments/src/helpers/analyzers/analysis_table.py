@@ -40,6 +40,10 @@ def transform_metrics_to_markdown_table(
                 row_data["Exclusion ratio"] = round(
                     metric_details.get("exclusion_ratio"), 4
                 )
+            elif metric_name == "EXCLUSION_RATIO_NATIVE":
+                row_data["Exclusion ratio (native)"] = round(
+                    metric_details.get("exclusion_ratio"), 4
+                )
             elif metric_name == "SUM_OBJECTIVES":
                 row_data["Sum objectives"] = metric_details.get("sum")
             elif metric_name == "EJR_PLUS":
