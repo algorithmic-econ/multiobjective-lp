@@ -1,0 +1,535 @@
+import hashlib
+import logging
+from collections import defaultdict
+from collections.abc import Callable
+from functools import reduce
+from operator import ior
+from typing import Any, cast
+
+from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from pabutools.election import (
+    CumulativeProfile,
+    Instance,
+    OrdinalProfile,
+    Profile,
+    Project,
+)
+from pulp import (
+    LpAffineExpression,
+    LpConstraint,
+    LpConstraintGE,
+    LpConstraintLE,
+    LpVariable,
+    lpSum,
+)
+
+from helpers.runners.model import ConstraintConfig, Strategy, Utility
+from helpers.transformers.pabutools_constants import (
+    CONSTRAINT_PREFIX,
+    TARGET_PREFIX,
+    VARIABLE_PREFIX,
+)
+from helpers.transformers.pabutools_utils import AgentId, District
+
+logger = logging.getLogger(__name__)
+
+
+def pabutools_to_multi_objective_lp(
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    constraints_configs: list[ConstraintConfig],
+    utility: Utility,
+    deduplicate_objectives: bool = False,
+) -> MultiObjectiveLpProblem:
+    problem = MultiObjectiveLpProblem(f"election-{'-'.join(instances.keys())}")
+
+    project_variables = create_projects_variables(instances)
+    problem.addVariables(project_variables.values())
+
+    objectives = create_voter_objectives(utility, profiles, project_variables)
+
+    merged_objectives, weights, voter_groups = resolve_objectives(
+        objectives, deduplicate_objectives
+    )
+    problem.set_objectives(merged_objectives)
+    problem.set_objectives_weights(weights)
+    problem.set_objectives_voter_groups(voter_groups)
+
+    district_constraints = create_baseline_constraints(
+        instances, project_variables
+    )
+    for constraint in district_constraints:
+        problem.addConstraint(constraint)
+
+    additional_constraints = create_constraints_from_config(
+        constraints_configs,
+        instances,
+        profiles,
+        project_variables,
+        utility,
+    )
+    baseline_names = {constraint.name for constraint in district_constraints}
+    for constraint in additional_constraints:
+        if constraint.name in baseline_names:
+            raise ValueError(
+                f"constraint '{constraint.name}' duplicates a baseline "
+                "constraint: every district is already capped at its own "
+                "budget; drop the DISTRICT/UPPER constraint config"
+            )
+        problem.addConstraint(constraint)
+
+    return problem
+
+
+#
+# Variables
+#
+def create_projects_variables(
+    instances: dict[District, Instance],
+) -> dict[AgentId, LpVariable]:
+    projects_ids = [
+        project.name for instance in instances.values() for project in instance
+    ]
+    variables = LpVariable.dicts(VARIABLE_PREFIX, projects_ids, cat="Binary")
+    for variable in variables.values():
+        variable.setInitialValue(0)
+    return variables
+
+
+#
+# Objectives
+#
+def ballot_to_expression_strategy(
+    utility: Utility,
+) -> Callable[[Any], list[list[Any]]]:
+    match utility:
+        case "APPROVAL":
+            return lambda ballot: [[str(c), 1] for c in ballot]
+        case "COST":
+            return lambda ballot: [[str(c), int(c.cost)] for c in ballot]
+        case "ORDINAL":
+            return lambda ballot: [
+                [str(c), len(ballot) - idx] for idx, c in enumerate(ballot)
+            ]
+        case "CUMULATIVE":
+            return lambda ballot: [
+                [str(c), int(points)] for c, points in ballot.items()
+            ]
+        case "COST_ORDINAL":
+            return lambda ballot: [
+                [str(c), int(c.cost) * (len(ballot) - idx)]
+                for idx, c in enumerate(ballot)
+            ]
+        case "COST_CUMULATIVE":
+            return lambda ballot: [
+                [str(c), int(c.cost) * int(points)]
+                for c, points in ballot.items()
+            ]
+    raise ValueError(f"Unknown utility {utility}")
+
+
+def validate_profile_type_matches_utility(
+    profile: Profile, utility: Utility
+) -> bool:
+    match utility:
+        case "APPROVAL":
+            return True
+        case "COST":
+            return True
+        case "ORDINAL" | "COST_ORDINAL":
+            return isinstance(profile, OrdinalProfile)
+        case "CUMULATIVE" | "COST_CUMULATIVE":
+            return isinstance(profile, CumulativeProfile)
+    raise ValueError(f"Unknown utility {utility}")
+
+
+def create_voter_objectives(
+    utility: Utility,
+    profiles: dict[District, Profile],
+    projects_variables: dict[AgentId, LpVariable],
+) -> dict[str, LpAffineExpression]:
+    ballot_mapper_by_utility = ballot_to_expression_strategy(utility)
+    votes = defaultdict(list)
+
+    for district, profile in profiles.items():
+        # TODO: Extract input data validation
+        if not validate_profile_type_matches_utility(profile, utility):
+            raise ValueError(
+                f"Profile for {district} does not match utility {utility}"
+            )
+        for ballot in profile:
+            votes[ballot.meta["voter_id"]] += ballot_mapper_by_utility(ballot)
+
+    return {
+        voter: define_voter_objective(
+            f"{TARGET_PREFIX}_{voter}", approved_candidates, projects_variables
+        )
+        for voter, approved_candidates in votes.items()
+    }
+
+
+def resolve_objectives(
+    objectives: dict[str, LpAffineExpression],
+    deduplicate: bool,
+) -> tuple[list[LpAffineExpression], dict[str, float], dict[str, list[str]]]:
+    if deduplicate:
+        return merge_duplicate_objectives(objectives)
+    merged = list(objectives.values())
+    # int, not 1.0: MES bindings require integer utilities (long long);
+    # float weights propagate into total_utilities and fail pybind casting.
+    # objectives are always named (define_voter_objective) -> name not None
+    weights: dict[str, float] = {cast(str, obj.name): 1 for obj in merged}
+    voter_groups = {
+        cast(str, obj.name): [voter_id] for voter_id, obj in objectives.items()
+    }
+    return merged, weights, voter_groups
+
+
+def merge_duplicate_objectives(
+    objectives: dict[str, LpAffineExpression],
+) -> tuple[list[LpAffineExpression], dict[str, float], dict[str, list[str]]]:
+    groups: dict[str, list[str]] = defaultdict(list)
+    canonical_expr: dict[str, LpAffineExpression] = {}
+    for voter_id, expr in objectives.items():
+        key = str(expr)
+        groups[key].append(voter_id)
+        canonical_expr.setdefault(key, expr)
+
+    merged: list[LpAffineExpression] = []
+    weights: dict[str, float] = {}
+    voter_groups: dict[str, list[str]] = {}
+    for key, voter_ids in groups.items():
+        digest = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
+        merged_name = f"{TARGET_PREFIX}_{digest}"
+        expr = canonical_expr[key]
+        expr.name = merged_name
+        merged.append(expr)
+        weights[merged_name] = len(voter_ids)
+        voter_groups[merged_name] = sorted(voter_ids)
+
+    logger.info(
+        "Merged objectives",
+        extra={
+            "voters": sum(weights.values()),
+            "groups": len(merged),
+            "top_weights": sorted(weights.values(), reverse=True)[:5],
+        },
+    )
+    return merged, weights, voter_groups
+
+
+def define_voter_objective(
+    name: str,
+    approved_projects_utilities: list[tuple[AgentId, float]],
+    projects_variables: dict[AgentId, LpVariable],
+) -> LpAffineExpression:
+    approved_projects_variables = [
+        [projects_variables[candidate_id], utility]
+        for candidate_id, utility in approved_projects_utilities
+    ]
+    return LpAffineExpression(
+        [
+            [variable, utility]
+            for variable, utility in approved_projects_variables
+        ],
+        name=name,
+    )
+
+
+#
+# Base Constraints (total and per UB district)
+#
+def create_baseline_constraints(
+    instances: dict[District, Instance],
+    projects_variables: dict[AgentId, LpVariable],
+) -> list[LpConstraint]:
+    budgets: dict[District, int] = {
+        district: (int(float(meta["budget"])) if "budget" in meta else 0)
+        for district, instance in instances.items()
+        for meta in [instance.meta or {}]
+    }
+    projects_costs: dict[District, dict[AgentId, int]] = {
+        district: {project.name: int(project.cost) for project in instance}
+        for district, instance in instances.items()
+    }
+
+    all_projects_costs = {
+        k: v
+        for district_projects_costs in projects_costs.values()
+        for k, v in district_projects_costs.items()
+    }
+
+    total_budget_constraint = define_constraint(
+        "total_budget",
+        LpConstraintLE,
+        projects_variables,
+        all_projects_costs,
+        sum(budgets.values()),
+    )
+
+    if len(instances) == 1:
+        return [total_budget_constraint]
+
+    return [
+        define_constraint(
+            district,
+            LpConstraintLE,
+            projects_variables,
+            projects_costs[district],
+            budgets[district],
+        )
+        for district in instances.keys()
+    ] + [total_budget_constraint]
+
+
+#
+# Strategy Computation
+#
+def ballot_to_cost_weights(ballot):
+    if hasattr(ballot, "items"):
+        return [[str(c), int(c.cost)] for c, _ in ballot.items()]
+    return [[str(c), int(c.cost)] for c in ballot]
+
+
+def compute_voter_category_shares(
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    utility: Utility,
+    total_budget: int,
+    use_cost: bool,
+) -> dict[str, float]:
+    all_projects = {
+        project.name: project
+        for instance in instances.values()
+        for project in instance
+    }
+    total_voters = sum(len(profile) for profile in profiles.values())
+    if total_voters == 0:
+        return {}
+    voter_budget = total_budget / total_voters
+    weight_fn = (
+        ballot_to_cost_weights
+        if use_cost
+        else ballot_to_expression_strategy(utility)
+    )
+
+    category_shares: dict[str, float] = defaultdict(float)
+    for profile in profiles.values():
+        for ballot in profile:
+            entries = weight_fn(ballot)
+            total_weight = sum(w for _, w in entries)
+            if total_weight == 0:
+                continue
+            for pid, weight in entries:
+                project = all_projects[pid]
+                proportion = weight / total_weight
+                share = voter_budget * proportion
+                cats = project.categories
+                if cats:
+                    for cat in cats:
+                        category_shares[cat] += share / len(cats)
+    return dict(category_shares)
+
+
+def compute_district_lb(district_instance: Instance) -> int:
+    meta = district_instance.meta or {}
+    budget = int(float(meta["budget"])) if "budget" in meta else 0
+    max_cost = max((int(p.cost) for p in district_instance), default=0)
+    return budget - max_cost
+
+
+def compute_category_lb(
+    category: str,
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    utility: Utility,
+    total_budget: int,
+    use_cost: bool,
+) -> int:
+    shares = compute_voter_category_shares(
+        instances, profiles, utility, total_budget, use_cost
+    )
+    all_projects = [p for inst in instances.values() for p in inst]
+    max_cost = max(
+        (int(p.cost) for p in all_projects if category in p.categories),
+        default=0,
+    )
+    return int(shares.get(category, 0)) - max_cost
+
+
+def create_constraints_from_config(
+    constraints_configs: list[ConstraintConfig],
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    projects_variables: dict[AgentId, LpVariable],
+    utility: Utility,
+) -> list[LpConstraint]:
+    total_budget: int = sum(
+        [
+            int(float(meta["budget"])) if "budget" in meta else 0
+            for _, instance in instances.items()
+            for meta in [instance.meta or {}]
+        ]
+    )
+    allowed_categories = reduce(
+        ior, [instance.categories for instance in instances.values()], set()
+    )
+
+    # expand wildcard configs
+    expanded_configs: list[ConstraintConfig] = []
+    for config in constraints_configs:
+        if config.value == "*":
+            targets = (
+                allowed_categories
+                if config.key == "CATEGORY"
+                else instances.keys()
+            )
+            for val in targets:
+                expanded_configs.append(
+                    config.model_copy(update={"value": val})
+                )
+        else:
+            expanded_configs.append(config)
+
+    projects = [
+        project for instance in instances.values() for project in instance
+    ]
+    constraints = []
+    for constraint_config in expanded_configs:
+        if (
+            constraint_config.key == "CATEGORY"
+            and constraint_config.value in allowed_categories
+        ):
+            constraints.append(
+                create_category_constraint(
+                    constraint_config,
+                    projects_variables,
+                    projects,
+                    total_budget,
+                    instances,
+                    profiles,
+                    utility,
+                )
+            )
+        if (
+            constraint_config.key == "DISTRICT"
+            and constraint_config.value in instances.keys()
+        ):
+            constraints.append(
+                create_district_constraint(
+                    constraint_config,
+                    projects_variables,
+                    [
+                        project
+                        for project in instances[constraint_config.value]
+                    ],
+                    total_budget,
+                    instances[constraint_config.value],
+                )
+            )
+    return constraints
+
+
+def create_category_constraint(
+    constraint_config: ConstraintConfig,
+    projects_variables: dict[AgentId, LpVariable],
+    projects: list[Project],
+    total_budget: int,
+    instances: dict[District, Instance],
+    profiles: dict[District, Profile],
+    utility: Utility,
+) -> LpConstraint:
+    category = constraint_config.value
+    bound = constraint_config.bound
+    projects_costs = reduce(
+        ior,
+        [
+            {project.name: int(project.cost)}
+            for project in projects
+            if category in project.categories
+        ],
+        {},
+    )
+
+    if constraint_config.strategy is not None:
+        use_cost = constraint_config.strategy == Strategy.CATEGORY_COST_SHARE
+        constraint_limit = compute_category_lb(
+            category, instances, profiles, utility, total_budget, use_cost
+        )
+    elif constraint_config.budget_ratio is None:
+        raise ValueError(
+            f"constraint '{category}': budget_ratio required "
+            "when no strategy is set"
+        )
+    else:
+        constraint_limit = int(constraint_config.budget_ratio * total_budget)
+
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB category constraint '{category}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
+
+    sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
+    return define_constraint(
+        category, sense, projects_variables, projects_costs, constraint_limit
+    )
+
+
+def create_district_constraint(
+    constraint_config: ConstraintConfig,
+    projects_variables: dict[AgentId, LpVariable],
+    district_projects: list[Project],
+    total_budget: int,
+    district_instance: Instance,
+) -> LpConstraint:
+    district = constraint_config.value
+    bound = constraint_config.bound
+    projects_costs = reduce(
+        ior,
+        [{project.name: int(project.cost)} for project in district_projects],
+        {},
+    )
+
+    if constraint_config.strategy is not None:
+        constraint_limit = compute_district_lb(district_instance)
+    elif constraint_config.budget_ratio is None:
+        raise ValueError(
+            f"constraint '{district}': budget_ratio required "
+            "when no strategy is set"
+        )
+    else:
+        constraint_limit = int(constraint_config.budget_ratio * total_budget)
+
+    max_possible = sum(projects_costs.values())
+    if bound == "LOWER" and constraint_limit > max_possible:
+        logger.warning(
+            f"LB district constraint '{district}': budget_ratio requires {constraint_limit} "
+            f"but all matching projects sum to {max_possible}, clamping"
+        )
+        constraint_limit = max_possible
+
+    sense = LpConstraintLE if bound == "UPPER" else LpConstraintGE
+    return define_constraint(
+        district, sense, projects_variables, projects_costs, constraint_limit
+    )
+
+
+def define_constraint(
+    name: str,
+    sense: int,  # LpConstraintLE | LpConstraintGE (pulp int consts)
+    all_projects_variables: dict[AgentId, LpVariable],
+    participating_projects_costs: dict[AgentId, int],
+    maximum_cost: int,
+) -> LpConstraint:
+    return LpConstraint(
+        e=lpSum(
+            all_projects_variables[project_id] * project_cost
+            for project_id, project_cost in participating_projects_costs.items()
+        ),
+        sense=sense,
+        rhs=maximum_cost,
+        name=f"{CONSTRAINT_PREFIX}_{'ub' if sense == LpConstraintLE else 'lb'}_{name}",
+    )

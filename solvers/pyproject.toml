@@ -1,5 +1,5 @@
 [project]
-version = "0.0.14"
+version = "0.0.15"
 name = "muoblpsolvers"
 description = "Solvers for multi objective linear programming"
 
@@ -12,21 +12,27 @@ readme = "README.md"
 
 requires-python = ">=3.13"
 
-dynamic = [ "dependencies" ]
+dependencies = [
+    "muoblp>=1.0.5,<2.0",
+    "pulp==3.3.2",
+    "muoblpbindings>=0.0.18,<0.1",
+]
 
 [project.urls]
-repository = "https://github.com/jasieksz/multiobjective-lp"
+repository = "https://github.com/algorithmic-econ/multiobjective-lp"
 documentation = "https://jasieksz.github.io/multiobjective-lp"
 
 [tool.poetry]
 packages = [{include = "muoblpsolvers", from = "src"}]
 
+# Single-style policy: static [project.dependencies] holds the
+# published version pins; this table ONLY enriches them with local path
+# sources for dev installs. Poetry 2.x uses [project] for wheel METADATA
+# and this table for install/lock -- do not move deps back here alone or
+# wheels regain broken file:// refs.
 [tool.poetry.dependencies]
-# muoblp = "1.0.3"
 muoblp = {path = "../core", develop = true}
-pulp = "2.9.0"
-muoblpbindings = "0.0.17"
-pytest = "8.4.1"
+muoblpbindings = {path = "../bindings", develop = false}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -48,5 +54,7 @@ testpaths = [
 
 [dependency-groups]
 dev = [
-    "ruff (>=0.15.1,<0.16.0)"
+    "pytest (>=8.4,<9.0)",
+    "ruff (>=0.15.1,<0.16.0)",
+    "pyright (>=1.1,<2.0)"
 ]

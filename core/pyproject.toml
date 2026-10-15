@@ -1,5 +1,5 @@
 [project]
-version = "1.0.4"
+version = "1.0.5"
 name = "muoblp"
 description = "Implementation of multi objective linear programming module"
 
@@ -10,13 +10,13 @@ authors = [
 license = "MIT"
 readme = "README.md"
 
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "pulp == 2.9.0"
+    "pulp == 3.3.2"
 ]
 
 [project.urls]
-repository = "https://github.com/jasieksz/multiobjective-lp"
+repository = "https://github.com/algorithmic-econ/multiobjective-lp"
 documentation = "https://jasieksz.github.io/multiobjective-lp"
 
 [tool.poetry]
@@ -28,3 +28,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 79
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4,<9.0)",
+    "pyright (>=1.1,<2.0)"
+]

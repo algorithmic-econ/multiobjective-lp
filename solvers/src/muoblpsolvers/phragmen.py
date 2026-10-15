@@ -1,31 +1,48 @@
 import copy
 import logging
 import time
-from typing import TypedDict
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from pulp import LpVariable
+from pulp import LpStatusNotSolved, LpStatusOptimal, LpVariable
 
-from muoblpsolvers.election_solver import Election, ElectionSolver
+from muoblpsolvers.election_solver import (
+    Election,
+    ElectionSolver,
+    FeasibilityChecker,
+)
 from muoblpsolvers.types import CandidateId, Cost, VoterId
 from muoblpsolvers.utils import set_solved
 
 logger = logging.getLogger(__name__)
 
 
-class SolverOptions(TypedDict):
-    increasing_scalings: bool
-    kappa: float
-    bos_version: bool
-    eps: float
-
-
 class PhragmenSolver(ElectionSolver):
     name = "Phragmen"
 
-    def __init__(self, solver_options):
-        super().__init__()
-        self.solver_options: SolverOptions = solver_options
+    def __init__(
+        self,
+        mip=True,
+        msg=True,
+        options=None,
+        timeLimit=None,
+        *,
+        increasing_scalings: bool = False,
+        kappa: float = 1.0,
+        bos_version: bool = False,
+        eps: float = 1e-6,
+        **kwargs,
+    ):
+        super().__init__(
+            mip=mip,
+            msg=msg,
+            options=options,
+            timeLimit=timeLimit,
+            increasing_scalings=increasing_scalings,
+            kappa=kappa,
+            bos_version=bos_version,
+            eps=eps,
+            **kwargs,
+        )
 
     def _solve_election(
         self,
@@ -33,27 +50,35 @@ class PhragmenSolver(ElectionSolver):
         election: Election,
         **kwargs,
     ):
-        start_time = time.time()
-        logger.info(
-            "SOLVER START",
-            extra={"options": self.solver_options, "instance": lp.name},
+        if self.msg:
+            logger.info(
+                "SOLVER START",
+                extra={"options": self.optionsDict, "instance": lp.name},
+            )
+        deadline = (
+            time.monotonic() + self.timeLimit
+            if self.timeLimit is not None
+            else None
         )
         selected = phragmen_cardinal(
             lp,
             election,
-            increasing_scalings=self.solver_options.get(
-                "increasing_scalings", False
-            ),
-            kappa=self.solver_options.get("kappa", 1.0),
-            bos_version=self.solver_options.get("bos_version", False),
-            eps=self.solver_options.get("eps", 1e-6),
+            increasing_scalings=self.optionsDict["increasing_scalings"],
+            kappa=self.optionsDict["kappa"],
+            bos_version=self.optionsDict["bos_version"],
+            eps=self.optionsDict["eps"],
+            deadline=deadline,
         )
-        logger.info(
-            "SOLVER END",
-            extra={"time": (time.time() - start_time), "instance": lp.name},
-        )
+        status = LpStatusOptimal
+        if deadline is not None and time.monotonic() > deadline:
+            status = LpStatusNotSolved
+        if self.msg:
+            logger.info(
+                "SOLVER END",
+                extra={"instance": lp.name, "selected": len(selected)},
+            )
 
-        set_solved(lp, selected)
+        set_solved(lp, selected, status)
         return lp.status
 
 
@@ -64,7 +89,7 @@ def update_local_scalings(
     m_spent,
     sorted_utils,
     candidates: dict[CandidateId, Cost],
-    weights: dict[VoterId, int],
+    weights: dict[VoterId, float],
 ):
     for candidate in remaining:
         scaling_for_c = 0
@@ -97,16 +122,18 @@ def phragmen_cardinal(
     kappa=1.0,
     bos_version=False,
     eps=1e-6,
-) -> set[str]:
+    deadline: float | None = None,
+) -> list[str]:
     timestamp_step = 1
     weights = election["voters"]
+    checker = FeasibilityChecker(lp)
 
     profile: dict[CandidateId, dict[VoterId, float]] = {}
     variables: dict[CandidateId, LpVariable] = lp.variablesDict()
     for candidate, approvers_utilities in election["profile"].items():
         candidate_variable = variables[candidate]
         candidate_variable.setInitialValue(1)
-        if not lp.valid():
+        if not checker.check():
             candidate_variable.setInitialValue(0)
             continue
         candidate_variable.setInitialValue(0)
@@ -130,7 +157,9 @@ def phragmen_cardinal(
         for candidate in profile.keys()
     }
 
-    money_spent = {voter: 0 for voter in election["voters"]}
+    money_spent: dict[VoterId, float] = {
+        voter: 0 for voter in election["voters"]
+    }
     timestamp_low = 0
     timestamp_high = timestamp_low + timestamp_step
     rank = []
@@ -138,13 +167,15 @@ def phragmen_cardinal(
         candidate for candidate in profile.keys() if candidate not in rank
     ])
 
-    local_caps = {
+    local_caps: dict[CandidateId, dict[VoterId, float]] = {
         candidate: {voter: 0 for voter in profile[candidate].keys()}
         for candidate in profile.keys()
     }
     global_scalings = {voter: 0 for voter in election["voters"]}
 
     while remaining:
+        if deadline is not None and time.monotonic() > deadline:
+            break
         select_candidate = False
         while not select_candidate:
             if increasing_scalings:
@@ -181,7 +212,7 @@ def phragmen_cardinal(
                 timestamp_high *= 2
 
         timestamp_low = timestamp_high / 2
-        local_caps_tmp = {
+        local_caps_tmp: dict[CandidateId, dict[VoterId, float]] = {
             candidate: {voter: 0 for voter in profile[candidate].keys()}
             for candidate in profile.keys()
         }
@@ -350,7 +381,7 @@ def phragmen_cardinal(
         for candidate in remaining:
             candidate_variable = variables[candidate]
             candidate_variable.setInitialValue(1)
-            if not lp.valid():
+            if not checker.check():
                 candidates_to_remove.append(candidate)
             candidate_variable.setInitialValue(0)
 

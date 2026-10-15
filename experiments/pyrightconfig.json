@@ -1,3 +1,5 @@
 {
-  "extraPaths": ["src"]
+  "typeCheckingMode": "basic",
+  "extraPaths": ["src"],
+  "exclude": ["archived_code", ".venv"]
 }

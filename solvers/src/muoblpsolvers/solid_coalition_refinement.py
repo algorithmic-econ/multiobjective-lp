@@ -1,11 +1,11 @@
 import logging
-import time
+import warnings
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpbindings import solid_coalition_refinement
 from pulp import LpSolver
 
-from muoblpsolvers.utils import set_solved
+from muoblpsolvers.election_solver import validate_election_program
+from muoblpsolvers.utils import bindings_available, set_solved
 
 logger = logging.getLogger(__name__)
 
@@ -13,17 +13,25 @@ logger = logging.getLogger(__name__)
 class SolidCoalitionRefinement(LpSolver):
     name = "SolidCoalitionRefinement"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def available(self) -> bool:
-        return True
+        return bindings_available()
 
     def actualSolve(self, lp: MultiObjectiveLpProblem, **kwargs) -> int:
-        start_time = time.time()
-        logger.info("SOLVER START")
+        if self.timeLimit is not None:
+            warnings.warn(
+                f"{self.name} does not support timeLimit; "
+                "solving without limit"
+            )
+        validate_election_program(
+            lp, allow_lower_bound=False, solver_name=self.name
+        )
+        from muoblpbindings import solid_coalition_refinement
+
+        if self.msg:
+            logger.info("SOLVER START")
         selected = solid_coalition_refinement(lp)
-        logger.info("SOLVER END", extra={"time": time.time() - start_time})
+        if self.msg:
+            logger.info("SOLVER END")
 
         set_solved(lp, selected)
         return lp.status

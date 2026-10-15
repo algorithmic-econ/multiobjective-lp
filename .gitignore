@@ -5,15 +5,17 @@ __pycache__/
 /output
 /resources/**/*
 .ipynb_checkpoints/
+.coverage
 .idea/
 .fleet/
 .zed/
 /documentation/site/
 dist/
-/experiments/resources/results/
+/experiments/resources/
 /solvers/**/binding/build/
 
 experiments/sample-experiment/results
-experiments/resources/**/*.png
-experiments/resources/experiment-results
 papers/
+
+# local agent worktrees
+.claude/worktrees/

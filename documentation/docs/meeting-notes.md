@@ -4,7 +4,10 @@
 
 * Run experiment directly from python
 * improve __init__ imports
-* align with PULP conventions, e.g. Set LpStatus = SOLVED
+* align with PULP https://coin-or.github.io/pulp/ conventions, follow guide for adding new solver https://coin-or.github.io/pulp/develop/add_solver.html
+  * Set LpStatus = SOLVED
+  * bump PULP dependency to newsest version
+* See list of open github issues - https://github.com/algorithmic-econ/multiobjective-lp/issues
 
 ## LB experiments design
 

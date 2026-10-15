@@ -1,11 +1,8 @@
 import logging
-import os
-import re
 from pathlib import Path
 
 import pandas as pd
 
-from helpers.runners.model import Solver, Utility
 from helpers.utils.utils import read_from_json
 
 logger = logging.getLogger(__name__)
@@ -16,53 +13,20 @@ def transform_metrics_to_markdown_table(
 ) -> str:
     data = read_from_json(json_file_path)
 
-    solver_pattern = "|".join(
-        re.escape(s)
-        for s in sorted(list(Solver.__args__), key=len, reverse=True)
-    )
-    utility_pattern = "|".join(
-        re.escape(u)
-        for u in sorted(list(Utility.__args__), key=len, reverse=True)
-    )
-    datetime_pattern = r"(\d{2}-\d{2}T\d{2}-\d{2}-\d{2})"
-    id_pattern = r"([a-zA-Z0-9]{4})"
-
-    pattern = re.compile(
-        rf"meta_{datetime_pattern}_{id_pattern}_((?:(?!_{utility_pattern}).)*)_({utility_pattern})_({solver_pattern})\.json"
-    )
-
     all_rows_data = []
 
     for idx, item in enumerate(data):
-        if item is None:
+        if "error_type" in item:
             logger.warning(
-                "Skip unknown item from result table",
-                extra={"result_item": idx},
+                "Skip failed result item from result table",
+                extra={"result_item": idx, "meta_path": item.get("meta_path")},
             )
             continue
-        problem_path = item["problem_path"]
-        filename = os.path.basename(problem_path)
-
-        match = pattern.match(filename)
-        if match:
-            date_time, experiment_id, city, problem_type, method = (
-                match.groups()
-            )
-        else:
-            logger.error(
-                "Filename did not match regex",
-                extra={"file": filename, "problem_path": problem_path},
-            )
-            raise Exception(
-                f"Filename '{filename}' did not match the regex pattern."
-            )
 
         row_data = {
-            "Date-Time": date_time,
-            "ID": experiment_id,
-            "City": city,
-            "Type": problem_type,
-            "Method": method,
+            "City": item["city"],
+            "Type": item["utility"],
+            "Method": item["solver"],
         }
 
         for metric_name in item.get("metrics", []):
@@ -72,8 +36,12 @@ def transform_metrics_to_markdown_table(
             if metric_details is None:
                 continue
 
-            if metric_name == "EXCLUSION_RATION":
+            if metric_name == "EXCLUSION_RATIO":
                 row_data["Exclusion ratio"] = round(
+                    metric_details.get("exclusion_ratio"), 4
+                )
+            elif metric_name == "EXCLUSION_RATIO_NATIVE":
+                row_data["Exclusion ratio (native)"] = round(
                     metric_details.get("exclusion_ratio"), 4
                 )
             elif metric_name == "SUM_OBJECTIVES":
@@ -86,23 +54,20 @@ def transform_metrics_to_markdown_table(
 
         all_rows_data.append(row_data)
 
+    if not all_rows_data:
+        return "no analyzable rows"
+
     df = pd.DataFrame(all_rows_data)
 
-    if "Date-Time" in df.columns and "ID" in df.columns:
-        df = df.drop(columns=["Date-Time", "ID"])
+    df["Location-Year"] = df["City"].astype(str).str.replace("_", " ")
+    df = df.drop(columns=["City"])
 
-    if "City" in df.columns:
-        df["Location-Year"] = df["City"].astype(str).str.replace("_", " ")
-        df = df.drop(columns=["City"])
-
-    # TODO: handle errors if Location-Year column is missing
-    if "Location-Year" in df.columns:
-        cols = df.columns.tolist()
-        if "Location-Year" in cols:
-            cols.insert(0, cols.pop(cols.index("Location-Year")))
-            df = df[cols]
+    cols = df.columns.tolist()
+    cols.insert(0, cols.pop(cols.index("Location-Year")))
+    df = pd.DataFrame(df[cols])
 
     df = df.sort_values(by=["Location-Year", "Type", "Method"], ascending=True)
 
     df_limited = df.head(limit) if limit is not None else df
-    return df_limited.to_markdown(index=False)
+    # buf=None -> to_markdown returns str; stubs say str | None
+    return df_limited.to_markdown(index=False) or ""

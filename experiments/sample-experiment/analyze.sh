@@ -1,1 +1,2 @@
-python ../src/analyzerRunner.py sample-analysis-config.jsonc
+#!/bin/sh
+python ../src/analyzer_runner.py sample-analysis-config.jsonc

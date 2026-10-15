@@ -1,4 +1,7 @@
-from helpers.transformers.pabutoolsToMoLp import (
+import pytest
+
+from helpers.runners.model import ConstraintConfig, Utility
+from helpers.transformers.pabutools_to_molp import (
     pabutools_to_multi_objective_lp,
 )
 
@@ -7,7 +10,7 @@ def test_variable_count(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     assert len(problem.variables()) == 3
@@ -17,7 +20,7 @@ def test_objective_count(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     # 2 voters → 2 objectives
@@ -28,7 +31,7 @@ def test_baseline_constraint_present(single_district_setup):
     instances, profiles, _, _ = single_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
@@ -39,16 +42,16 @@ def test_baseline_constraint_present(single_district_setup):
 def test_additional_constraints_from_config(single_district_setup):
     instances, profiles, _, _ = single_district_setup
     configs = [
-        {
-            "key": "CATEGORY",
-            "value": "edu",
-            "bound": "UPPER",
-            "budget_ratio": 0.5,
-        }
+        ConstraintConfig(
+            key="CATEGORY",
+            value="edu",
+            bound="UPPER",
+            budget_ratio=0.5,
+        )
     ]
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, configs, "APPROVAL"
+        instances, profiles, configs, Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
@@ -56,13 +59,60 @@ def test_additional_constraints_from_config(single_district_setup):
     assert len(constraint_names) == 2
 
 
+def test_objective_weights_are_integers(single_district_setup):
+    # MES bindings require integer utilities (long long); float weights
+    # (e.g. 1.0) propagate into total_utilities and fail pybind casting
+    instances, profiles, _, _ = single_district_setup
+
+    problem = pabutools_to_multi_objective_lp(
+        instances, profiles, [], Utility.APPROVAL
+    )
+
+    weights = problem.objectives_weights
+    assert len(weights) == 2
+    assert all(isinstance(w, int) for w in weights.values())
+
+
 def test_multi_district_constraints(multi_district_setup):
     instances, profiles, _, _ = multi_district_setup
 
     problem = pabutools_to_multi_objective_lp(
-        instances, profiles, [], "APPROVAL"
+        instances, profiles, [], Utility.APPROVAL
     )
 
     constraint_names = list(problem.constraints.keys())
     # 2 per-district + 1 total = 3
     assert len(constraint_names) == 3
+
+
+def test_district_upper_config_colliding_with_baseline_raises(
+    multi_district_setup,
+):
+    # multi-district baseline already caps each district at its budget
+    instances, profiles, _, _ = multi_district_setup
+    configs = [
+        ConstraintConfig(
+            key="DISTRICT", value="d1", bound="UPPER", budget_ratio=0.5
+        )
+    ]
+
+    with pytest.raises(ValueError, match="'C_ub_d1' duplicates a baseline"):
+        pabutools_to_multi_objective_lp(
+            instances, profiles, configs, Utility.APPROVAL
+        )
+
+
+def test_district_lower_config_does_not_collide(multi_district_setup):
+    instances, profiles, _, _ = multi_district_setup
+    configs = [
+        ConstraintConfig(
+            key="DISTRICT", value="d1", bound="LOWER", budget_ratio=0.1
+        )
+    ]
+
+    problem = pabutools_to_multi_objective_lp(
+        instances, profiles, configs, Utility.APPROVAL
+    )
+
+    # 2 per-district + 1 total + 1 lower bound
+    assert len(problem.constraints) == 4

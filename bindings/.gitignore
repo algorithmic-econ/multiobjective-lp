@@ -1,0 +1,12 @@
+wheelhouse/
+dist/
+build/
+__pycache__/
+
+.clangd
+.vscode/
+.venv/
+.idea/
+
+.DS_Store
+*.log

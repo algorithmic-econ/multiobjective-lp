@@ -164,3 +164,48 @@ def invalid_pb(
     basic_pb_approval.addConstraint(pb_constraint_copy)
 
     return basic_pb_approval
+
+
+@pytest.fixture
+def ordinal_pb() -> MultiObjectiveLpProblem:
+    """Committee-selection instance for the ordinal bindings (EA/STV/SCR).
+
+    C++ Instance contract: exactly one constraint, ALL candidate costs 1,
+    rhs = committee size, strictly-decreasing positive utilities per voter
+    (rank positions), and an objectives_weights entry per voter.
+    """
+    rankings = {
+        "v1": ["A", "B", "C"],
+        "v2": ["A", "B", "C"],
+        "v3": ["B", "D"],
+        "v4": ["C", "D"],
+        "v5": ["D", "A"],
+    }
+    names = ["A", "B", "C", "D"]
+    committee_size = 2
+    prob = MultiObjectiveLpProblem("ordinal_pb")
+    variables = LpVariable.dicts("", names, cat="Binary")
+    for variable in variables.values():
+        variable.setInitialValue(0)
+    objectives = [
+        LpAffineExpression(
+            [
+                [variables[candidate], len(ranking) - position]
+                for position, candidate in enumerate(ranking)
+            ],
+            name=voter,
+        )
+        for voter, ranking in rankings.items()
+    ]
+    prob.addVariables(variables.values())
+    prob.set_objectives(objectives)
+    prob.set_objectives_weights({voter: 1 for voter in rankings})
+    prob.addConstraint(
+        LpConstraint(
+            e=lpSum(variables[name] * 1 for name in names),
+            sense=LpConstraintLE,
+            rhs=committee_size,
+            name="pb",
+        )
+    )
+    return prob

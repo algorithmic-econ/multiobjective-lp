@@ -47,6 +47,13 @@ def expression_to_variables_only(expression: LpAffineExpression):
         if val == 1:
             term = f"{sign} {v.name}"
         else:
+            # coefficients are written as integers - refuse to truncate
+            # silently (read_lp_file would read the truncated value back)
+            if val != int(val):
+                raise ValueError(
+                    f"non-integer coefficient {expression[v]} for variable "
+                    f"{v.name} in objective {expression.name}"
+                )
             # adding zero to val to remove instances of negative zero
             term = f"{sign} {int(val) + 0:.12g} {v.name}"
 

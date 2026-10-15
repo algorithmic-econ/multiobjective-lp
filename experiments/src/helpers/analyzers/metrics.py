@@ -1,24 +1,37 @@
 from collections.abc import Callable
+from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
-from muoblpsolvers.common import get_total_budget_constraint
+from muoblpsolvers.election_solver import validate_pb_constraint
 
-from helpers.analyzers.model import AnalyzerResult, Metric
+from helpers.analyzers import native_metrics
+from helpers.analyzers.model import Metric
 
 
 def get_metrics(
     metrics: list[Metric], problem: MultiObjectiveLpProblem
-) -> dict:
-    result: AnalyzerResult = {"metrics": metrics}
+) -> dict[str, dict]:
+    # native handle built once per problem, only if a native metric is asked
+    instance = (
+        native_metrics.build_solved_instance(problem)
+        if any(m in native_metrics.NATIVE_STRATEGIES for m in metrics)
+        else None
+    )
+    results: dict[str, dict] = {}
     for metric in metrics:
-        result |= {metric: get_metric_strategy(metric)(problem)}
-    return result
+        if instance is not None and metric in native_metrics.NATIVE_STRATEGIES:
+            results[metric] = native_metrics.NATIVE_STRATEGIES[metric](
+                instance
+            )
+        else:
+            results[metric] = get_metric_strategy(metric)(problem)
+    return results
 
 
 def get_metric_strategy(
     metric: Metric,
 ) -> Callable[[MultiObjectiveLpProblem], dict]:
-    if metric == "EXCLUSION_RATION":
+    if metric == "EXCLUSION_RATIO":
         return exclusion_ratio
     if metric == "SUM_OBJECTIVES":
         return sum_objectives
@@ -31,7 +44,7 @@ def get_metric_strategy(
     if metric == "TOTAL_COST":
         return total_cost
 
-    raise Exception("Metric not implemented")
+    raise NotImplementedError("Metric not implemented")
 
 
 def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
@@ -42,13 +55,15 @@ def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
+    # objective values are set before analysis (enhance_problem_from_
+    # solver_result) — value() is never None here
     return {
-        "sum": sum([obj.value() for obj in problem.objectives]),
+        "sum": sum([cast(float, obj.value()) for obj in problem.objectives]),
     }
 
 
 def total_cost(problem: MultiObjectiveLpProblem) -> dict:
-    pb_constraint = get_total_budget_constraint(problem)
+    pb_constraint = validate_pb_constraint(problem)
     costs = {candidate.name: cost for candidate, cost in pb_constraint.items()}
     selected = [v for v in problem.variables() if v.value() == 1.0]
     return {
@@ -57,7 +72,7 @@ def total_cost(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def invalid_constraints(problem: MultiObjectiveLpProblem) -> dict:
-    total_budget_constraint = get_total_budget_constraint(problem)
+    total_budget_constraint = validate_pb_constraint(problem)
     return {
         "pb_constraint": total_budget_constraint.valid(),
         "invalid_count": sum(
@@ -81,10 +96,10 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
         for candidate, cost in constraint.items()
     }
 
-    total_budget = abs(get_total_budget_constraint(problem).constant)
+    total_budget = abs(validate_pb_constraint(problem).constant)
 
     voter_satisfaction = sorted(
-        [(voter, voter.value()) for voter in problem.objectives],
+        [(voter, cast(float, voter.value())) for voter in problem.objectives],
         key=lambda v_sat: v_sat[1],
     )
     voter_count = len(problem.objectives)
@@ -106,69 +121,3 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
                     break
 
     return {"ejr_plus": len(failures)}
-
-
-# def ejr_plus_violations(instance, profile, outcome, up_to_one=True):
-#     utility = []
-#     for vote in profile:
-#         utility.append(Cost_Sat(instance, profile, vote).sat(outcome))
-#     sorted_voters = sorted(enumerate(profile), key=lambda x: utility[x[0]])
-#     failures = []
-#     for not_elected in instance:
-#         if not_elected in outcome:
-#             continue
-#         coalition_size = 0
-#         for i, voter in sorted_voters:
-#             if not_elected in voter:
-#                 coalition_size += 1
-#                 if up_to_one:
-#                     ejr_satisfied = (
-#                         utility[i]
-#                         >= (coalition_size / len(profile)) * instance.budget_limit
-#                         - not_elected.cost
-#                     )
-#                 else:
-#                     ejr_satisfied = (
-#                         utility[i]
-#                         >= (coalition_size / len(profile)) * instance.budget_limit
-#                     )
-#                 if not ejr_satisfied:
-#                     failures.append(not_elected.name)
-#                     break
-#     return failures
-#
-#
-#
-# def cost_sat_func(
-#         instance: Instance,
-#         profile: AbstractProfile,
-#         ballot: AbstractBallot,
-#         project: Project,
-#         precomputed_values: dict,
-# ) -> int:
-#     if isinstance(ballot, AbstractCardinalBallot):
-#         return ballot.get(project, 0) * project.cost
-#     elif isinstance(ballot, AbstractOrdinalBallot):
-#         if project in ballot:
-#             return (len(ballot) - ballot.position(project)) * project.cost
-#         else:
-#             return 0
-#     else:
-#         return int(project in ballot) * project.cost
-
-
-# def get_project_sat(self, project: Project) -> Numeric:
-#     score = self.scores.get(project, None)
-#     if score is None:
-#         score = self.func(
-#             self.instance,
-#             self.profile,
-#             self.ballot,
-#             project,
-#             self.precomputed_values,
-#         )
-#         self.scores[project] = score
-#     return score
-#
-# def sat(self, proj: Collection[Project]) -> Numeric:
-#     return sum(self.get_project_sat(p) for p in proj)

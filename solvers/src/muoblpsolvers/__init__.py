@@ -9,6 +9,7 @@ from muoblpsolvers.mes import (
     MethodOfEqualSharesUtilitySolver,
 )
 from muoblpsolvers.phragmen import PhragmenSolver
+from muoblpsolvers.registration import register_solvers
 from muoblpsolvers.single_transferable_vote import SingleTransferableVote
 from muoblpsolvers.solid_coalition_refinement import SolidCoalitionRefinement
 from muoblpsolvers.summed_objectives_lp_solver import SummedObjectivesLpSolver
@@ -24,8 +25,11 @@ __all__ = [
     "SingleTransferableVote",
     "SolidCoalitionRefinement",
     "SummedObjectivesLpSolver",
+    "register_solvers",
 ]
 
 logger = logging.getLogger(__name__)
 
 logger.addHandler(logging.NullHandler())
+
+register_solvers()
