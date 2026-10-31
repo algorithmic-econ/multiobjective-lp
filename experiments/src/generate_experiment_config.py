@@ -205,7 +205,9 @@ if __name__ == "__main__":
     results_base_path = questionary.text("Results base path:").ask()
 
     pattern_groups_raw = questionary.text(
-        "Pattern groups (groups ';', patterns ',', blank = all):",
+        "Pattern groups (substrings matched on path; ',' = AND, ';' = OR; "
+        "blank = all). E.g. 'warszawa,2024;krakow,2023' -> "
+        "(warszawa AND 2024) OR (krakow AND 2023):",
         default="",
     ).ask()
     pattern_groups = parse_pattern_groups(pattern_groups_raw)
@@ -293,7 +295,7 @@ if __name__ == "__main__":
             ),
         )
 
-    output_path = Path(output)
+    output_path = Path(output).resolve()
     output_path.parent.mkdir(parents=True, exist_ok=True)
     write_to_json(
         output_path, config.model_dump(mode="json", exclude_none=True)
@@ -302,3 +304,4 @@ if __name__ == "__main__":
         "Generated experiment configuration saved",
         extra={"output_path": str(output_path)},
     )
+    print(f"Generated config: {output_path}")
