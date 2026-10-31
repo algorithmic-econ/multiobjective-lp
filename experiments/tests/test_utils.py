@@ -12,6 +12,13 @@ def test_write_read_roundtrip(tmp_path, suffix):
     assert read_from_json(path) == DATA
 
 
+def test_write_leaves_no_tmp_file(tmp_path):
+    path = tmp_path / "data.json"
+    write_to_json(path, DATA)
+    write_to_json(path, DATA)
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["data.json"]
+
+
 def test_read_jsonc_with_comments(tmp_path):
     path = tmp_path / "config.jsonc"
     path.write_text('{\n  // comment\n  "a": 1,\n}\n', encoding="utf-8")

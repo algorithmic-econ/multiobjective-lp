@@ -1572,6 +1572,18 @@ files = [
 ]
 
 [[package]]
+name = "uuid6"
+version = "2025.0.1"
+description = "New time-based UUID formats which are suited for use as a database key"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "uuid6-2025.0.1-py3-none-any.whl", hash = "sha256:80530ce4d02a93cdf82e7122ca0da3ebbbc269790ec1cb902481fa3e9cc9ff99"},
+    {file = "uuid6-2025.0.1.tar.gz", hash = "sha256:cd0af94fa428675a44e32c5319ec5a3485225ba2179eefcf4c3f205ae30a81bd"},
+]
+
+[[package]]
 name = "wcwidth"
 version = "0.8.2"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -1586,4 +1598,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "f2c07cc0d621bbfc01fad10a88e6ca364574281a4649ce6887d9dac92c1610a7"
+content-hash = "f46ee3cdd1705912c834a4e4fa69e802d4089d781a7c1b691467b0d743e0b3f5"

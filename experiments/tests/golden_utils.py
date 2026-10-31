@@ -2,8 +2,8 @@
 
 Normalization strips nondeterminism:
 1. drop `time` (wall-clock)
-2. `problem_|meta_<MM-DDTHH-MM-SS>_<uuid4[:4]>_` in filenames -> `..._ID_`
-3. paths -> basename only (kills tmp_path / absolute paths)
+2. `<uuid7>_` run dir prefix -> `ID_` (key_hash suffix kept)
+3. paths -> run dir + basename only (kills tmp_path / absolute paths)
 4. floats rounded to 6 dp (exclusion_ratio)
 5. metrics rows: no None rows allowed, sorted by solver
 
@@ -17,8 +17,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-ID_PATTERN = re.compile(
-    r"(problem|meta)_\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_[a-zA-Z0-9]{4}_"
+RUN_ID_PATTERN = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}_"
 )
 
 
@@ -33,7 +33,10 @@ def _round_floats(value: Any, ndigits: int = 6) -> Any:
 
 
 def _normalize_path(path: str) -> str:
-    return ID_PATTERN.sub(r"\1_ID_", Path(path).name)
+    # <tmp>/<uuid7>_..._<key_hash>/meta.json -> ID_..._<key_hash>/meta.json
+    # key_hash kept on purpose: golden pins it (hash drift = cache miss)
+    run_dir = RUN_ID_PATTERN.sub("ID_", Path(path).parent.name)
+    return f"{run_dir}/{Path(path).name}"
 
 
 def normalize_meta(meta: dict) -> dict:

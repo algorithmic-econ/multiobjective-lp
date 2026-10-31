@@ -188,5 +188,5 @@ def test_generate_and_run_produces_meta_files(tmp_path):
     generated_path = gsc.main(spec_path)
     experiment_runner.main(read_from_json(generated_path))
 
-    meta_paths = list(results_path.glob("meta_*.json"))
+    meta_paths = list(results_path.glob("*/meta.json"))
     assert len(meta_paths) >= 1

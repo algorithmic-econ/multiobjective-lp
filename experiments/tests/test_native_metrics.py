@@ -45,6 +45,9 @@ from .fixtures.problem_factories import (
     make_tiny_problem,
     make_weighted_objectives_problem,
 )
+from .fixtures.runner_result_factories import (
+    cache_key_fields,
+)
 
 PAIRS = list(PYTHON_COUNTERPART.items())
 PAIR_IDS = [native.value for native, _ in PAIRS]
@@ -66,6 +69,7 @@ EXPECTED_EXCLUSION_RATIO = {
 
 def _runner_result(problem_path, selected: list[str]) -> RunnerResult:
     return RunnerResult(
+        **cache_key_fields(),
         time=0.1,
         solver=Solver.GREEDY,
         solver_options={},

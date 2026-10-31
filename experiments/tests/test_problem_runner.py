@@ -10,7 +10,9 @@ from pathlib import Path
 import pytest
 
 import problem_runner as problem_runner_module
-from helpers.runners.model import RunnerConfig, Solver, Source
+from helpers.runners.model import RunnerConfig, RunnerResult, Solver, Source
+from helpers.utils.result_naming import META_FILENAME, PROBLEM_FILENAME
+from helpers.utils.utils import read_from_json
 
 FIXTURE_INPUT = (
     Path(__file__).parent / "fixtures" / "input" / "krakow_2024_mini"
@@ -27,14 +29,28 @@ def _config(results_dir: Path) -> RunnerConfig:
 
 
 def _metas(results_dir: Path) -> list[Path]:
-    return sorted(results_dir.glob("meta_*.json"))
+    return sorted(results_dir.glob(f"*/{META_FILENAME}"))
 
 
 def test_first_run_persists_meta_and_lp(tmp_path):
     problem_runner_module.problem_runner(_config(tmp_path))
 
-    assert len(_metas(tmp_path)) == 1
-    assert len(list(tmp_path.glob("problem_*.lp"))) == 1
+    [meta_path] = _metas(tmp_path)
+    run_dir = meta_path.parent
+    assert (run_dir / PROBLEM_FILENAME).is_file()
+    meta = RunnerResult.model_validate(read_from_json(meta_path))
+    assert run_dir.name.endswith(f"_{meta.key_hash}")
+    assert meta.problem_path == str(run_dir / PROBLEM_FILENAME)
+    assert not list(run_dir.glob(".*.tmp"))
+
+
+def test_different_solver_options_is_cache_miss(tmp_path):
+    problem_runner_module.problem_runner(_config(tmp_path))
+    config = _config(tmp_path)
+    config.solver_options = {"timeLimit": 10}
+    problem_runner_module.problem_runner(config)
+
+    assert len(_metas(tmp_path)) == 2
 
 
 def test_cache_hit_skips_solve(tmp_path, monkeypatch):
