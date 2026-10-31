@@ -14,7 +14,7 @@
       "size": 10
     },
     "SUM_OBJECTIVES": {
-      "sum": 48069190
+      "sum": 48069190.0
     },
     "TOTAL_COST": {
       "total_cost": 1335005
@@ -29,7 +29,7 @@
       "INSTANCE_SIZE",
       "TOTAL_COST"
     ],
-    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_GREEDY.json",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_GREEDY_e64b7c573f20/meta.json",
     "solver": "GREEDY",
     "solver_options": {},
     "utility": "COST_ORDINAL"
@@ -49,7 +49,7 @@
       "size": 10
     },
     "SUM_OBJECTIVES": {
-      "sum": 51347190
+      "sum": 51347190.0
     },
     "TOTAL_COST": {
       "total_cost": 1414005
@@ -64,7 +64,7 @@
       "INSTANCE_SIZE",
       "TOTAL_COST"
     ],
-    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1.json",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1_9fa415d50dee/meta.json",
     "solver": "MES_ADD1",
     "solver_options": {},
     "utility": "COST_ORDINAL"
@@ -84,7 +84,7 @@
       "size": 10
     },
     "SUM_OBJECTIVES": {
-      "sum": 47834190
+      "sum": 47834190.0
     },
     "TOTAL_COST": {
       "total_cost": 1243005
@@ -99,7 +99,7 @@
       "INSTANCE_SIZE",
       "TOTAL_COST"
     ],
-    "problem_path": "meta_ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS.json",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS_48e07bc3760a/meta.json",
     "solver": "MES_UTILS",
     "solver_options": {},
     "utility": "COST_ORDINAL"
