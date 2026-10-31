@@ -6,9 +6,14 @@ import json5
 
 
 def write_to_json(path: Path, data: Any) -> None:
-    processor = json5 if path.suffix == ".jsonc" else json
     with open(path, "w", encoding="utf-8") as file:
-        processor.dump(data, file, ensure_ascii=False, indent=4)
+        if path.suffix == ".jsonc":
+            # json5 default leaves keys unquoted
+            json5.dump(
+                data, file, ensure_ascii=False, indent=4, quote_keys=True
+            )
+        else:
+            json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 def read_from_json(path: Path) -> Any:

@@ -16,3 +16,9 @@ def test_read_jsonc_with_comments(tmp_path):
     path = tmp_path / "config.jsonc"
     path.write_text('{\n  // comment\n  "a": 1,\n}\n', encoding="utf-8")
     assert read_from_json(path) == {"a": 1}
+
+
+def test_write_jsonc_quotes_keys(tmp_path):
+    path = tmp_path / "data.jsonc"
+    write_to_json(path, DATA)
+    assert '"name":' in path.read_text(encoding="utf-8")
