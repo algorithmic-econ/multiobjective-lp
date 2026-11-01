@@ -22,6 +22,7 @@ from helpers.utils.enhance_from_solver_result import (
     enhance_problem_from_solver_result,
 )
 from helpers.utils.logger import setup_logging
+from helpers.utils.result_naming import META_FILENAME
 from helpers.utils.utils import read_from_json, write_to_json
 
 logger = logging.getLogger(__name__)
@@ -66,11 +67,9 @@ def main(
 ) -> tuple[int, int]:
     config: AnalyzerConfig = AnalyzerConfig.model_validate(raw_config)
     logger.info("Start analysis", extra={"config": config})
-    runner_results = [
-        result_path
-        for result_path in Path(config.experiment_results_base_path).iterdir()
-        if result_path.is_file() and result_path.suffix == ".json"
-    ]
+    runner_results = sorted(
+        Path(config.experiment_results_base_path).glob(f"*/{META_FILENAME}")
+    )
 
     Path(config.analyzer_result_path).mkdir(parents=True, exist_ok=True)
 

@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from helpers.utils.result_naming import META_FILENAME, PROBLEM_FILENAME
+
 from .golden_utils import (
     normalize_meta,
     normalize_metrics_rows,
@@ -55,9 +57,11 @@ def test_e2e_golden(tmp_path):
     }
     experiment_runner.main(experiment)
 
-    meta_paths = sorted(Path(results_path).glob("meta_*.json"))
+    meta_paths = sorted(Path(results_path).glob(f"*/{META_FILENAME}"))
     assert len(meta_paths) == len(SOLVERS)
-    assert len(sorted(Path(results_path).glob("problem_*.lp"))) == len(SOLVERS)
+    assert all(
+        (path.parent / PROBLEM_FILENAME).is_file() for path in meta_paths
+    )
     actual_metas = {}
     for meta_path in meta_paths:
         meta = json.loads(meta_path.read_text())

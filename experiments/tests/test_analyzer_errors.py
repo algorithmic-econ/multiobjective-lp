@@ -11,7 +11,10 @@ from helpers.runners.model import (
     Source,
     Utility,
 )
+from helpers.utils.result_naming import META_FILENAME, PROBLEM_FILENAME
 from helpers.utils.utils import write_to_json
+
+from .fixtures.runner_result_factories import cache_key_fields
 
 
 def _make_tiny_problem() -> MultiObjectiveLpProblem:
@@ -25,11 +28,14 @@ def _make_tiny_problem() -> MultiObjectiveLpProblem:
     return problem
 
 
-def _persist_happy_meta(tmp_path):
-    problem_path = tmp_path / "problem_ok.lp"
-    meta_path = tmp_path / "meta_ok.json"
+def _persist_happy_meta(results_dir):
+    run_dir = results_dir / "run_ok"
+    run_dir.mkdir()
+    problem_path = run_dir / PROBLEM_FILENAME
+    meta_path = run_dir / META_FILENAME
     _make_tiny_problem().write_lp(str(problem_path))
     result = RunnerResult(
+        **cache_key_fields(),
         time=0.1,
         solver=Solver.GREEDY,
         solver_options={},
@@ -46,6 +52,12 @@ def _persist_happy_meta(tmp_path):
     return meta_path
 
 
+def _persist_bad_meta(results_dir):
+    run_dir = results_dir / "run_bad"
+    run_dir.mkdir()
+    (run_dir / META_FILENAME).write_text("not json")
+
+
 def test_invalid_json_meta_returns_failure(tmp_path):
     meta_path = tmp_path / "meta_bad.json"
     meta_path.write_text("not json")
@@ -60,6 +72,7 @@ def test_invalid_json_meta_returns_failure(tmp_path):
 def test_missing_problem_lp_returns_failure(tmp_path):
     meta_path = tmp_path / "meta_missing_lp.json"
     result_data = RunnerResult(
+        **cache_key_fields(),
         time=0.1,
         solver=Solver.GREEDY,
         solver_options={},
@@ -108,7 +121,7 @@ def test_main_returns_mixed_counts_and_writes_both_row_kinds(tmp_path):
     results_dir = tmp_path / "results"
     results_dir.mkdir()
     _persist_happy_meta(results_dir)
-    (results_dir / "meta_bad.json").write_text("not json")
+    _persist_bad_meta(results_dir)
 
     analysis_dir = tmp_path / "analysis"
     config = {
@@ -147,7 +160,7 @@ def test_main_returns_zero_failed_when_all_ok(tmp_path):
 def test_main_logs_failure_summary(tmp_path, caplog):
     results_dir = tmp_path / "results"
     results_dir.mkdir()
-    (results_dir / "meta_bad.json").write_text("not json")
+    _persist_bad_meta(results_dir)
 
     analysis_dir = tmp_path / "analysis"
     config = {

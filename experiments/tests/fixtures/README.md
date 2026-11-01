@@ -29,8 +29,9 @@ Result: 10 projects / 30 voters / 2 districts.
 
 Golden outputs for the e2e test: `selected.json` (per-solver normalized run
 meta) and `metrics.json` (normalized analyzer rows). Normalization (see
-`tests/golden_utils.py`): drop `time`, timestamp+uuid in filenames → `ID`,
-paths → basename, floats rounded to 6 dp, metrics rows sorted by solver.
+`tests/golden_utils.py`): drop `time`, uuid7 run dir prefix → `ID` (cache
+key hash suffix kept, so goldens pin it), paths → run dir + basename, floats
+rounded to 6 dp, metrics rows sorted by solver.
 
 ### Regenerating goldens
 

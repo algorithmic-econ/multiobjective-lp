@@ -1,9 +1,20 @@
 {
   "GREEDY": {
+    "cache_key": {
+      "constraints_configs": [],
+      "data_source": "krakow_2024_mini",
+      "deduplicate_objectives": false,
+      "schema_version": 1,
+      "solver": "GREEDY",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST_ORDINAL"
+    },
     "constraints_configs": [],
     "deduplicate_objectives": false,
     "instance_size": 10,
-    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_GREEDY.lp",
+    "key_hash": "e64b7c573f20",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_GREEDY_e64b7c573f20/problem.lp",
     "selected": [
       "V_BO.D10.12_24",
       "V_BO.D10.8_24",
@@ -17,10 +28,21 @@
     "utility_type": "COST_ORDINAL"
   },
   "MES_ADD1": {
+    "cache_key": {
+      "constraints_configs": [],
+      "data_source": "krakow_2024_mini",
+      "deduplicate_objectives": false,
+      "schema_version": 1,
+      "solver": "MES_ADD1",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST_ORDINAL"
+    },
     "constraints_configs": [],
     "deduplicate_objectives": false,
     "instance_size": 10,
-    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1.lp",
+    "key_hash": "9fa415d50dee",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_MES_ADD1_9fa415d50dee/problem.lp",
     "selected": [
       "V_BO.D10.12_24",
       "V_BO.D10.8_24",
@@ -34,10 +56,21 @@
     "utility_type": "COST_ORDINAL"
   },
   "MES_UTILS": {
+    "cache_key": {
+      "constraints_configs": [],
+      "data_source": "krakow_2024_mini",
+      "deduplicate_objectives": false,
+      "schema_version": 1,
+      "solver": "MES_UTILS",
+      "solver_options": {},
+      "source_type": "PABUTOOLS",
+      "utility_type": "COST_ORDINAL"
+    },
     "constraints_configs": [],
     "deduplicate_objectives": false,
     "instance_size": 10,
-    "problem_path": "problem_ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS.lp",
+    "key_hash": "48e07bc3760a",
+    "problem_path": "ID_krakow_2024_mini_COST_ORDINAL_MES_UTILS_48e07bc3760a/problem.lp",
     "selected": [
       "V_BO.D10.8_24",
       "V_BO.D9.6_24"

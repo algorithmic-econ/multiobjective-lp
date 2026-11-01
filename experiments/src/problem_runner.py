@@ -7,12 +7,17 @@ from helpers.runners.source_strategy import (
     load_and_transform_strategy,
     resolve_constraints_configs,
 )
-from helpers.utils.result_naming import (
-    data_source_name,
-    new_problem_id,
-    result_filename,
+from helpers.utils.result_cache import (
+    build_cache_key,
+    cache_key_hash,
+    find_cached_run,
 )
-from helpers.utils.result_cache import is_result_present
+from helpers.utils.result_naming import (
+    META_FILENAME,
+    PROBLEM_FILENAME,
+    new_run_id,
+    run_dir_name,
+)
 from helpers.utils.utils import write_to_json
 
 logger = logging.getLogger(__name__)
@@ -39,25 +44,32 @@ def problem_runner(config: RunnerConfig) -> None:
         constraints_configs,
         deduplicate_objectives,
     )
-    if is_result_present(config, utility_type):
-        logger.info(f"Result already present - {results_base_path}")
+    results_dir = Path(results_base_path)
+    cache_key = build_cache_key(config, utility_type)
+    cached_run = find_cached_run(results_dir, cache_key)
+    if cached_run is not None:
+        logger.info(f"Result already present - {cached_run}")
         return
 
     solver = get_solver(solver_type, solver_options)
     try:
         problem.solve(solver)
 
-        results_dir = Path(results_base_path)
-        problem_id = new_problem_id()
-        data_source = data_source_name(source_directory_path)
-        problem_path = results_dir / result_filename(
-            "problem", "lp", problem_id, data_source, utility_type, solver_type
+        key_hash = cache_key_hash(cache_key)
+        run_dir = results_dir / run_dir_name(
+            new_run_id(),
+            cache_key.data_source,
+            utility_type,
+            solver_type,
+            key_hash,
         )
-        meta_path = results_dir / result_filename(
-            "meta", "json", problem_id, data_source, utility_type, solver_type
-        )
+        run_dir.mkdir(parents=True)
+        problem_path = run_dir / PROBLEM_FILENAME
+        meta_path = run_dir / META_FILENAME
 
         result = RunnerResult(
+            cache_key=cache_key,
+            key_hash=key_hash,
             time=problem.solutionTime,
             solver=solver_type,
             solver_options=solver_options,
@@ -81,6 +93,7 @@ def problem_runner(config: RunnerConfig) -> None:
         # write_lp (not pulp writeLP): appends OBJECTIVES/WEIGHTS sections
         # required by read_lp_file in analyzer
         problem.write_lp(str(problem_path))
+        # meta last: marks run complete for find_cached_run
         write_to_json(
             meta_path,
             result.model_dump(mode="json", exclude_none=True),

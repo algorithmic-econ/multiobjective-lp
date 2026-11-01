@@ -15,6 +15,8 @@ from helpers.utils.enhance_from_solver_result import (
 )
 from helpers.utils.logger import setup_logging
 
+from .fixtures.runner_result_factories import cache_key_fields
+
 
 @pytest.fixture
 def restore_root_logging():
@@ -40,6 +42,7 @@ def _problem_with_two_projects() -> MultiObjectiveLpProblem:
 
 def _runner_result(selected: list[str]) -> RunnerResult:
     return RunnerResult(
+        **cache_key_fields(),
         time=0.1,
         solver=Solver.GREEDY,
         solver_options={},

@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -6,7 +7,9 @@ import json5
 
 
 def write_to_json(path: Path, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as file:
+    # atomic: readers never see a partially written file
+    tmp_path = path.with_name(f".{path.name}.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as file:
         if path.suffix == ".jsonc":
             # json5 default leaves keys unquoted
             json5.dump(
@@ -14,6 +17,7 @@ def write_to_json(path: Path, data: Any) -> None:
             )
         else:
             json.dump(data, file, ensure_ascii=False, indent=4)
+    os.replace(tmp_path, path)
 
 
 def read_from_json(path: Path) -> Any:

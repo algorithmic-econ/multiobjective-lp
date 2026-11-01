@@ -105,25 +105,28 @@ $ poetry run ./run.sh
 
 ### 4. Results
 * Results are stored under the path defined in the experiment config `experiment_results_base_path` (gitignored)
-* Each Multi-objective LP instance generates two result files
-  * Metadata and results file
-  * LP definition file
-  * Output files name have the following structure (see [result_naming.py](../src/helpers/utils/result_naming.py))
+* Each Multi-objective LP instance generates a run directory with two files
+  * `meta.json` - metadata and results (written last, marks run complete)
+  * `problem.lp` - LP definition
+  * Run directory name has the following structure (see [result_naming.py](../src/helpers/utils/result_naming.py))
     ```
-    {file_type}_{problem_id}_{data_source}_{utility_type}_{solver_type}.{extension}
+    {run_id}_{data_source}_{utility_type}_{solver_type}_{key_hash}/
     ```
     Where
-    * `file_type` is `problem` or `meta`
-    * `problem_id` is based on execution timestamp and UUID
+    * `run_id` is a uuid7 - time-ordered, so dirs sort by execution datetime
     * `data_source` is the last segment of `source_directory_path` (without `.pb`)
     * `utility_type` and `solver_type` are based on runner config
-    * `extension` is directly linked to `file_type`, it can be `.json` or `.lp`
-  * Example files:
+    * `key_hash` is a hash of the cache key (see [result_cache.py](../src/helpers/utils/result_cache.py))
+    * everything before `key_hash` is for humans only and never parsed
+  * Example:
     ```
-    problem_08-30T18-45-11_6305_krakow_2024_COST_MES_ADD1.lp
-    meta_08-30T18-45-11_6305_krakow_2024_COST_MES_ADD1.json
+    01a192d5-3ed7-7c06-b102-5365b824df3a_krakow_2024_COST_MES_ADD1_e64b7c573f20/
+      meta.json
+      problem.lp
     ```
-* Rerun skips already-solved problems (result cache); delete `results/` to force re-solve.
+* Rerun skips already-solved problems (result cache keyed by `key_hash`); delete `results/` to force re-solve.
+* Results from older layout (`meta_*.json` / `problem_*.lp`): migrate with
+  `python ../src/rehash_results.py results/sample-experiment [--dry-run]`.
 
 
 ### 5. Define analyzer configuration

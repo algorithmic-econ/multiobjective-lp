@@ -100,7 +100,25 @@ class SweepSpec(StrictModel):
     output_path: str
 
 
+class CacheKey(StrictModel):
+    """Everything that defines a run result. Hashed with exclude_defaults:
+    new fields MUST default to the previous behaviour to keep old hashes.
+    Fields without default are always hashed (incl. schema_version, so
+    bumping it invalidates all results)."""
+
+    schema_version: int
+    solver: Solver
+    solver_options: dict[str, Any] = {}
+    source_type: Source
+    utility_type: Utility
+    data_source: str
+    constraints_configs: list[ConstraintConfig] = []
+    deduplicate_objectives: bool = False
+
+
 class RunnerResult(StrictModel):
+    cache_key: CacheKey
+    key_hash: str
     time: float
     solver: Solver
     solver_options: dict[str, Any]
