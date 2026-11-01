@@ -39,7 +39,11 @@ this shape implicitly (no compile-time link to core):
 - `var.varValue` for every variable (`prob.variables()` + objective-only
   variables); `None` → `ValueError`.
 - `objective.constant` + objective dict items (pulp order preserved).
-- Any number of constraints tolerated; constraints/costs/weights not read.
+- `prob.constraints`: any number tolerated. Per-var cost = constraint coef,
+  last write wins over all constraints. PB budget = `abs(constant)` of the
+  unique `<=` constraint over all `prob.variables()` (mirrors
+  `validate_pb_constraint`); none/many → `ValueError` only from metrics that
+  need it (`ejr_plus`). Weights not read.
 
 ## Exposed functions
 - `equal_shares_utils(...)`, `equal_shares_add1(...)` — Method of Equal Shares.
@@ -49,6 +53,8 @@ this shape implicitly (no compile-time link to core):
   ro props `num_voters`, `num_candidates`.
 - `metrics.exclusion_ratio(instance)` — fraction of voters with objective
   value exactly 0 (bit-identical to python `obj.value() == 0`).
+- `metrics.ejr_plus(instance, up_to_one=True)` — number of unelected
+  candidates violating EJR+ (up to one); parity with python `ejr_plus`.
 
 See `src/muoblpbindings/__init__.pyi` and `metrics.pyi` for signatures.
 

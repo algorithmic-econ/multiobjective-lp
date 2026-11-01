@@ -19,8 +19,12 @@ set_target_properties(methods PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_library(metrics STATIC
   src/metrics/solved_instance.cpp
-  src/metrics/exclusion_ratio.cpp)
+  src/metrics/exclusion_ratio.cpp
+  src/metrics/ejr_plus.cpp)
 set_target_properties(metrics PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# no fused multiply-add: python rounds every * and +, parity is bit-exact
+target_compile_options(metrics PRIVATE
+  $<IF:$<CXX_COMPILER_ID:MSVC>,/fp:precise,-ffp-contract=off>)
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)

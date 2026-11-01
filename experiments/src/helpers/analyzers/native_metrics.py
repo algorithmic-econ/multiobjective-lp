@@ -31,11 +31,20 @@ def exclusion_ratio_native(instance: "SolvedInstance") -> dict:
     return {"exclusion_ratio": exclusion_ratio(instance)}
 
 
+def ejr_plus_native(instance: "SolvedInstance") -> dict:
+    from muoblpbindings.metrics import ejr_plus
+
+    # up_to_one=True, same as the python metric
+    return {"ejr_plus": ejr_plus(instance, up_to_one=True)}
+
+
 NATIVE_STRATEGIES: dict[Metric, Callable[["SolvedInstance"], dict]] = {
     Metric.EXCLUSION_RATIO_NATIVE: exclusion_ratio_native,
+    Metric.EJR_PLUS_NATIVE: ejr_plus_native,
 }
 
 # parity tests iterate this map: every native metric must be registered here
 PYTHON_COUNTERPART: dict[Metric, Metric] = {
     Metric.EXCLUSION_RATIO_NATIVE: Metric.EXCLUSION_RATIO,
+    Metric.EJR_PLUS_NATIVE: Metric.EJR_PLUS,
 }

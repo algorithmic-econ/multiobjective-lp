@@ -11,11 +11,12 @@ import sys
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblp.utils.lp_reader_utils import read_lp_file
-from pulp import LpVariable
+from pulp import LpAffineExpression, LpVariable, PulpSolverError
 
 from analyzer_runner import analyze_runner_result
 from helpers.analyzers import native_metrics
 from helpers.analyzers.metrics import (
+    ejr_plus,
     exclusion_ratio,
     get_metric_strategy,
     get_metrics,
@@ -25,6 +26,7 @@ from helpers.analyzers.native_metrics import (
     NATIVE_STRATEGIES,
     PYTHON_COUNTERPART,
     build_solved_instance,
+    ejr_plus_native,
     exclusion_ratio_native,
 )
 from helpers.runners.model import RunnerResult, Solver, Source, Utility
@@ -64,6 +66,19 @@ EXPECTED_EXCLUSION_RATIO = {
     make_multi_constraint_problem: 0.5,
     make_weighted_objectives_problem: 1 / 3,
     make_float_constant_problem: 0.4,
+}
+
+# ejr_plus (up_to_one) of each handcrafted factory, by hand: (k / n) * B
+# - cost vs satisfaction of k-th approver (ascending) of unelected projects
+EXPECTED_EJR_PLUS = {
+    make_tiny_problem: 0,
+    make_ejr_violation_problem: 1,  # p2: 0 < 250/4 - 10
+    make_all_excluded_problem: 1,  # p1, k=2: 0 < 2/3 * 250 - 100
+    make_none_excluded_problem: 1,  # p3, k=2: 30 < 2/3 * 100 - 30
+    make_objective_only_variable_problem: 0,
+    make_multi_constraint_problem: 0,
+    make_weighted_objectives_problem: 0,
+    make_float_constant_problem: 0,  # all selected
 }
 
 
@@ -133,6 +148,18 @@ def test_handcrafted_absolute_values():
         }, factory.__name__
 
 
+def test_handcrafted_ejr_plus_absolute_values():
+    assert set(EXPECTED_EJR_PLUS) == set(HANDCRAFTED_FACTORIES)
+    for factory, expected in EXPECTED_EJR_PLUS.items():
+        result = get_metrics(
+            [Metric.EJR_PLUS, Metric.EJR_PLUS_NATIVE], factory()
+        )
+        assert result[Metric.EJR_PLUS] == {"ejr_plus": expected}
+        assert result[Metric.EJR_PLUS_NATIVE] == {"ejr_plus": expected}, (
+            factory.__name__
+        )
+
+
 @pytest.mark.parametrize(("native", "python"), PAIRS, ids=PAIR_IDS)
 def test_parity_random(native, python):
     for seed in RANDOM_SEEDS:
@@ -147,6 +174,12 @@ def test_random_generator_is_not_degenerate():
     }
     assert len(ratios) >= 3
     assert 0.0 in ratios and 1.0 in ratios
+
+    violations = {
+        ejr_plus(make_random_problem(seed))["ejr_plus"]
+        for seed in RANDOM_SEEDS
+    }
+    assert 0 in violations and len(violations) >= 3
 
 
 def test_random_generator_is_deterministic():
@@ -275,6 +308,79 @@ def test_empty_objectives_error_types():
         get_metrics([Metric.EXCLUSION_RATIO], problem)
     with pytest.raises(ValueError):
         get_metrics([Metric.EXCLUSION_RATIO_NATIVE], problem)
+
+
+def test_ejr_plus_threshold_is_not_fused():
+    # (1 / 5) * 215 - 43 is 0.0 in python, 2.4e-15 with a fused
+    # multiply-add -> a sat 0 approver would fail only natively
+    p1 = LpVariable("p1", cat="Binary")
+    p2 = LpVariable("p2", cat="Binary")
+    p1.setInitialValue(0)
+    p2.setInitialValue(0)
+    objectives = [LpAffineExpression({p1: 5})] + [
+        LpAffineExpression({p2: 1}) for _ in range(4)
+    ]
+    problem = MultiObjectiveLpProblem(
+        "fma", objectives=objectives, objectives_weights={}
+    )
+    problem += 43 * p1 + 500 * p2 <= 215, "pb_constraint"
+
+    result = get_metrics([Metric.EJR_PLUS, Metric.EJR_PLUS_NATIVE], problem)
+    assert result[Metric.EJR_PLUS] == {"ejr_plus": 0}
+    assert result[Metric.EJR_PLUS_NATIVE] == {"ejr_plus": 0}
+
+
+def test_ejr_plus_up_to_one_false():
+    from muoblpbindings.metrics import ejr_plus as native_ejr_plus
+
+    # all_excluded, no cost slack: p1 and p2 fail at k=1 (0 < 250/3)
+    handle = build_solved_instance(make_all_excluded_problem())
+    assert native_ejr_plus(handle, up_to_one=False) == 2
+    assert native_ejr_plus(handle) == 1
+    assert ejr_plus_native(handle) == {"ejr_plus": 1}
+
+
+def test_ejr_plus_empty_objectives():
+    problem = MultiObjectiveLpProblem("empty", objectives=[])
+    p1 = LpVariable("p1", cat="Binary")
+    p1.setInitialValue(0)
+    problem += 10 * p1 <= 20, "pb_constraint"
+
+    result = get_metrics([Metric.EJR_PLUS, Metric.EJR_PLUS_NATIVE], problem)
+    assert result[Metric.EJR_PLUS] == {"ejr_plus": 0}
+    assert result[Metric.EJR_PLUS_NATIVE] == {"ejr_plus": 0}
+
+
+def test_ejr_plus_without_pb_constraint():
+    # no LE constraint covers all candidates (GE one does not count)
+    problem = make_tiny_problem()
+    p1, p2 = _variable(problem, "p1"), _variable(problem, "p2")
+    problem = MultiObjectiveLpProblem(
+        "no_pb", objectives=problem.objectives, objectives_weights={}
+    )
+    problem += 100 * p1 <= 250, "district_a"
+    problem += 200 * p2 <= 250, "district_b"
+    problem += 100 * p1 + 200 * p2 >= 50, "lower"
+
+    with pytest.raises(PulpSolverError, match="does not have"):
+        get_metrics([Metric.EJR_PLUS], problem)
+    with pytest.raises(ValueError, match="does not have"):
+        get_metrics([Metric.EJR_PLUS_NATIVE], problem)
+    # budget is only needed by ejr_plus: same handle serves exclusion ratio
+    assert get_metrics([Metric.EXCLUSION_RATIO_NATIVE], problem) == {
+        Metric.EXCLUSION_RATIO_NATIVE: {"exclusion_ratio": 0.0}
+    }
+
+
+def test_ejr_plus_too_many_pb_constraints():
+    problem = make_tiny_problem()
+    p1, p2 = _variable(problem, "p1"), _variable(problem, "p2")
+    problem += 100 * p1 + 200 * p2 <= 300, "pb_constraint_2"
+
+    with pytest.raises(PulpSolverError, match="too many"):
+        get_metrics([Metric.EJR_PLUS], problem)
+    with pytest.raises(ValueError, match="too many"):
+        get_metrics([Metric.EJR_PLUS_NATIVE], problem)
 
 
 def test_variable_without_value_is_rejected():

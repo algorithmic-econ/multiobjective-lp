@@ -18,6 +18,8 @@ class Metric(StrEnum):
     TOTAL_COST = "TOTAL_COST"
     # native (C++ bindings) twin of EXCLUSION_RATIO
     EXCLUSION_RATIO_NATIVE = "EXCLUSION_RATIO_NATIVE"
+    # native (C++ bindings) twin of EJR_PLUS
+    EJR_PLUS_NATIVE = "EJR_PLUS_NATIVE"
     # "METADATA" dropped: never implemented (metrics.py had no strategy)
 
 
@@ -47,6 +49,7 @@ class AnalyzerResult(StrictModel):
     INSTANCE_SIZE: dict[str, Any] | None = None
     TOTAL_COST: dict[str, Any] | None = None
     EXCLUSION_RATIO_NATIVE: dict[str, Any] | None = None
+    EJR_PLUS_NATIVE: dict[str, Any] | None = None
 
 
 class AnalyzerFailure(StrictModel):
