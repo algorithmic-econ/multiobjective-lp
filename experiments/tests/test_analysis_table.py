@@ -96,3 +96,23 @@ def test_native_exclusion_ratio_column_label(tmp_path):
     table = transform_metrics_to_markdown_table(metrics_path, limit=None)
     assert "Exclusion ratio (native)" in table
     assert "0.1235" in table
+
+
+def test_native_ejr_plus_column_label(tmp_path):
+    metrics_path = tmp_path / "metrics.json"
+    write_to_json(
+        metrics_path,
+        [
+            {
+                "problem_path": "results/meta_ok.json",
+                "city": "krakow_2024",
+                "utility": "COST",
+                "solver": "GREEDY",
+                "metrics": ["EJR_PLUS_NATIVE"],
+                "EJR_PLUS_NATIVE": {"ejr_plus": 167},
+            }
+        ],
+    )
+    table = transform_metrics_to_markdown_table(metrics_path, limit=None)
+    assert "EJR+ violations (native)" in table
+    assert "167" in table

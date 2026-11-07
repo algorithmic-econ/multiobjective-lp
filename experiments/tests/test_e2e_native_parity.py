@@ -70,9 +70,8 @@ def test_e2e_native_parity(tmp_path):
             # JSON round-trip of identical doubles is identical
             assert row[native.value] == row[python.value], label
 
-    # parity on all-zero ratios would be a weak signal
-    assert any(
-        row[python.value]["exclusion_ratio"] > 0
-        for row in rows
-        for python in PYTHON_COUNTERPART.values()
-    )
+    # parity on all-zero values would be a weak signal
+    for python in PYTHON_COUNTERPART.values():
+        assert any(
+            value > 0 for row in rows for value in row[python.value].values()
+        ), python.value

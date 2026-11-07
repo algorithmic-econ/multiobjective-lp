@@ -15,3 +15,9 @@ def exclusion_ratio(instance: SolvedInstance) -> float:
     """
     Fraction of voters with zero objective value
     """
+
+def ejr_plus(instance: SolvedInstance, up_to_one: bool = True) -> int:
+    """
+    Number of unelected candidates violating EJR+ (up to one if
+    `up_to_one`). Raises ValueError without a unique PB constraint
+    """

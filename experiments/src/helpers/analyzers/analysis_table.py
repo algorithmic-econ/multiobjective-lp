@@ -48,6 +48,10 @@ def transform_metrics_to_markdown_table(
                 row_data["Sum objectives"] = metric_details.get("sum")
             elif metric_name == "EJR_PLUS":
                 row_data["EJR+ violations"] = metric_details.get("ejr_plus")
+            elif metric_name == "EJR_PLUS_NATIVE":
+                row_data["EJR+ violations (native)"] = metric_details.get(
+                    "ejr_plus"
+                )
             else:
                 for sub_key, sub_value in metric_details.items():
                     row_data[f"{metric_name}_{sub_key}"] = sub_value

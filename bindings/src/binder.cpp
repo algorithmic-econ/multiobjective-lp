@@ -30,4 +30,11 @@ PYBIND11_MODULE(muoblpbindings, m) {
                        py::gil_scoped_release release;
                        return metrics::exclusion_ratio(inst);
                      });
+  metrics_module.def(
+      "ejr_plus",
+      [](const metrics::SolvedInstance& inst, bool up_to_one) {
+        py::gil_scoped_release release;
+        return metrics::ejr_plus(inst, up_to_one);
+      },
+      py::arg("instance"), py::arg("up_to_one") = true);
 }
