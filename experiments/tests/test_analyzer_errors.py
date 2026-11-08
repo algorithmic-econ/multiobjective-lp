@@ -1,10 +1,11 @@
 import logging
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
+from muoblpanalyzers import Metric
 from pulp import LpAffineExpression, LpVariable
 
 from analyzer_runner import analyze_runner_result, main
-from helpers.analyzers.model import AnalyzerFailure, AnalyzerResult, Metric
+from helpers.analyzers.model import AnalyzerFailure, AnalyzerResult
 from helpers.runners.model import (
     RunnerResult,
     Solver,

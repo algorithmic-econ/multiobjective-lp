@@ -1,9 +1,10 @@
 from pathlib import Path as _Path
 
 import pytest
+from muoblpanalyzers import Metric
 from pydantic import ValidationError
 
-from helpers.analyzers.model import AnalyzerConfig, Metric
+from helpers.analyzers.model import AnalyzerConfig
 from helpers.runners.model import (
     ExperimentConfig,
     RunnerConfig,

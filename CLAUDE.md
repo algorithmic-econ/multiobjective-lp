@@ -6,11 +6,12 @@
 - End every plan with a numbered list of concrete steps. This should be the last thing visible in the terminal.
 
 ## Repository structure
-- multiobjective-lp is python monorepo, with four projects
+- multiobjective-lp is python monorepo, with five projects
   - core - defines model of multiobjective linear program
   - solvers - independent set of algorithms that can be applied to solve an instance of multiobjective LP, sometimes with C++ bindings
+  - analyzers - standalone metrics (`muoblpanalyzers`) for analysing solved multiobjective LPs, python + optional native (C++) twins
   - experiments - scripts and utilities to generate, solve and analyse instances of multiobjective LPs
-  - bindings - performance-critical solver algorithms in C++20 (pybind11/scikit-build-core), consumed by solvers as a path dependency and by experiments (native analysis metrics)
+  - bindings - performance-critical solver algorithms in C++20 (pybind11/scikit-build-core), consumed by solvers as a path dependency and by analyzers (native metrics, `[native]` extra)
 
 ## Tools
 - This repository and every subproject uses poetry to manage dependencies. Use venv of given project when executing python.

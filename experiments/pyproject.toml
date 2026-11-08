@@ -26,6 +26,7 @@ priority = "explicit"
 pabutools = {version = "1.2.2"}
 muoblp = {path = "../core", develop = true}
 muoblpsolvers = {path = "../solvers", develop = true}
+muoblpanalyzers = {path = "../analyzers", develop = true}
 # explicit path wiring: solvers' [tool.poetry] path enrichment for
 # muoblpbindings doesn't propagate transitively on relock
 muoblpbindings = {path = "../bindings", develop = false}
