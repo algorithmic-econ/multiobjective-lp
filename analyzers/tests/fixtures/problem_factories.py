@@ -228,9 +228,9 @@ def make_random_problem(seed: int) -> MultiObjectiveLpProblem:
     for _ in range(n_voters):
         approved = rng.sample(candidates, rng.randint(0, n_candidates))
         objectives.append(
-            LpAffineExpression(
-                {candidate: rng.randint(1, 100) for candidate in approved}
-            )
+            LpAffineExpression({
+                candidate: rng.randint(1, 100) for candidate in approved
+            })
         )
 
     problem = MultiObjectiveLpProblem(

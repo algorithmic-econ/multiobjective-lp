@@ -5,7 +5,7 @@ Runs experiment_runner -> analyzer_runner on the tiny krakow fixture
 and every native metric, then compares them row by row, exactly.
 
 To cover a new native metric: register it in `PYTHON_COUNTERPART`
-(helpers/analyzers/native_metrics.py); METRICS below is derived from it.
+(muoblpanalyzers, analyzers/src/muoblpanalyzers/native_metrics.py); METRICS below is derived from it.
 """
 
 import json
@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from helpers.analyzers.native_metrics import PYTHON_COUNTERPART
+from muoblpanalyzers import PYTHON_COUNTERPART
 
 pytestmark = pytest.mark.e2e
 

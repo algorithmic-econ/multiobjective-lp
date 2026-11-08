@@ -1,7 +1,7 @@
 """Native (C++) metrics vs their python counterparts (oracle).
 
 Generic over `PYTHON_COUNTERPART`: registering a new native metric there
-(see helpers/analyzers/native_metrics.py) puts it under every parity test
+(see muoblpanalyzers/native_metrics.py) puts it under every parity test
 below. Exact `==` everywhere: C++ mirrors pulp's summation order, so doubles
 are bit-identical.
 """
@@ -13,27 +13,21 @@ from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblp.utils.lp_reader_utils import read_lp_file
 from pulp import LpAffineExpression, LpVariable, PulpSolverError
 
-from analyzer_runner import analyze_runner_result
-from helpers.analyzers import native_metrics
-from helpers.analyzers.metrics import (
+from muoblpanalyzers import native_metrics
+from muoblpanalyzers.metric import Metric
+from muoblpanalyzers.metrics import (
     ejr_plus,
     exclusion_ratio,
     get_metric_strategy,
     get_metrics,
 )
-from helpers.analyzers.model import AnalyzerFailure, AnalyzerResult, Metric
-from helpers.analyzers.native_metrics import (
+from muoblpanalyzers.native_metrics import (
     NATIVE_STRATEGIES,
     PYTHON_COUNTERPART,
     build_solved_instance,
     ejr_plus_native,
     exclusion_ratio_native,
 )
-from helpers.runners.model import RunnerResult, Solver, Source, Utility
-from helpers.utils.enhance_from_solver_result import (
-    enhance_problem_from_solver_result,
-)
-from helpers.utils.utils import write_to_json
 
 from .fixtures.problem_factories import (
     HANDCRAFTED_FACTORIES,
@@ -46,9 +40,6 @@ from .fixtures.problem_factories import (
     make_random_problem,
     make_tiny_problem,
     make_weighted_objectives_problem,
-)
-from .fixtures.runner_result_factories import (
-    cache_key_fields,
 )
 
 PAIRS = list(PYTHON_COUNTERPART.items())
@@ -82,31 +73,13 @@ EXPECTED_EJR_PLUS = {
 }
 
 
-def _runner_result(problem_path, selected: list[str]) -> RunnerResult:
-    return RunnerResult(
-        **cache_key_fields(),
-        time=0.1,
-        solver=Solver.GREEDY,
-        solver_options={},
-        source_type=Source.PABUTOOLS,
-        utility_type=Utility.COST,
-        source_path="krakow_2024",
-        constraints_configs=[],
-        deduplicate_objectives=False,
-        problem_path=str(problem_path),
-        instance_size=len(selected),
-        selected=selected,
-    )
-
-
-def _persist_happy_meta(tmp_path):
-    # same shape analyze_runner_result gets from experiment_runner
-    problem_path = tmp_path / "problem_ok.lp"
-    meta_path = tmp_path / "meta_ok.json"
-    make_multi_constraint_problem().write_lp(str(problem_path))
-    result = _runner_result(problem_path, ["p1", "p3"])
-    write_to_json(meta_path, result.model_dump(mode="json", exclude_none=True))
-    return meta_path
+def _select(
+    problem: MultiObjectiveLpProblem, selected: list[str]
+) -> MultiObjectiveLpProblem:
+    # what the experiments harness does with a solver result before analysis
+    for variable in problem.variables():
+        variable.setInitialValue(1 if variable.name in selected else 0)
+    return problem
 
 
 def _block_bindings(monkeypatch, module: str) -> None:
@@ -205,15 +178,12 @@ def test_random_generator_is_deterministic():
     ids=lambda x: x.__name__ if callable(x) else None,
 )
 def test_parity_lp_roundtrip(tmp_path, native, python, factory, selected):
-    # mirrors analyze_runner_result: read_lp_file -> enhance -> metrics.
+    # mirrors the analysis flow: read_lp_file -> select -> metrics.
     # Factories are roundtrip-safe (positive int coefs, no empty voters,
     # no objective-only variables).
     path = tmp_path / "problem.lp"
     factory().write_lp(str(path))
-    problem = read_lp_file(str(path))
-    problem = enhance_problem_from_solver_result(
-        _runner_result(path, selected), problem
-    )
+    problem = _select(read_lp_file(str(path)), selected)
 
     result = get_metrics([python, native], problem)
 
@@ -228,9 +198,7 @@ def test_roundtrip_absolute_value(tmp_path):
     # v5=0 (p1,p5), v6=0 (p5) -> 3 of 6 excluded
     path = tmp_path / "problem.lp"
     make_multi_constraint_problem().write_lp(str(path))
-    problem = enhance_problem_from_solver_result(
-        _runner_result(path, ["p2", "p3", "p4"]), read_lp_file(str(path))
-    )
+    problem = _select(read_lp_file(str(path)), ["p2", "p3", "p4"])
     result = get_metrics(
         [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE], problem
     )
@@ -386,7 +354,7 @@ def test_ejr_plus_too_many_pb_constraints():
 def test_variable_without_value_is_rejected():
     # documented divergence: python counts such a voter as non-excluded
     # (None == 0 is False), native refuses the whole problem. Unreachable
-    # in the analyzer flow (enhance sets every variable).
+    # in the analyzer flow (every variable gets a value before analysis).
     problem = make_tiny_problem()
     p3 = LpVariable("p3", cat="Binary")  # varValue None
     problem += 10 * p3 <= 20, "extra"
@@ -419,40 +387,12 @@ def test_missing_bindings_raise_import_error(monkeypatch, module):
     }
 
 
-@pytest.mark.parametrize(
-    "module", ["muoblpbindings", "muoblpbindings.metrics"]
-)
-def test_missing_bindings_give_analyzer_failure(tmp_path, monkeypatch, module):
-    meta_path = _persist_happy_meta(tmp_path)
-    _block_bindings(monkeypatch, module)
-
-    result = analyze_runner_result(meta_path, [Metric.EXCLUSION_RATIO_NATIVE])
-
-    assert isinstance(result, AnalyzerFailure)
-    assert result.error_type in ("ImportError", "ModuleNotFoundError")
-
-
-def test_analyze_runner_result_populates_native_metric(tmp_path):
-    meta_path = _persist_happy_meta(tmp_path)
-
-    result = analyze_runner_result(
-        meta_path, [Metric.EXCLUSION_RATIO, Metric.EXCLUSION_RATIO_NATIVE]
-    )
-
-    # selected p1, p3 -> v2, v4, v6 excluded
-    assert isinstance(result, AnalyzerResult)
-    assert result.EXCLUSION_RATIO_NATIVE == {"exclusion_ratio": 0.5}
-    assert result.EXCLUSION_RATIO_NATIVE == result.EXCLUSION_RATIO
-
-
 # --- registry ---------------------------------------------------------
 
 
 def test_registries_are_consistent():
     assert set(NATIVE_STRATEGIES) == set(PYTHON_COUNTERPART)
     for native, python in PYTHON_COUNTERPART.items():
-        assert native in AnalyzerResult.model_fields
-        assert python in AnalyzerResult.model_fields
         assert python not in NATIVE_STRATEGIES
         get_metric_strategy(python)  # python oracle: must not raise
         with pytest.raises(NotImplementedError):

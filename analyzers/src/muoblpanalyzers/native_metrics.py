@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 
-from helpers.analyzers.model import Metric
+from muoblpanalyzers.metric import Metric
 
 if TYPE_CHECKING:
     from muoblpbindings.metrics import SolvedInstance

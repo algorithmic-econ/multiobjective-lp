@@ -4,8 +4,8 @@ from typing import cast
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.election_solver import validate_pb_constraint
 
-from helpers.analyzers import native_metrics
-from helpers.analyzers.model import Metric
+from muoblpanalyzers import native_metrics
+from muoblpanalyzers.metric import Metric
 
 
 def get_metrics(
@@ -31,20 +31,11 @@ def get_metrics(
 def get_metric_strategy(
     metric: Metric,
 ) -> Callable[[MultiObjectiveLpProblem], dict]:
-    if metric == "EXCLUSION_RATIO":
-        return exclusion_ratio
-    if metric == "SUM_OBJECTIVES":
-        return sum_objectives
-    if metric == "EJR_PLUS":
-        return ejr_plus
-    if metric == "CONSTRAINTS":
-        return invalid_constraints
-    if metric == "INSTANCE_SIZE":
-        return instance_size
-    if metric == "TOTAL_COST":
-        return total_cost
-
-    raise NotImplementedError("Metric not implemented")
+    # native metrics have no python strategy (see NATIVE_STRATEGIES)
+    try:
+        return PYTHON_STRATEGIES[metric]
+    except KeyError:
+        raise NotImplementedError("Metric not implemented") from None
 
 
 def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
@@ -55,10 +46,10 @@ def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
 
 
 def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
-    # objective values are set before analysis (enhance_problem_from_
-    # solver_result) — value() is never None here
+    # expects a solved problem: every variable has a value, so value() is
+    # never None here
     return {
-        "sum": sum([cast(float, obj.value()) for obj in problem.objectives]),
+        "sum": sum(cast(float, obj.value()) for obj in problem.objectives),
     }
 
 
@@ -76,7 +67,7 @@ def invalid_constraints(problem: MultiObjectiveLpProblem) -> dict:
     return {
         "pb_constraint": total_budget_constraint.valid(),
         "invalid_count": sum(
-            [1 if not c.valid() else 0 for c in problem.constraints.values()]
+            1 if not c.valid() else 0 for c in problem.constraints.values()
         ),
     }
 
@@ -111,7 +102,7 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
         coalition_size = 0
         for voter, satisfaction in voter_satisfaction:
             # if voter approved of project
-            if project in voter.keys():
+            if project in voter:
                 coalition_size += 1
                 ejr_satisfied = satisfaction >= (
                     coalition_size / voter_count
@@ -121,3 +112,13 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
                     break
 
     return {"ejr_plus": len(failures)}
+
+
+PYTHON_STRATEGIES: dict[Metric, Callable[[MultiObjectiveLpProblem], dict]] = {
+    Metric.EXCLUSION_RATIO: exclusion_ratio,
+    Metric.SUM_OBJECTIVES: sum_objectives,
+    Metric.EJR_PLUS: ejr_plus,
+    Metric.CONSTRAINTS: invalid_constraints,
+    Metric.INSTANCE_SIZE: instance_size,
+    Metric.TOTAL_COST: total_cost,
+}

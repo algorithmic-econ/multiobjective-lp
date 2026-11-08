@@ -76,9 +76,11 @@ See `src/muoblpbindings/__init__.pyi` and `metrics.pyi` for signatures.
 4. Bind in `binder.cpp` (`metrics_module.def`) with `py::gil_scoped_release`
 5. Re-export in `src/muoblpbindings/metrics.py`, add stub in `metrics.pyi`
 6. Add `x.cpp` to `metrics` library in `CMakeLists.txt`
-7. Bump project version in `pyproject.toml`; relock `solvers` + `experiments`
-8. In `experiments`: python oracle + parity pairing in
-   `helpers/analyzers/native_metrics.py`
+7. Bump project version in `pyproject.toml`; relock `solvers` + `analyzers` +
+   `experiments`
+8. In `analyzers`: python oracle + parity pairing in
+   `src/muoblpanalyzers/native_metrics.py` (see
+   [analyzers README](../analyzers/README.md))
 
 ## Publishing
 Independent semver from the rest of the monorepo. Tag `bindings@x.y.z`

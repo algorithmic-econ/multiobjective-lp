@@ -1,0 +1,64 @@
+[project]
+version = "0.0.1"
+name = "muoblpanalyzers"
+description = "Analysis metrics for solved multi objective linear programs"
+
+authors = [
+    { name = "Piotr Skowron", email = "p.skowron@mimuw.edu.pl" },
+    { name = "Jan Sznajd", email = "j.sznajd@uw.edu.pl" }
+]
+license = "MIT"
+readme = "README.md"
+
+requires-python = ">=3.13"
+
+dependencies = [
+    "muoblp>=1.0.5,<2.0",
+    "muoblpsolvers>=0.0.15,<0.1",
+    "pulp==3.3.2",
+]
+
+[project.optional-dependencies]
+# native (C++) metrics: muoblpbindings.metrics, imported lazily
+native = ["muoblpbindings>=0.0.20,<0.1"]
+
+[project.urls]
+repository = "https://github.com/algorithmic-econ/multiobjective-lp"
+documentation = "https://jasieksz.github.io/multiobjective-lp"
+
+[tool.poetry]
+packages = [{include = "muoblpanalyzers", from = "src"}]
+
+# Single-style policy: static [project.dependencies] holds the
+# published version pins; this table ONLY enriches them with local path
+# sources for dev installs. Poetry 2.x uses [project] for wheel METADATA
+# and this table for install/lock -- do not move deps back here alone or
+# wheels regain broken file:// refs.
+[tool.poetry.dependencies]
+muoblp = {path = "../core", develop = true}
+muoblpsolvers = {path = "../solvers", develop = true}
+# explicit path wiring: solvers' path enrichment for muoblpbindings
+# doesn't propagate transitively on relock
+muoblpbindings = {path = "../bindings", develop = false, optional = true}
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 79
+preview = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --import-mode=importlib"
+testpaths = [
+    "tests",
+]
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4,<9.0)",
+    "ruff (==0.15.1)",  # = CI (ruff.yml); preview rules drift across patches
+    "pyright (>=1.1,<2.0)"
+]
