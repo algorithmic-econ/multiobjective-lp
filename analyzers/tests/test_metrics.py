@@ -2,7 +2,10 @@ from typing import cast
 
 import pytest
 
-from helpers.analyzers.metrics import (
+from muoblpanalyzers import native_metrics
+from muoblpanalyzers.metric import Metric
+from muoblpanalyzers.metrics import (
+    PYTHON_STRATEGIES,
     ejr_plus,
     exclusion_ratio,
     get_metric_strategy,
@@ -12,8 +15,6 @@ from helpers.analyzers.metrics import (
     sum_objectives,
     total_cost,
 )
-from helpers.analyzers import native_metrics
-from helpers.analyzers.model import Metric
 
 from .fixtures.problem_factories import (
     make_ejr_violation_problem,
@@ -103,6 +104,15 @@ def test_ejr_plus_violated():
 )
 def test_get_metric_strategy_dispatch(metric, expected):
     assert get_metric_strategy(metric) is expected
+
+
+def test_every_metric_has_exactly_one_strategy():
+    python, native = (
+        set(PYTHON_STRATEGIES),
+        set(native_metrics.NATIVE_STRATEGIES),
+    )
+    assert not python & native
+    assert python | native == set(Metric)
 
 
 def test_get_metric_strategy_unknown_raises():

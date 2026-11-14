@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [core, solvers, experiments]
+        project: [core, solvers, analyzers, experiments]
         python: ["3.13", "3.14"]
 
     steps:
@@ -72,21 +72,21 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ matrix.project }}/.venv
-        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
+        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'analyzers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
 
     - name: Install dependencies
       working-directory: ${{ matrix.project }}
-      run: poetry install --no-interaction
+      run: poetry install --no-interaction --all-extras
 
     - name: Download bindings wheel
-      if: matrix.project == 'solvers'
+      if: matrix.project == 'solvers' || matrix.project == 'analyzers'
       uses: actions/download-artifact@v4
       with:
         name: bindings-wheel-py${{ matrix.python }}
         path: bindings-wheel
 
     - name: Install bindings from built wheel
-      if: matrix.project == 'solvers'
+      if: matrix.project == 'solvers' || matrix.project == 'analyzers'
       working-directory: ${{ matrix.project }}
       run: poetry run pip install --force-reinstall --no-deps ../bindings-wheel/*.whl
 
@@ -99,7 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [core, solvers, experiments]
+        project: [core, solvers, analyzers, experiments]
         python: ["3.13", "3.14"]
 
     steps:
@@ -122,11 +122,11 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ matrix.project }}/.venv
-        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
+        key: venv-${{ runner.os }}-py${{ matrix.python }}-${{ matrix.project }}-${{ hashFiles('core/poetry.lock', 'solvers/poetry.lock', 'analyzers/poetry.lock', 'experiments/poetry.lock', 'bindings/pyproject.toml', 'bindings/CMakeLists.txt', 'bindings/src/**') }}
 
     - name: Install dependencies
       working-directory: ${{ matrix.project }}
-      run: poetry install --no-interaction
+      run: poetry install --no-interaction --all-extras
 
     - name: Run pyright
       working-directory: ${{ matrix.project }}

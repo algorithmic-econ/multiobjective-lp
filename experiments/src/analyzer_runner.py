@@ -6,16 +6,15 @@ from pathlib import Path
 from typing import Any, List
 
 from muoblp.utils.lp_reader_utils import read_lp_file
+from muoblpanalyzers import Metric, get_metrics
 
 from helpers.analyzers.analysis_table import (
     transform_metrics_to_markdown_table,
 )
-from helpers.analyzers.metrics import get_metrics
 from helpers.analyzers.model import (
     AnalyzerConfig,
     AnalyzerFailure,
     AnalyzerResult,
-    Metric,
 )
 from helpers.runners.model import RunnerResult
 from helpers.utils.enhance_from_solver_result import (

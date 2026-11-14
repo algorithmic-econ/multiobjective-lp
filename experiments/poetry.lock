@@ -653,6 +653,28 @@ type = "directory"
 url = "../core"
 
 [[package]]
+name = "muoblpanalyzers"
+version = "0.0.1"
+description = "Analysis metrics for solved multi objective linear programs"
+optional = false
+python-versions = ">=3.13"
+groups = ["main"]
+files = []
+develop = true
+
+[package.dependencies]
+muoblp = ">=1.0.5,<2.0"
+muoblpsolvers = ">=0.0.15,<0.1"
+pulp = "3.3.2"
+
+[package.extras]
+native = ["muoblpbindings (>=0.0.20,<0.1)"]
+
+[package.source]
+type = "directory"
+url = "../analyzers"
+
+[[package]]
 name = "muoblpbindings"
 version = "0.0.20"
 description = ""
@@ -1598,4 +1620,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "f46ee3cdd1705912c834a4e4fa69e802d4089d781a7c1b691467b0d743e0b3f5"
+content-hash = "13159130808d20cc2e4da8ff27a736d994cc351b5b9481347655a892869da5a0"
