@@ -5,6 +5,7 @@ Metric-level parity and unit tests live in the `muoblpanalyzers` package
 """
 
 import sys
+from importlib.abc import MetaPathFinder
 
 import pytest
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
@@ -54,14 +55,32 @@ def _persist_happy_meta(tmp_path):
     return meta_path
 
 
+class _BlockingFinder(MetaPathFinder):
+    """Fails `module` (+ submodules) like a missing install would."""
+
+    def __init__(self, module: str) -> None:
+        self.module = module
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname == self.module or fullname.startswith(f"{self.module}."):
+            raise ModuleNotFoundError(
+                f"No module named {fullname!r}", name=fullname
+            )
+        return None
+
+
 def _block_bindings(monkeypatch, module: str) -> None:
-    # None in sys.modules -> import raises. An already-imported submodule
-    # entry short-circuits the parent check, so evict it for the parent case.
-    if module == "muoblpbindings":
-        monkeypatch.delitem(
-            sys.modules, "muoblpbindings.metrics", raising=False
-        )
-    monkeypatch.setitem(sys.modules, module, None)
+    # evict cached entries so the import reaches the finder. Not the
+    # `sys.modules[module] = None` trick: for the parent it yields
+    # name="muoblpbindings.metrics", and py3.15 traceback formatting (via
+    # logger.exception) re-imports the blocked parent -> pytest INTERNALERROR
+    for name in [
+        m for m in sys.modules if m == module or m.startswith(f"{module}.")
+    ]:
+        monkeypatch.delitem(sys.modules, name)
+    monkeypatch.setattr(
+        sys, "meta_path", [_BlockingFinder(module), *sys.meta_path]
+    )
 
 
 @pytest.mark.parametrize(
