@@ -33,6 +33,21 @@ CandidateId intern(SolvedInstance& instance, py::handle var,
   return id;
 }
 
+// objectives_weights[name]; unnamed / absent -> 1. Mirrors python _weight.
+double read_weight(py::handle objective, const py::dict& weights) {
+  py::object name = objective.attr("name");
+  if (name.is_none() || !weights.contains(name)) {
+    return 1;
+  }
+  const double weight = py::handle(weights[name]).cast<double>();
+  if (!(std::isfinite(weight) && weight > 0)) {
+    throw std::invalid_argument(std::format(
+        "Objective {} has invalid weight {} (expected finite and > 0)",
+        name.cast<std::string>(), weight));
+  }
+  return weight;
+}
+
 }  // namespace
 
 SolvedInstance SolvedInstance::from_MuoblpProblem(py::object prob) {
@@ -53,6 +68,7 @@ SolvedInstance SolvedInstance::from_MuoblpProblem(py::object prob) {
 
   // Voters; objective-only variables are interned on the fly
   py::list objectives = prob.attr("objectives");
+  py::dict objectives_weights = prob.attr("objectives_weights");
   const size_t n = objectives.size();
   if (n > std::numeric_limits<VoterId>::max()) {
     throw std::invalid_argument(
@@ -64,6 +80,8 @@ SolvedInstance SolvedInstance::from_MuoblpProblem(py::object prob) {
     py::handle objective = objectives[i];
     SolvedInstance::Voter& voter = instance.voters[i];
     voter.constant = objective.attr("constant").cast<double>();
+    voter.weight = read_weight(objective, objectives_weights);
+    instance.total_weight += voter.weight;
     py::dict terms = objective.cast<py::dict>();
     voter.terms.reserve(terms.size());
     for (const auto& item : terms) {

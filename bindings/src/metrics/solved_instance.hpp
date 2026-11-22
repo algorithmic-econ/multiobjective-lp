@@ -13,7 +13,7 @@ namespace metrics {
 
 // Snapshot of a solved MuoblpProblem for metric computation. Holds variable
 // values (var.varValue), sparse per-voter objectives in pulp dict order,
-// candidate costs and the PB budget. Weights are intentionally not extracted.
+// candidate costs, the PB budget and voter weights (objectives_weights).
 struct SolvedInstance {
   struct Term {
     CandidateId candidate;
@@ -22,12 +22,17 @@ struct SolvedInstance {
   struct Voter {
     double constant;
     std::vector<Term> terms;
+    // multiplicity (deduplicated identical voters): objectives_weights[name],
+    // 1 if unnamed or name absent; finite and > 0
+    double weight = 1;
   };
 
   std::vector<std::string> candidate_names;
   std::unordered_map<std::string, CandidateId> candidate_ids;
   std::vector<double> candidate_values;
   std::vector<Voter> voters;
+  // sum of voter weights in voter order (= python _voter_count)
+  double total_weight = 0;
 
   // ids [0, num_problem_candidates) come from prob.variables(), the rest
   // appear in objectives only

@@ -24,6 +24,10 @@ PYBIND11_MODULE(muoblpbindings, m) {
       .def_property_readonly("num_candidates",
                              [](const metrics::SolvedInstance& inst) {
                                return inst.candidate_names.size();
+                             })
+      .def_property_readonly("total_weight",
+                             [](const metrics::SolvedInstance& inst) {
+                               return inst.total_weight;
                              });
   metrics_module.def("exclusion_ratio",
                      [](const metrics::SolvedInstance& inst) {

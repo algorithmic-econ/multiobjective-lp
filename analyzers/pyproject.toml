@@ -20,7 +20,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # native (C++) metrics: muoblpbindings.metrics, imported lazily
-native = ["muoblpbindings>=0.0.20,<0.1"]
+native = ["muoblpbindings>=0.0.21,<0.1"]
 
 [project.urls]
 repository = "https://github.com/algorithmic-econ/multiobjective-lp"

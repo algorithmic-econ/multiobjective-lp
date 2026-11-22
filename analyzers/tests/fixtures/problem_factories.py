@@ -149,10 +149,13 @@ def make_multi_constraint_problem() -> MultiObjectiveLpProblem:
 
 
 def make_weighted_objectives_problem() -> MultiObjectiveLpProblem:
-    """Named objectives with `objectives_weights` != 1 (as after
-    deduplicate_objectives). Both implementations ignore weights.
+    """Named objectives with float `objectives_weights` != 1 (as after
+    deduplicate_objectives, but fractional). Total weight 3 + 2.5 + 0.5 = 6.
 
-    T_v1 = 100, T_v2 = 0, T_v3 = 100 (p1 selected) -> 1 of 3 excluded.
+    T_v1 = 100, T_v2 = 0, T_v3 = 100 (p1 selected) -> excluded weight 2.5
+    -> 2.5 / 6. Sum = 3 * 100 + 2.5 * 0 + 0.5 * 100 = 350.
+    EJR+ p2 (cost 200, B 250): T_v2 (sat 0) k=2.5: 2.5/6 * 250 - 200 < 0;
+    T_v3 (sat 100) k=3: 3/6 * 250 - 200 < 0 -> 0 failures.
     """
     p1 = LpVariable("p1", cat="Binary")
     p2 = LpVariable("p2", cat="Binary")
@@ -170,6 +173,55 @@ def make_weighted_objectives_problem() -> MultiObjectiveLpProblem:
         objectives_weights={"T_v1": 3, "T_v2": 2.5, "T_v3": 0.5},
     )
     problem += 100 * p1 + 200 * p2 <= 250, "pb_constraint"
+    return problem
+
+
+def make_weighted_problem() -> MultiObjectiveLpProblem:
+    """p1 ($100, selected), p2 ($100, not selected), budget 250.
+    a = {p1: 100} weight 3, b = {p2: 100} weight 1 -> 4 voters.
+
+    exclusion: b (w 1) of 4 -> 0.25 (ignoring weights: 0.5).
+    sum: 3 * 100 + 0 = 300 (ignoring weights: 100).
+    EJR+ p2, b (sat 0) k=1: 1/4 * 250 - 100 = -37.5 <= 0 -> 0 failures
+    (ignoring weights: 1/2 * 250 - 100 = 25 > 0 -> 1 failure).
+    Same metrics as `make_weighted_problem_expanded`.
+    """
+    p1 = LpVariable("p1", cat="Binary")
+    p2 = LpVariable("p2", cat="Binary")
+    p1.setInitialValue(1)
+    p2.setInitialValue(0)
+
+    objectives = [
+        LpAffineExpression({p1: 100}, name="a"),
+        LpAffineExpression({p2: 100}, name="b"),
+    ]
+    problem = MultiObjectiveLpProblem(
+        "weighted_dedup",
+        objectives=objectives,
+        objectives_weights={"a": 3, "b": 1},
+    )
+    problem += 100 * p1 + 100 * p2 <= 250, "pb_constraint"
+    return problem
+
+
+def make_weighted_problem_expanded() -> MultiObjectiveLpProblem:
+    """`make_weighted_problem` with weight-3 voter `a` copied 3 times and
+    no weights -> identical metrics (0.25, 300, 0)."""
+    p1 = LpVariable("p1", cat="Binary")
+    p2 = LpVariable("p2", cat="Binary")
+    p1.setInitialValue(1)
+    p2.setInitialValue(0)
+
+    objectives = [
+        LpAffineExpression({p1: 100}, name="a1"),
+        LpAffineExpression({p1: 100}, name="a2"),
+        LpAffineExpression({p1: 100}, name="a3"),
+        LpAffineExpression({p2: 100}, name="b"),
+    ]
+    problem = MultiObjectiveLpProblem(
+        "weighted_expanded", objectives=objectives, objectives_weights={}
+    )
+    problem += 100 * p1 + 100 * p2 <= 250, "pb_constraint"
     return problem
 
 
@@ -206,7 +258,9 @@ def make_float_constant_problem() -> MultiObjectiveLpProblem:
 def make_random_problem(seed: int) -> MultiObjectiveLpProblem:
     """Deterministic per seed: 1-40 voters, 1-15 candidates, each voter
     approves a random (possibly empty) subset with int utilities 1-100;
-    selection is none / all / random; one budget constraint."""
+    selection is none / all / random; one budget constraint; named voters
+    with float weights in {0.5, 1, ..., 3} (drawn last: rest of the problem
+    does not depend on them)."""
     rng = random.Random(seed)
     n_voters = rng.randint(1, 40)
     n_candidates = rng.randint(1, 15)
@@ -225,12 +279,13 @@ def make_random_problem(seed: int) -> MultiObjectiveLpProblem:
         candidate.setInitialValue(selected)
 
     objectives = []
-    for _ in range(n_voters):
+    for i in range(n_voters):
         approved = rng.sample(candidates, rng.randint(0, n_candidates))
         objectives.append(
-            LpAffineExpression({
-                candidate: rng.randint(1, 100) for candidate in approved
-            })
+            LpAffineExpression(
+                {candidate: rng.randint(1, 100) for candidate in approved},
+                name=f"v{i}",
+            )
         )
 
     problem = MultiObjectiveLpProblem(
@@ -242,6 +297,9 @@ def make_random_problem(seed: int) -> MultiObjectiveLpProblem:
         <= sum(costs) // 2 + 1,
         "pb_constraint",
     )
+    problem.set_objectives_weights({
+        f"v{i}": rng.randint(1, 6) / 2 for i in range(n_voters)
+    })
     return problem
 
 
@@ -253,5 +311,7 @@ HANDCRAFTED_FACTORIES = (
     make_objective_only_variable_problem,
     make_multi_constraint_problem,
     make_weighted_objectives_problem,
+    make_weighted_problem,
+    make_weighted_problem_expanded,
     make_float_constant_problem,
 )

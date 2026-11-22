@@ -21,6 +21,13 @@ Index: `plans/metrics-index.md`.
 - Python only. Native C++ twin = separate follow-up plan, only after the
   python metric is merged.
 
+## Decisions (session)
+- e2e/goldens never dedup (all w=1) → goldens unchanged, no regen
+- `SUM_OBJECTIVES`: same key, now Σ w·value
+- weights = float (model `objectives_weights: dict[str, float]`),
+  fractional ok; `ValueError` (py + native) only if non-finite or ≤ 0.
+  Unnamed objective / name missing from dict → 1
+
 ## Model mapping (verified: `pabulib-analyzer2/utils.py:get_election`)
 - pabulib `e.profile[p][v]` = Cost_Sat utility = objective coef `voter[p]`
 - voter = objective; weight w_v = `objectives_weights.get(voter.name, 1)`

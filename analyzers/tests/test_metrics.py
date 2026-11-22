@@ -1,6 +1,7 @@
 from typing import cast
 
 import pytest
+from pulp import LpAffineExpression
 
 from muoblpanalyzers import native_metrics
 from muoblpanalyzers.metric import Metric
@@ -19,6 +20,9 @@ from muoblpanalyzers.metrics import (
 from .fixtures.problem_factories import (
     make_ejr_violation_problem,
     make_tiny_problem,
+    make_weighted_objectives_problem,
+    make_weighted_problem,
+    make_weighted_problem_expanded,
 )
 
 
@@ -89,6 +93,70 @@ def test_ejr_plus_violated():
     #   0 >= (1/4)*250 - 10 = 52.5  -> FALSE, p2 recorded as a failure.
     problem = make_ejr_violation_problem()
     assert ejr_plus(problem) == {"ejr_plus": 1}
+
+
+# --- objective weights (w = multiplicity of identical voters) ----------
+
+
+@pytest.mark.parametrize(
+    "factory", [make_weighted_problem, make_weighted_problem_expanded]
+)
+def test_weighted_metrics(factory):
+    # a (p1 sel, 100) x3, b (p2 unsel) x1, B 250, cost[p2] 100:
+    #   exclusion: b -> 1/4; sum: 3*100 + 0 = 300
+    #   ejr p2: b sat 0, k=1: 0 >= 1/4*250 - 100 = -37.5 -> ok
+    # (ignoring a's weight: 1/2, 100, 1)
+    problem = factory()
+    assert exclusion_ratio(problem) == {"exclusion_ratio": 0.25}
+    assert sum_objectives(problem) == {"sum": 300}
+    assert ejr_plus(problem) == {"ejr_plus": 0}
+
+
+def test_fractional_weights():
+    # weights 3, 2.5, 0.5 (total 6); T_v2 (w 2.5) is the only excluded
+    # sum: 3*100 + 2.5*0 + 0.5*100 = 350
+    problem = make_weighted_objectives_problem()
+    assert exclusion_ratio(problem) == {"exclusion_ratio": 2.5 / 6}
+    assert sum_objectives(problem) == {"sum": 350}
+    assert ejr_plus(problem) == {"ejr_plus": 0}
+
+
+def test_weight_counts_in_ejr_coalition():
+    # ejr_violation (p2 cost 10, B 250) w/ both p2 supporters merged into
+    # one voter of weight 2, v1 dropped -> n = 1 + 2 = 3:
+    #   v (sat 0) k=2: 0 >= 2/3*250 - 10 -> FALSE -> 1 failure
+    # weight 0.1 instead -> n 1.1, k 0.1: 0 >= 0.1/1.1*250 - 10 = 12.7
+    #   -> still fails; weight 0.01 -> 0.01/1.01*250 - 10 < 0 -> ok
+    problem = make_ejr_violation_problem()
+    v1, _, v3, _ = problem.objectives
+    v1.name, v3.name = "v1", "v3"
+    problem.set_objectives([v1, v3])
+    for weight, expected in [(2, 1), (0.1, 1), (0.01, 0)]:
+        problem.set_objectives_weights({"v3": weight})
+        assert ejr_plus(problem) == {"ejr_plus": expected}, weight
+
+
+@pytest.mark.parametrize("weight", [0, -1, float("nan"), float("inf")])
+def test_invalid_weight_rejected(weight):
+    problem = make_weighted_problem()
+    problem.objectives_weights["b"] = weight
+    for metric in (exclusion_ratio, sum_objectives, ejr_plus):
+        with pytest.raises(ValueError, match="Objective b has invalid"):
+            metric(problem)
+    # weight-free metrics unaffected
+    assert instance_size(problem) == {"size": 2}
+    assert total_cost(problem) == {"total_cost": 100}
+
+
+def test_unnamed_or_missing_weight_defaults_to_one():
+    problem = make_tiny_problem()  # unnamed objectives, v1 = v2 = 100
+    problem.objectives_weights["None"] = 5
+    assert sum_objectives(problem) == {"sum": 200}
+    problem = make_weighted_problem()
+    del problem.objectives_weights["a"]  # a -> 1, b -> 1
+    assert exclusion_ratio(problem) == {"exclusion_ratio": 0.5}
+    problem.objectives.append(LpAffineExpression(name="c"))  # absent -> 1
+    assert exclusion_ratio(problem) == {"exclusion_ratio": 2 / 3}
 
 
 @pytest.mark.parametrize(

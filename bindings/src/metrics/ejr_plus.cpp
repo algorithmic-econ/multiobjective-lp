@@ -13,6 +13,7 @@ size_t ejr_plus(const SolvedInstance& instance, bool up_to_one) {
   }
   const double budget = *instance.total_budget;
   const size_t n = instance.voters.size();
+  const double total_weight = instance.total_weight;
 
   std::vector<double> satisfaction(n);
   for (size_t i = 0; i < n; i++) {
@@ -24,13 +25,19 @@ size_t ejr_plus(const SolvedInstance& instance, bool up_to_one) {
     return satisfaction[a] < satisfaction[b];
   });
 
-  // approvers[c] = satisfactions of voters with c in their objective,
-  // ascending (filled in sorted voter order)
-  std::vector<std::vector<double>> approvers(instance.num_problem_candidates);
+  // approvers[c] = (satisfaction, weight) of voters with c in their
+  // objective, ascending satisfaction (filled in sorted voter order)
+  struct Approver {
+    double satisfaction;
+    double weight;
+  };
+  std::vector<std::vector<Approver>> approvers(
+      instance.num_problem_candidates);
   for (VoterId v : order) {
     for (const SolvedInstance::Term& term : instance.voters[v].terms) {
       if (term.candidate < instance.num_problem_candidates) {
-        approvers[term.candidate].push_back(satisfaction[v]);
+        approvers[term.candidate].push_back(
+            {satisfaction[v], instance.voters[v].weight});
       }
     }
   }
@@ -49,10 +56,13 @@ size_t ejr_plus(const SolvedInstance& instance, bool up_to_one) {
       }
       cost = *instance.candidate_costs[c];
     }
-    for (size_t k = 1; k <= approvers[c].size(); k++) {
-      const double threshold =
-          (static_cast<double>(k) / static_cast<double>(n)) * budget - cost;
-      if (!(approvers[c][k - 1] >= threshold)) {
+    // weight w == w identical voters: checking only the largest coalition
+    // (strictest threshold) is equivalent
+    double coalition = 0;
+    for (const Approver& approver : approvers[c]) {
+      coalition += approver.weight;
+      const double threshold = (coalition / total_weight) * budget - cost;
+      if (!(approver.satisfaction >= threshold)) {
         failures++;
         break;
       }

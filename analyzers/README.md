@@ -28,14 +28,19 @@ ejr_plus(problem)  # single metric -> {"ejr_plus": 0}
 
 | `Metric` | Function | Result | Notes |
 |---|---|---|---|
-| `EXCLUSION_RATIO` | `exclusion_ratio` | `{"exclusion_ratio": float}` | share of objectives (voters) with value 0 |
-| `SUM_OBJECTIVES` | `sum_objectives` | `{"sum": float}` | sum of objective values |
-| `EJR_PLUS` | `ejr_plus` | `{"ejr_plus": int}` | unelected projects violating EJR+ (up to one) |
+| `EXCLUSION_RATIO` | `exclusion_ratio` | `{"exclusion_ratio": float}` | weighted share of objectives (voters) with value 0 |
+| `SUM_OBJECTIVES` | `sum_objectives` | `{"sum": float}` | weighted sum of objective values |
+| `EJR_PLUS` | `ejr_plus` | `{"ejr_plus": int}` | unelected projects violating EJR+ (up to one), weighted voters |
 | `CONSTRAINTS` | `invalid_constraints` | `{"pb_constraint": bool, "invalid_count": int}` | needs PB constraint |
 | `INSTANCE_SIZE` | `instance_size` | `{"size": int}` | number of variables |
 | `TOTAL_COST` | `total_cost` | `{"total_cost": float}` | needs PB constraint |
 | `EXCLUSION_RATIO_NATIVE` | native | same as `EXCLUSION_RATIO` | needs `[native]` |
 | `EJR_PLUS_NATIVE` | native | same as `EJR_PLUS` | needs `[native]` |
+
+Voter weight = `problem.objectives_weights[objective.name]` (multiplicity
+of deduplicated identical voters; unnamed / absent → 1; float ok,
+non-finite or ≤ 0 raises `ValueError`). A weight-w voter counts as w
+identical voters.
 
 PB constraint = single `<=` constraint covering all candidates
 (`muoblpsolvers.election_solver.validate_pb_constraint`); missing or ambiguous

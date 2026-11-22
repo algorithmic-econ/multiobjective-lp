@@ -10,13 +10,14 @@ double exclusion_ratio(const SolvedInstance& instance) {
     throw std::invalid_argument(
         "Cannot compute exclusion ratio: no objectives");
   }
-  size_t zero_count = 0;
+  // weighted, summed in voter order (bit-identical to python)
+  double zero_weight = 0;
   for (const SolvedInstance::Voter& voter : instance.voters) {
     if (voter_value(instance, voter) == 0) {
-      zero_count++;
+      zero_weight += voter.weight;
     }
   }
-  return static_cast<double>(zero_count) / static_cast<double>(n);
+  return zero_weight / instance.total_weight;
 }
 
 }  // namespace metrics
