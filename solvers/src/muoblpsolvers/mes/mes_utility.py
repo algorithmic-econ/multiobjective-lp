@@ -41,9 +41,8 @@ class MethodOfEqualSharesUtilitySolver(LpSolver):
         if self.msg:
             logger.info("SOLVER START")
 
-        # TODO: weight-aware via binding update
         selected = equal_shares_utils(
-            list(voters.keys()),
+            voters,
             projects,
             costs,
             *binding_utilities(approvals_utilities, total_utilities),

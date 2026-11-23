@@ -29,7 +29,7 @@ this shape implicitly (no compile-time link to core):
 - `prob.objectives`: list; each element has `.name` and is iterable as a dict
   `{LpVariable: utility}`. `Utility` is `double` in `common.cpp` (int or float
   accepted); `equal_shares_*` take flattened `long long` utilities — pybind
-  rejects float there (non-dedup objective weights must be `1`, not `1.0`).
+  rejects float utilities there (weights may be float).
 - `prob.objectives_weights`: `dict[name -> double]`.
 - `prob.variables()`, `prob.constraints` (first constraint = budget; budget =
   `-constraint.constant`, per-var cost from constraint dict). Solvers require
@@ -50,6 +50,12 @@ this shape implicitly (no compile-time link to core):
 
 ## Exposed functions
 - `equal_shares_utils(...)`, `equal_shares_add1(...)` — Method of Equal Shares.
+  Args: `voters` (`dict[id, weight]`), `projects`, `cost`,
+  `approvals_utilities` (`{candidate: [(voter, int utility)]}`),
+  `total_utility` (`{candidate: Σ w·u}`, float), `total_budget`. Weight-w
+  voter ≡ w identical voters: each copy budget `B / Σw`; Add1 steps the
+  budget by `Σw`. All weights 1 → identical to unweighted MES. Exact ties
+  broken by `unordered_map` order (may differ weighted vs expanded).
 - `expanding_approvals(prob)`, `single_transferable_vote(prob)`,
   `solid_coalition_refinement(prob)`.
 - `metrics.SolvedInstance(prob)` — opaque snapshot of solved problem;

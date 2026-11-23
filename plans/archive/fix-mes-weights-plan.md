@@ -89,3 +89,12 @@ Reference pattern: `mes/mes_exponential.py:55-150`. W = Σ w_v.
 7. Verification block incl. waw-krk dedup rerun + comparison
 8. Docs (bindings README, metrics-index warning → resolved); commit, PR →
    base; stop, wait for review
+
+## Decisions (session)
+- base: `feat/pabulib-metrics-base`; branch `fix/mes-weights`
+- types: utilities stay `long long`; weights `double`; `total_utility` →
+  `double` (weighted, computed in python)
+- `remaining` long long truncation: separate ticket (leftovers)
+- tie-break `choices[0]`: keep; invariance tests tie-free; ties documented
+  as known divergence
+- PHRAGMEN 1/54 dedup diff: separate ticket (leftovers)

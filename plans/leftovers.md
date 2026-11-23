@@ -11,7 +11,7 @@ Env / machine state (NOT in repo):
 - THIS MACHINE: CommandLineTools broken — toolchain missing `c++/v1` headers, bare `clang++` can't compile hello-world. Bindings build needs `SDKROOT=$(xcrun --show-sdk-path) CXXFLAGS="-cxx-isystem $SDKROOT/usr/include/c++/v1"`. Proper fix: reinstall CLT (`xcode-select --install`, needs user). Affects T06/T07 local verify.
 
 Discovered bugs fixed in T01 beyond plan (context for T02 golden):
-- B6: non-dedup objective weights must be int (`1` not `1.0`) — MES bindings take `long long` utilities, pybind rejects float. Dedup path uses `len()` (int) already. If anyone reintroduces float weights/utilities, every MES solve dies with pybind TypeError.
+- B6: non-dedup objective weights must be int (`1` not `1.0`) — MES bindings take `long long` utilities, pybind rejects float. Dedup path uses `len()` (int) already. If anyone reintroduces float weights/utilities, every MES solve dies with pybind TypeError. **Update fix/mes-weights (bindings 0.0.22): weights now float-safe (MES takes `voters: dict[id, double]`, `total_utility` double); per-voter utilities still must be int.**
 - B7: runner must call `problem.write_lp` (custom, appends OBJECTIVES/WEIGHTS) not pulp `writeLP` — analyzer `read_lp_file` requires those sections. Contract covered by `tests/test_lp_roundtrip.py`.
 
 Deferred (has ticket):
@@ -501,3 +501,11 @@ CI (test.yml) notes for T07/future:
 - Ruff `preview = true` (solvers style), dev ruff pinned `==0.15.1` (= CI; 0.15.22 preview flags ~30 extra in solvers). 4 behaviour-preserving fixes in moved `metrics.py` (`sum(gen)`, `project in voter`; `LpAffineExpression` is dict subclass, no `__contains__` override).
 - CI: publish.yml accepts `analyzers@X.Y.Z(-rc)`; test.yml analyzers in test+pyright matrices, bindings wheel installed for solvers+analyzers, `--all-extras`; ruff.yml `analyzers/`.
 - Release order (user): `bindings@0.0.20` (PyPI has ≤0.0.18) → trusted publisher `muoblpanalyzers` on pypi.org → `analyzers@0.0.1` (no rc).
+
+### From fix-mes-weights (fix/mes-weights, 2026-11-23)
+- Native MES now weight-aware (bindings 0.0.22): `voters` = `dict[id, weight]`, `total_utility` weighted double. w≡1 bit-identical (goldens unchanged). Old dedup MES results invalid → rerun.
+- Separate tickets (not fixed, would change w=1 goldens):
+  - `mes_utils.cpp` `remaining` is `unordered_map<CandidateId, long long>` but stores `eff_vote_count` (double) → truncation; affects pruning order / early `break`.
+  - `break_ties` returns `choices[0]` after cost/utility filters; order = `unordered_map` iteration → exact ties nondeterministic across weighted vs expanded inputs. Fix: final tie-break by candidate name.
+  - PHRAGMEN: 1/54 waw-krk instances differ dedup vs non-dedup (likely tie); not investigated.
+- waw-krk dedup MES_ADD1 rerun lives in `experiments/resources/experiment-results/independent-waw-krk-dedup-fixed/` (+ analyzer-results same name); old `independent-waw-krk-dedup` MES_ADD1 rows still stale.

@@ -120,9 +120,8 @@ class MethodOfEqualSharesConstrainsSolver(LpSolver):
                 status = LpStatusNotSolved
                 break
             # Run MES
-            # TODO: weight-aware via binding update
             selected = equal_shares_utils(
-                list(voters.keys()),
+                voters,
                 projects,
                 costs,
                 *binding_utilities(approvals_utilities, total_utilities),
