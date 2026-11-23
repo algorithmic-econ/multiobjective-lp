@@ -43,18 +43,22 @@ this shape implicitly (no compile-time link to core):
   last write wins over all constraints. PB budget = `abs(constant)` of the
   unique `<=` constraint over all `prob.variables()` (mirrors
   `validate_pb_constraint`); none/many → `ValueError` only from metrics that
-  need it (`ejr_plus`). Weights not read.
+  need it (`ejr_plus`).
+- `prob.objectives_weights[objective.name]` = voter weight (multiplicity);
+  unnamed objective / absent name → 1; non-finite or ≤ 0 → `ValueError`.
+  Metrics count a weight-w voter as w identical voters.
 
 ## Exposed functions
 - `equal_shares_utils(...)`, `equal_shares_add1(...)` — Method of Equal Shares.
 - `expanding_approvals(prob)`, `single_transferable_vote(prob)`,
   `solid_coalition_refinement(prob)`.
 - `metrics.SolvedInstance(prob)` — opaque snapshot of solved problem;
-  ro props `num_voters`, `num_candidates`.
-- `metrics.exclusion_ratio(instance)` — fraction of voters with objective
-  value exactly 0 (bit-identical to python `obj.value() == 0`).
+  ro props `num_voters`, `num_candidates`, `total_weight`.
+- `metrics.exclusion_ratio(instance)` — weighted fraction of voters with
+  objective value exactly 0 (bit-identical to python `obj.value() == 0`).
 - `metrics.ejr_plus(instance, up_to_one=True)` — number of unelected
-  candidates violating EJR+ (up to one); parity with python `ejr_plus`.
+  candidates violating EJR+ (up to one), voters weighted; parity with
+  python `ejr_plus`.
 
 See `src/muoblpbindings/__init__.pyi` and `metrics.pyi` for signatures.
 

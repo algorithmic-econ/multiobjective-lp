@@ -40,6 +40,8 @@ from .fixtures.problem_factories import (
     make_random_problem,
     make_tiny_problem,
     make_weighted_objectives_problem,
+    make_weighted_problem,
+    make_weighted_problem_expanded,
 )
 
 PAIRS = list(PYTHON_COUNTERPART.items())
@@ -55,7 +57,9 @@ EXPECTED_EXCLUSION_RATIO = {
     make_none_excluded_problem: 0.0,
     make_objective_only_variable_problem: 0.5,
     make_multi_constraint_problem: 0.5,
-    make_weighted_objectives_problem: 1 / 3,
+    make_weighted_objectives_problem: 2.5 / 6,  # T_v2 w 2.5 of 6
+    make_weighted_problem: 0.25,  # b w 1 of 4
+    make_weighted_problem_expanded: 0.25,
     make_float_constant_problem: 0.4,
 }
 
@@ -68,7 +72,9 @@ EXPECTED_EJR_PLUS = {
     make_none_excluded_problem: 1,  # p3, k=2: 30 < 2/3 * 100 - 30
     make_objective_only_variable_problem: 0,
     make_multi_constraint_problem: 0,
-    make_weighted_objectives_problem: 0,
+    make_weighted_objectives_problem: 0,  # see factory docstring
+    make_weighted_problem: 0,  # p2, k=1: 0 >= 1/4 * 250 - 100
+    make_weighted_problem_expanded: 0,
     make_float_constant_problem: 0,  # all selected
 }
 
@@ -174,6 +180,7 @@ def test_random_generator_is_deterministic():
         (make_ejr_violation_problem, ["p2"]),
         (make_multi_constraint_problem, ["p2", "p3", "p4"]),
         (make_weighted_objectives_problem, ["p1"]),
+        (make_weighted_problem, ["p1"]),
     ],
     ids=lambda x: x.__name__ if callable(x) else None,
 )
@@ -261,6 +268,17 @@ def test_handle_counts_random(seed):
     handle = build_solved_instance(problem)
     assert handle.num_voters == len(problem.objectives)
     assert handle.num_candidates == len(problem.variables())
+    assert handle.total_weight == sum(problem.objectives_weights.values())
+
+
+def test_handle_total_weight():
+    # weighted: 3 + 1; expanded: 4 voters w/o weights -> 1 each
+    assert build_solved_instance(make_weighted_problem()).total_weight == 4
+    expanded = build_solved_instance(make_weighted_problem_expanded())
+    assert (expanded.num_voters, expanded.total_weight) == (4, 4)
+    # 3 + 2.5 + 0.5
+    weighted = build_solved_instance(make_weighted_objectives_problem())
+    assert weighted.total_weight == 6
 
 
 # --- errors -----------------------------------------------------------
@@ -362,6 +380,28 @@ def test_variable_without_value_is_rejected():
     with pytest.raises(ValueError):
         build_solved_instance(problem)
     assert exclusion_ratio(problem) == {"exclusion_ratio": 0.0}
+
+
+@pytest.mark.parametrize("weight", [0, -1, float("nan"), float("inf")])
+def test_invalid_weight_rejected(weight):
+    problem = make_weighted_problem()
+    problem.objectives_weights["b"] = weight
+
+    with pytest.raises(ValueError, match="Objective b has invalid weight"):
+        build_solved_instance(problem)
+    for metric in (Metric.EXCLUSION_RATIO, Metric.EJR_PLUS):
+        with pytest.raises(ValueError, match="Objective b has invalid"):
+            get_metrics([metric], problem)
+
+
+def test_unnamed_or_missing_weight_defaults_to_one():
+    # weights keyed by name: unnamed objective / absent name -> 1
+    problem = make_tiny_problem()  # unnamed objectives
+    problem.objectives_weights["None"] = 5
+    assert build_solved_instance(problem).total_weight == 2
+    problem = make_weighted_problem()
+    del problem.objectives_weights["a"]
+    assert build_solved_instance(problem).total_weight == 2
 
 
 # --- fail loudly ------------------------------------------------------

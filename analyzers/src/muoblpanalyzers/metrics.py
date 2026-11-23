@@ -1,8 +1,10 @@
+import math
 from collections.abc import Callable
 from typing import cast
 
 from muoblp.model.multi_objective_lp import MultiObjectiveLpProblem
 from muoblpsolvers.election_solver import validate_pb_constraint
+from pulp import LpAffineExpression
 
 from muoblpanalyzers import native_metrics
 from muoblpanalyzers.metric import Metric
@@ -38,10 +40,34 @@ def get_metric_strategy(
         raise NotImplementedError("Metric not implemented") from None
 
 
+def _weight(
+    problem: MultiObjectiveLpProblem, objective: LpAffineExpression
+) -> float:
+    # voter multiplicity (deduplicated identical voters); unnamed objective
+    # or name missing from objectives_weights -> 1
+    name = objective.name
+    if name is None:
+        return 1
+    weight = problem.objectives_weights.get(name, 1)
+    if not (math.isfinite(weight) and weight > 0):
+        raise ValueError(
+            f"Objective {name} has invalid weight {weight} (expected finite"
+            " and > 0)"
+        )
+    return weight
+
+
+def _voter_count(problem: MultiObjectiveLpProblem) -> float:
+    # summed in objectives order (native mirrors it -> bit-identical)
+    return sum(_weight(problem, obj) for obj in problem.objectives)
+
+
 def exclusion_ratio(problem: MultiObjectiveLpProblem) -> dict:
-    zero_count = len([1 for obj in problem.objectives if obj.value() == 0])
+    zero_weight = sum(
+        _weight(problem, obj) for obj in problem.objectives if obj.value() == 0
+    )
     return {
-        "exclusion_ratio": zero_count / len(problem.objectives),
+        "exclusion_ratio": zero_weight / _voter_count(problem),
     }
 
 
@@ -49,7 +75,10 @@ def sum_objectives(problem: MultiObjectiveLpProblem) -> dict:
     # expects a solved problem: every variable has a value, so value() is
     # never None here
     return {
-        "sum": sum(cast(float, obj.value()) for obj in problem.objectives),
+        "sum": sum(
+            _weight(problem, obj) * cast(float, obj.value())
+            for obj in problem.objectives
+        ),
     }
 
 
@@ -89,21 +118,27 @@ def ejr_plus(problem: MultiObjectiveLpProblem) -> dict:
 
     total_budget = abs(validate_pb_constraint(problem).constant)
 
+    # (voter, satisfaction, weight); weight w == w identical voters
     voter_satisfaction = sorted(
-        [(voter, cast(float, voter.value())) for voter in problem.objectives],
-        key=lambda v_sat: v_sat[1],
+        [
+            (voter, cast(float, voter.value()), _weight(problem, voter))
+            for voter in problem.objectives
+        ],
+        key=lambda v_sat_w: v_sat_w[1],
     )
-    voter_count = len(problem.objectives)
+    voter_count = _voter_count(problem)
     failures = []
 
     for project in problem.variables():
         if project.value() == 1:  # skip elected
             continue
         coalition_size = 0
-        for voter, satisfaction in voter_satisfaction:
+        for voter, satisfaction, weight in voter_satisfaction:
             # if voter approved of project
             if project in voter:
-                coalition_size += 1
+                # w identical voters share satisfaction: checking only the
+                # largest coalition (strictest threshold) is equivalent
+                coalition_size += weight
                 ejr_satisfied = satisfaction >= (
                     coalition_size / voter_count
                 ) * total_budget - (costs[project.name] if up_to_one else 0)
