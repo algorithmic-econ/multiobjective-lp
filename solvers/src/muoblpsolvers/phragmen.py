@@ -266,23 +266,23 @@ def phragmen_cardinal(
 
         for candidate in remaining:
             if bos_version:
+                # eps-filtered `profile`: same keys as `local_caps`
+                utilities = profile[candidate]
                 supporters_sorted = sorted(
-                    list(election["profile"][candidate].keys()),
+                    utilities,
                     key=lambda voter: (
                         local_caps[candidate][voter]
-                        / (
-                            weights[voter]
-                            * election["profile"][candidate][voter]
-                        )
+                        / (weights[voter] * utilities[voter])
                     ),
                 )
-                total_utility = sum(
-                    weights[v] * u
-                    for v, u in election["profile"][candidate].items()
+                candidate_utility = sum(
+                    weights[v] * u for v, u in utilities.items()
                 )
+                total_utility = candidate_utility
                 money_used = 0
                 last_rho = 0
                 new_ratio = float("inf")
+                new_rho = float("inf")
                 new_alpha = 0
                 for voter in supporters_sorted:
                     alpha = min(
@@ -292,10 +292,7 @@ def phragmen_cardinal(
                             + total_utility
                             * (
                                 local_caps[candidate][voter]
-                                / (
-                                    weights[voter]
-                                    * election["profile"][candidate][voter]
-                                )
+                                / (weights[voter] * utilities[voter])
                             )
                         )
                         / election["candidates"][candidate],
@@ -311,33 +308,22 @@ def phragmen_cardinal(
                             new_ratio = rho / alpha
                             new_rho = rho
                             new_alpha = alpha
-                    total_utility -= (
-                        weights[voter] * election["profile"][candidate][voter]
-                    )
+                    total_utility -= weights[voter] * utilities[voter]
                     money_used += local_caps[candidate][voter]
                     last_rho = local_caps[candidate][voter] / (
-                        weights[voter] * election["profile"][candidate][voter]
+                        weights[voter] * utilities[voter]
                     )
-                if new_ratio < lowest_ratio:
+                if new_ratio == float("inf"):
+                    continue  # no rho found: unaffordable at this timestamp
+                # ties on ratio -> higher total weighted utility
+                if new_ratio < lowest_ratio or (
+                    new_ratio == lowest_ratio and candidate_utility > best_util
+                ):
                     lowest_ratio = new_ratio
                     lowest_rho = new_rho
                     next_candidate = candidate
                     best_alpha = new_alpha
-                    # TODO: check best_util calculation
-                    best_util = sum(
-                        weights[v] * u
-                        for v, u in election["profile"][candidate].items()
-                    )
-                elif new_ratio == lowest_ratio:
-                    total_utility = sum(
-                        weights[v] * u
-                        for v, u in election["profile"][candidate].items()
-                    )
-                    if total_utility > best_util:
-                        next_candidate = candidate
-                        best_util = total_utility
-                        lowest_rho = new_rho
-                        best_alpha = new_alpha
+                    best_util = candidate_utility
             elif sum(local_caps[candidate].values()) >= election["candidates"][
                 candidate
             ] * (1 - eps):
