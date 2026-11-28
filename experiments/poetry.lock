@@ -668,7 +668,7 @@ muoblpsolvers = ">=0.0.15,<0.1"
 pulp = "3.3.2"
 
 [package.extras]
-native = ["muoblpbindings (>=0.0.21,<0.1)"]
+native = ["muoblpbindings (>=0.0.22,<0.1)"]
 
 [package.source]
 type = "directory"
@@ -676,7 +676,7 @@ url = "../analyzers"
 
 [[package]]
 name = "muoblpbindings"
-version = "0.0.21"
+version = "0.0.22"
 description = ""
 optional = false
 python-versions = ">=3.13"
@@ -700,7 +700,7 @@ develop = true
 
 [package.dependencies]
 muoblp = ">=1.0.5,<2.0"
-muoblpbindings = ">=0.0.18,<0.1"
+muoblpbindings = ">=0.0.22,<0.1"
 pulp = "3.3.2"
 
 [package.source]

@@ -387,7 +387,7 @@ Verify: full matrix + sample smoke + aggregator city mode.
 | Auto-detect utility type (`:36`) | DONE — `RunnerConfig.utility_type: Utility \| None` |
 | PropRank removal constraint-based (`:101-103`) | DONE — `FeasibilityChecker` in `phragmen.py` (T16) |
 | Exp-MES B_init auto-derivation (`:112-125`) | PARTIAL — `budget_init` manual required option; epsilon / best-ratio derivation future |
-| MES generic utilities (`:127-133`) | PARTIAL — `MES_UTILS` exists; weight-aware bindings open (`# TODO: weight-aware via binding update` in `mes_add1.py`, `mes_utility.py`, `mes_constrains.py`) |
+| MES generic utilities (`:127-133`) | DONE — `MES_UTILS` exists; native MES weight-aware since bindings 0.0.22 (fix/mes-weights) |
 | One voter citywide + district, no split (`:144`) | unverified — future |
 
 ### Unowned findings (T28)

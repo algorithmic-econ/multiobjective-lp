@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 #include <string>
 
 using namespace std;
@@ -14,17 +15,21 @@ using Utility = long long;
 using Cost = double;
 
 vector<CandidateId> equal_shares_add1(
-    const vector<VoterId>& voters,
+    const unordered_map<VoterId, double>& voters,
     const vector<CandidateId>& projects,
     const unordered_map<CandidateId, Cost>& cost,
     const unordered_map<CandidateId, vector<pair<VoterId, Utility>>>& approvals_utilities,
-    const unordered_map<CandidateId, Utility>& total_utility,
+    const unordered_map<CandidateId, double>& total_utility,
     double total_budget) {
     // Step 1: Start with a fixed budget method
     vector<CandidateId> mes = equal_shares_utils(voters, projects, cost, approvals_utilities, total_utility, total_budget);
 
-    // Step 2: Initialize integral per-voter budget
-    double budget = static_cast<int>(total_budget / voters.size()) * voters.size();
+    // Step 2: Initialize integral per-voter budget (weighted voter count)
+    double total_weight = 0.0;
+    for (const auto& [_, weight] : voters) {
+        total_weight += weight;
+    }
+    double budget = floor(total_budget / total_weight) * total_weight;
     double current_cost = accumulate(mes.begin(), mes.end(), 0.0,
                                       [&cost](double sum, const string& c) { return sum + cost.at(c); });
 
@@ -44,7 +49,7 @@ vector<CandidateId> equal_shares_add1(
         }
 
         // Try the next higher budget
-        double next_budget = budget + voters.size();
+        double next_budget = budget + total_weight;
         vector<string> next_mes = equal_shares_utils(voters, projects, cost, approvals_utilities, total_utility, next_budget);
 
         current_cost = accumulate(next_mes.begin(), next_mes.end(), 0.0,

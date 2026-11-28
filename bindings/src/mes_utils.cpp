@@ -17,7 +17,7 @@ using Cost = double;
 namespace {
 
 CandidateId break_ties(const unordered_map<CandidateId, Cost>& cost,
-                       const unordered_map<CandidateId, Utility>& total_utility,
+                       const unordered_map<CandidateId, double>& total_utility,
                        vector<CandidateId> choices) {
     // COST
     double best_cost = cost.at(*ranges::min_element(choices, [&](const CandidateId& a, const CandidateId& b) {
@@ -29,7 +29,7 @@ CandidateId break_ties(const unordered_map<CandidateId, Cost>& cost,
     choices = vector<CandidateId>(filtered_by_cost.begin(), filtered_by_cost.end()); // Assign back to choices
 
     // UTILITY
-    Utility best_utility = total_utility.at(*ranges::max_element(choices, [&](const CandidateId& a, const CandidateId& b) {
+    double best_utility = total_utility.at(*ranges::max_element(choices, [&](const CandidateId& a, const CandidateId& b) {
         return total_utility.at(a) < total_utility.at(b);
     }));
     auto filtered_by_utility = choices | views::filter([&](const CandidateId& candidate) {
@@ -50,22 +50,28 @@ CandidateId break_ties(const unordered_map<CandidateId, Cost>& cost,
 }
 
 vector<CandidateId> equal_shares_utils(
-    const vector<VoterId>& voters,
+    const unordered_map<VoterId, double>& voters,
     const vector<CandidateId>& projects,
     const unordered_map<CandidateId, Cost>& cost,
     const unordered_map<CandidateId, vector<pair<VoterId, Utility>>>& approvals_utilities,
-    const unordered_map<CandidateId, Utility>& total_utility,
+    const unordered_map<CandidateId, double>& total_utility,
     double total_budget) {
 
+    // Weighted voter == weight identical copies, each with own budget.
+    double total_weight = 0.0;
+    for (const auto& [_, weight] : voters) {
+        total_weight += weight;
+    }
+
     unordered_map<VoterId, double> budget;
-    for (const auto& voter : voters) {
-        budget[voter] = total_budget / voters.size();
+    for (const auto& [voter, _] : voters) {
+        budget[voter] = total_budget / total_weight;
     }
 
     unordered_map<CandidateId, Utility> remaining;
     for (const auto& candidate : projects) {
         if (cost.at(candidate) > 0 && !approvals_utilities.at(candidate).empty()) {
-            remaining[candidate] = total_utility.at(candidate);
+            remaining[candidate] = static_cast<Utility>(total_utility.at(candidate));
         }
     }
 
@@ -95,7 +101,7 @@ vector<CandidateId> equal_shares_utils(
             // Check if candidate is affordable
             double money_behind_now = 0.0;
             for (const auto& [voter, _] : approvals_utilities.at(candidate)) {
-                money_behind_now += budget[voter];
+                money_behind_now += voters.at(voter) * budget[voter];
             }
             if (money_behind_now < cost.at(candidate)) {
                 unaffordable_candidates.insert(candidate);
@@ -112,15 +118,16 @@ vector<CandidateId> equal_shares_utils(
                       });
 
             double paid_so_far = 0.0;
-            double denominator = static_cast<double>(total_utility.at(candidate));
+            double denominator = total_utility.at(candidate);
 
             for (const auto& [voter, utility] : current_approvers_utilities) {
                 double payment_factor = (cost.at(candidate) - paid_so_far) / denominator;
                 double eff_vote_count = cost.at(candidate) / payment_factor;
 
                 if (payment_factor * utility > budget[voter]) {
-                    paid_so_far += budget[voter];
-                    denominator -= utility;
+                    double weight = voters.at(voter);
+                    paid_so_far += weight * budget[voter];
+                    denominator -= weight * static_cast<double>(utility);
                 } else {
                     remaining[candidate] = eff_vote_count;
                     if (eff_vote_count > best_eff_vote_count) {

@@ -19,15 +19,17 @@ logger = logging.getLogger(__name__)
 def binding_utilities(
     approvals_utilities: dict[CandidateId, list[tuple[VoterId, Utility]]],
     total_utilities: dict[CandidateId, Utility],
-) -> tuple[dict[str, list[tuple[str, int]]], dict[str, int]]:
-    """Narrow utilities to the MES bindings' `int` signature (C++ long long).
+) -> tuple[dict[str, list[tuple[str, int]]], dict[str, float]]:
+    """Narrow utilities to the MES bindings' signature.
 
-    Type-only: utilities are ints at runtime (B6 int-utility invariant, core
-    writer enforces it); pybind11 rejects floats, so no conversion here.
+    Type-only. Per-voter utilities are ints at runtime (B6 int-utility
+    invariant, core writer enforces it; C++ long long, pybind11 rejects
+    floats). Totals are weight-scaled (`Σ w·u`), passed as C++ double, so
+    float weights are fine.
     """
     return (
         cast(dict[str, list[tuple[str, int]]], approvals_utilities),
-        cast(dict[str, int], total_utilities),
+        cast(dict[str, float], total_utilities),
     )
 
 

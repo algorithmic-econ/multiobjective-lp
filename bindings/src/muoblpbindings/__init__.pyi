@@ -1,11 +1,11 @@
 from pulp import LpProblem
 
 def equal_shares_utils(
-    voters: list[str],
+    voters: dict[str, float],
     projects: list[str],
     cost: dict[str, float],
     approvals_utilities: dict[str, list[tuple[str, int]]],
-    total_utility: dict[str, int],
+    total_utility: dict[str, float],
     total_budget: float,
 ) -> list[str]:
     """
@@ -13,11 +13,11 @@ def equal_shares_utils(
     """
 
 def equal_shares_add1(
-    voters: list[str],
+    voters: dict[str, float],
     projects: list[str],
     cost: dict[str, float],
     approvals_utilities: dict[str, list[tuple[str, int]]],
-    total_utility: dict[str, int],
+    total_utility: dict[str, float],
     total_budget: float,
 ) -> list[str]:
     """

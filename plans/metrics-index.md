@@ -5,15 +5,13 @@ Base branch `feat/pabulib-metrics-base`; one session/PR per plan. Each plan
 starts by asking its unresolved questions. Native C++ twins = follow-up
 plans after python versions merge. Done plans → `plans/archive/`.
 
-## ⚠ Warning: MES results on deduplicated data are invalid
-Native MES (MES_UTILS, MES_ADD1, MES_CONSTRAINTS) ignores
-`objectives_weights` (every voter gets `B / #objectives`). Any run with
-`deduplicate_objectives: true` + native MES gives wrong selections (waw-krk:
-50/54 MES_ADD1 differ vs non-dedup, EJR+ violations 0 → 7). Metrics are
-correct (after metric-00); the solver is not. Don't validate/compare
-metrics on dedup MES results until
-[fix-mes-weights-plan.md](fix-mes-weights-plan.md) is merged. GREEDY,
-PHRAGMEN, MES_EXPONENTIAL, EA/STV/SCR are weight-aware.
+## Resolved: MES on deduplicated data (was invalid)
+Native MES (MES_UTILS, MES_ADD1, MES_CONSTRAINTS) ignored
+`objectives_weights` before bindings 0.0.22; dedup MES results produced
+earlier (e.g. old `independent-waw-krk-dedup`) are invalid — rerun them.
+Fixed by [fix-mes-weights-plan.md](archive/fix-mes-weights-plan.md):
+waw-krk dedup rerun → 0/54 MES_ADD1 differ vs non-dedup (was 50/54), EJR+
+violations 0. Exact ties may still differ (unordered_map tie-break).
 
 Not planned: `dominance_margin` (compares 2 outcomes), `jr_violations`
 (never implemented in pabulib), greedy-relative normalisation (already
