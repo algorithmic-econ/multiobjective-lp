@@ -94,14 +94,14 @@ def update_local_scalings(
     for candidate in remaining:
         scaling_for_c = 0
         sum_money = sum([
-            weights[v] * (timestamp - m_spent[v])
+            weights[v] * max(timestamp - m_spent[v], 0)
             for v, _ in sorted_utils[candidate]
         ])
         for voter, utility in sorted_utils[candidate]:
             alpha = sum_money / candidates[candidate]
             scaling_for_c = max(alpha * utility, scaling_for_c)
             local_scalings[voter] = max(local_scalings[voter], scaling_for_c)
-            sum_money -= weights[voter] * (timestamp - m_spent[voter])
+            sum_money -= weights[voter] * max(timestamp - m_spent[voter], 0)
 
 
 def compute_local_cap(timestamp, m_spent, ut, local_scaling, kappa, eps=1e-6):
