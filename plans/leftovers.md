@@ -507,5 +507,5 @@ CI (test.yml) notes for T07/future:
 - Separate tickets (not fixed, would change w=1 goldens):
   - `mes_utils.cpp` `remaining` is `unordered_map<CandidateId, long long>` but stores `eff_vote_count` (double) → truncation; affects pruning order / early `break`.
   - `break_ties` returns `choices[0]` after cost/utility filters; order = `unordered_map` iteration → exact ties nondeterministic across weighted vs expanded inputs. Fix: final tie-break by candidate name.
-  - PHRAGMEN: 1/54 waw-krk instances differ dedup vs non-dedup (likely tie); not investigated.
+- PHRAGMEN dedup diff (unrelated to MES; pure python `solvers/src/muoblpsolvers/phragmen.py`, weights via `election["voters"]` from `molp_to_simple_election`; untouched here), NOT investigated, cause unknown: 1/54 waw-krk differ dedup vs non-dedup — `poland_warszawa_2024_praga-polnoc` COST; non-dedup {`V_604`, `V_799`} vs dedup {`V_1663`} (2↔1 swap, not obvious tie). Compare `independent-waw-krk` vs `independent-waw-krk-dedup` PHRAGMEN meta.json.
 - waw-krk dedup MES_ADD1 rerun lives in `experiments/resources/experiment-results/independent-waw-krk-dedup-fixed/` (+ analyzer-results same name); old `independent-waw-krk-dedup` MES_ADD1 rows still stale.
