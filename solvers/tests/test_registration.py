@@ -16,6 +16,7 @@ SOLVER_NAMES = [
     "MethodOfEqualSharesExponential",
     "MethodOfEqualSharesUtility",
     "Phragmen",
+    "PhragmenNative",
     "SingleTransferableVote",
     "SolidCoalitionRefinement",
     "SummedObjectives",
@@ -23,7 +24,7 @@ SOLVER_NAMES = [
 
 
 def test_registration_covers_all_solvers():
-    assert len(SOLVERS) == 10
+    assert len(SOLVERS) == 11
     assert {s.name for s in SOLVERS} == set(SOLVER_NAMES)
 
 

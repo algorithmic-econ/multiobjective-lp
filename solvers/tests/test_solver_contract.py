@@ -9,6 +9,7 @@ from muoblpsolvers import (
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
     MethodOfEqualSharesUtilitySolver,
+    PhragmenNativeSolver,
     PhragmenSolver,
     SingleTransferableVote,
     SolidCoalitionRefinement,
@@ -22,6 +23,7 @@ ALL_SOLVERS = [
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
     MethodOfEqualSharesUtilitySolver,
+    PhragmenNativeSolver,
     PhragmenSolver,
     SingleTransferableVote,
     SolidCoalitionRefinement,
@@ -44,6 +46,7 @@ def test_unified_constructor(solver_class):
         (MethodOfEqualSharesConstrainsSolver, "cost_modification_base", 1.5),
         (MethodOfEqualSharesExponentialSolver, "budget_init", 100),
         (PhragmenSolver, "kappa", 2.0),
+        (PhragmenNativeSolver, "kappa", 2.0),
         (SummedObjectivesLpSolver, "use_gurobi", True),
     ],
 )
@@ -59,13 +62,13 @@ def test_option_defaults():
     assert constrains.optionsDict["max_iterations"] == 200
     assert constrains.optionsDict["cost_modification_base"] == 1.007
 
-    phragmen = PhragmenSolver()
-    assert phragmen.optionsDict == {
-        "increasing_scalings": False,
-        "kappa": 1.0,
-        "bos_version": False,
-        "eps": 1e-6,
-    }
+    for phragmen in (PhragmenSolver(), PhragmenNativeSolver()):
+        assert phragmen.optionsDict == {
+            "increasing_scalings": False,
+            "kappa": 1.0,
+            "bos_version": False,
+            "eps": 1e-6,
+        }
 
     assert SummedObjectivesLpSolver().optionsDict["use_gurobi"] is False
 

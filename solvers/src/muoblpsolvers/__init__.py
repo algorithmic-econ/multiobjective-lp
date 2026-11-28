@@ -9,6 +9,7 @@ from muoblpsolvers.mes import (
     MethodOfEqualSharesUtilitySolver,
 )
 from muoblpsolvers.phragmen import PhragmenSolver
+from muoblpsolvers.phragmen_native import PhragmenNativeSolver
 from muoblpsolvers.registration import register_solvers
 from muoblpsolvers.single_transferable_vote import SingleTransferableVote
 from muoblpsolvers.solid_coalition_refinement import SolidCoalitionRefinement
@@ -22,6 +23,7 @@ __all__ = [
     "MethodOfEqualSharesExponentialSolver",
     "MethodOfEqualSharesUtilitySolver",
     "PhragmenSolver",
+    "PhragmenNativeSolver",
     "SingleTransferableVote",
     "SolidCoalitionRefinement",
     "SummedObjectivesLpSolver",
