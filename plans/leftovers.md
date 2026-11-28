@@ -522,3 +522,9 @@ CI (test.yml) notes for T07/future:
 - bos branch now uses eps-filtered `profile` (no KeyError on 0-coef in-memory objectives); `new_rho` reset per candidate, candidates w/ no finite rho skipped (was `UnboundLocalError` in round 1, e.g. cost 1e8 vs 1); `best_util` = weighted utility computed once, `<`/`==` branches merged, TODO dropped.
 - Behaviour-preserving otherwise: inf-ratio candidates could only win while `lowest_ratio` inf, always overridden by first finite one; trigger candidate (sum caps ≥ cost) always finite → `assert next_candidate` holds. Old vs new: 1200 seeded cases (weighted + expanded, COST/APPR) 0 diffs.
 - Tests: `solvers/tests/test_phragmen_bos.py` (zero-coef == omitted, unaffordable candidates skipped; bos=True cases fail w/o fix). Unaffordable test hash-order dependent w/o fix (20 expensive cands → crash ~always).
+
+### From native-phragmen (feat/native-phragmen, 2026-11-28)
+- `PhragmenNative` (bindings 0.0.23 `phragmen`) = C++ port of `phragmen_cardinal`, bit-exact rank parity (900 seeded cases, all option combos). krakow_2024 COST: python 598s → native 3.4s (339 sel), bos 386s → 3.2s (314 sel), identical selections.
+- Python `phragmen.py` `remaining` set → ordered dict: ties were PYTHONHASHSEED-dependent, now profile order (both impls).
+- TOPIC TO INVESTIGATE (needed long term): GE (lower-bound) constraints rejected in `PhragmenNative`, like all native solvers (D15). Python `FeasibilityChecker` = CBC MIP per candidate check; bindings have no MIP solver. Options: MIP/LP lib in bindings (HiGHS?), cheaper GE completion check (knapsack/cover bound), GIL callback to python checker (slow, kills speedup). Same gap blocks native Greedy / MES-Exponential.
+- `compute_local_cap` ignores solver `eps` (hardcoded 1e-6) in both impls — kept faithful.

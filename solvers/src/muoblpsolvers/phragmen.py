@@ -163,9 +163,9 @@ def phragmen_cardinal(
     timestamp_low = 0
     timestamp_high = timestamp_low + timestamp_step
     rank = []
-    remaining = set([
-        candidate for candidate in profile.keys() if candidate not in rank
-    ])
+    # dict as ordered set: deterministic tie-break (profile order), not
+    # PYTHONHASHSEED-dependent set order; native PhragmenNative mirrors it
+    remaining: dict[CandidateId, None] = dict.fromkeys(profile)
 
     local_caps: dict[CandidateId, dict[VoterId, float]] = {
         candidate: {voter: 0 for voter in profile[candidate].keys()}
@@ -361,7 +361,7 @@ def phragmen_cardinal(
         variables: dict[CandidateId, LpVariable] = lp.variablesDict()
         rank.append(next_candidate)
         variables[next_candidate].setInitialValue(1)
-        remaining.remove(next_candidate)
+        del remaining[next_candidate]
 
         candidates_to_remove = []
         for candidate in remaining:
@@ -372,7 +372,7 @@ def phragmen_cardinal(
             candidate_variable.setInitialValue(0)
 
         for candidate in candidates_to_remove:
-            remaining.remove(candidate)
+            del remaining[candidate]
 
         if increasing_scalings:
             for voter in global_scalings.keys():

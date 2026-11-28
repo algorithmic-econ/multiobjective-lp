@@ -10,6 +10,7 @@ from muoblpsolvers import (
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesExponentialSolver,
     MethodOfEqualSharesUtilitySolver,
+    PhragmenNativeSolver,
     PhragmenSolver,
     SingleTransferableVote,
     SolidCoalitionRefinement,
@@ -22,6 +23,7 @@ BINDING_BACKED = [
     MethodOfEqualSharesAdd1Solver,
     MethodOfEqualSharesConstrainsSolver,
     MethodOfEqualSharesUtilitySolver,
+    PhragmenNativeSolver,
     SingleTransferableVote,
     SolidCoalitionRefinement,
 ]

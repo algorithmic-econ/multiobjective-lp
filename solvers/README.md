@@ -22,6 +22,7 @@ PuLP name / class module / experiments `solver_type` / bindings-backed / constru
 |---|---|---|---|---|
 | `Greedy` | `greedy_solver.py` | `GREEDY` | no | — |
 | `Phragmen` | `phragmen.py` | `PHRAGMEN` | no | `increasing_scalings=False`, `kappa=1.0`, `bos_version=False`, `eps=1e-6` |
+| `PhragmenNative` | `phragmen_native.py` | — | yes | same as `Phragmen` |
 | `SummedObjectives` | `summed_objectives_lp_solver.py` | `SUMMING` | no | `use_gurobi=False` |
 | `MethodOfEqualSharesExponential` | `mes/mes_exponential.py` | `MES_EXPONENTIAL` | no | `budget_init` (required) |
 | `MethodOfEqualSharesConstrains` | `mes/mes_constrains.py` | `MES_CONSTRAINT` | yes | `cost_modification_base=1.007`, `max_iterations=200` |
@@ -43,7 +44,7 @@ All solvers follow PuLP's `LpSolver` contract:
   `import muoblpsolvers` works without bindings).
 * **Status**: `actualSolve(lp)` sets `lp.status` and returns it.
 * **`msg=False`**: no output during solve.
-* **`timeLimit`**: Greedy, Phragmen, MES-Exponential and MES-Constrains
+* **`timeLimit`**: Greedy, Phragmen, PhragmenNative, MES-Exponential and MES-Constrains
   (coarsely, per iteration) stop early with `LpStatusNotSolved`;
   SummedObjectives passes it to CBC/Gurobi; other bindings-backed solvers
   emit a warning and ignore it.
@@ -54,6 +55,10 @@ All solvers follow PuLP's `LpSolver` contract:
   MES-Exponential and MES-Constrains; MES-Add1, MES-Utility, STV,
   ExpandingApprovals and SolidCoalitionRefinement reject them with
   `PulpSolverError` (they would ignore them and return a wrong answer).
+  PhragmenNative rejects them too (python FeasibilityChecker needs a CBC
+  solve per check); it honors all `<=`/`==` constraints like `lp.valid()`.
+* **PhragmenNative**: C++ port of Phragmen, identical selection and rank
+  order (bit-exact parity, ties broken by profile order in both).
 * **Known limitation**: those five also ignore upper-bound (`<=`) constraints
   other than the PB budget constraint (e.g. per-district caps).
 
@@ -63,18 +68,19 @@ All solvers follow PuLP's `LpSolver` contract:
 3. Solver needs to override method `actualSolve` to accept an instance of `MultiObjectiveLpProblem`, set `lp.status` and return it
 
 ## PuLP registration
-`import muoblpsolvers` registers all 10 solvers into PuLP's registry, so they
+`import muoblpsolvers` registers all 11 solvers into PuLP's registry, so they
 resolve through the standard PuLP API:
 ```python
 import muoblpsolvers  # side effect: registers solvers
 import pulp
 
-solver = pulp.getSolver("Phragmen", kappa=2.0)  # any of the 10 names
+solver = pulp.getSolver("Phragmen", kappa=2.0)  # any of the 11 names
 "Phragmen" in pulp.listSolvers()                 # True
 ```
 Registered names: `ExpandingApprovals`, `Greedy`, `MethodOfEqualSharesAdd1`,
 `MethodOfEqualSharesConstrains`, `MethodOfEqualSharesExponential`,
-`MethodOfEqualSharesUtility`, `Phragmen`, `SingleTransferableVote`,
+`MethodOfEqualSharesUtility`, `Phragmen`, `PhragmenNative`,
+`SingleTransferableVote`,
 `SolidCoalitionRefinement`, `SummedObjectives`.
 
 **Mechanism.** PuLP 3.3.2 drives `getSolver`/`listSolvers` off the module-level

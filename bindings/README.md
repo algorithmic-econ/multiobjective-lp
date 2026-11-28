@@ -58,6 +58,13 @@ this shape implicitly (no compile-time link to core):
   broken by `unordered_map` order (may differ weighted vs expanded).
 - `expanding_approvals(prob)`, `single_transferable_vote(prob)`,
   `solid_coalition_refinement(prob)`.
+- `phragmen(voters, profile, costs, constraints, *, increasing_scalings,
+  kappa, bos_version, eps, time_limit)` → `(rank, timed_out)` — 1:1 port of
+  solvers `phragmen_cardinal`, bit-exact parity (`-ffp-contract=off`). Ordered
+  list args (`voters` `[(id, w)]`, `profile` `[(cand, [(voter, u)])]`,
+  `constraints` `[(sense, constant, [(var, coef)])]`) fix tie/sum order. Float
+  utilities OK. Feasibility = `lp.valid()` over LE (-1) / EQ (0) senses; GE →
+  `ValueError`. Core `src/phragmen.cpp` pybind-free, runs with GIL released.
 - `metrics.SolvedInstance(prob)` — opaque snapshot of solved problem;
   ro props `num_voters`, `num_candidates`, `total_weight`.
 - `metrics.exclusion_ratio(instance)` — weighted fraction of voters with

@@ -44,7 +44,7 @@ url = "../core"
 
 [[package]]
 name = "muoblpbindings"
-version = "0.0.22"
+version = "0.0.23"
 description = ""
 optional = false
 python-versions = ">=3.13"
@@ -221,4 +221,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "5dc030b3acacb8c3ee8f5aeda91963f2e20f63d8e0d4e6c0554546608ff111ae"
+content-hash = "252da6054e4b9207330c86ea0cdc23e9b414e2eeaceb8ccc4754ca8028b31c27"

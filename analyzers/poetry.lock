@@ -44,7 +44,7 @@ url = "../core"
 
 [[package]]
 name = "muoblpbindings"
-version = "0.0.22"
+version = "0.0.23"
 description = ""
 optional = false
 python-versions = ">=3.13"
@@ -68,7 +68,7 @@ develop = true
 
 [package.dependencies]
 muoblp = ">=1.0.5,<2.0"
-muoblpbindings = ">=0.0.22,<0.1"
+muoblpbindings = ">=0.0.23,<0.1"
 pulp = "3.3.2"
 
 [package.source]

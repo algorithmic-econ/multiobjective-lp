@@ -14,8 +14,12 @@ add_library(methods STATIC
   src/mes_utils.cpp
   src/expanding_approvals.cpp
   src/single_transferable_vote.cpp
-  src/solid_coalition_refinement.cpp)
+  src/solid_coalition_refinement.cpp
+  src/phragmen.cpp)
 set_target_properties(methods PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# phragmen: bit parity with python phragmen.py (no fused multiply-add)
+set_source_files_properties(src/phragmen.cpp PROPERTIES COMPILE_OPTIONS
+  "$<IF:$<CXX_COMPILER_ID:MSVC>,/fp:precise,-ffp-contract=off>")
 
 add_library(metrics STATIC
   src/metrics/solved_instance.cpp

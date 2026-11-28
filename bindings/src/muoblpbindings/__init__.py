@@ -4,6 +4,7 @@ from .muoblpbindings import (
     expanding_approvals,
     single_transferable_vote,
     solid_coalition_refinement,
+    phragmen,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "expanding_approvals",
     "single_transferable_vote",
     "solid_coalition_refinement",
+    "phragmen",
 ]
